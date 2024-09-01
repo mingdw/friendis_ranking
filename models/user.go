@@ -9,11 +9,18 @@ type User struct {
 	Id         int    `json:"id"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
-	AddTime    int64  `json:"addTime"`
-	UpdateTime int64  `json:"updateTime"`
 	Age        int    `json:"age"`
 	Sex        int    `json:"sex"`
 	Phone      string `json:"phone"`
+	Status     int    `json:"status"`
+	CreateTime int64  `json:"CreateTime"`
+	UpEditTime int64  `json:"UpEditTime"`
+	Creator    string `json:"Creator"`
+	UpEditor   string `json:"UpEditor"`
+}
+
+func (User) TableName() string {
+	return "sys_user"
 }
 
 func GetUserInfoById(id int) User {
