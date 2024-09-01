@@ -7,6 +7,6 @@ import (
 
 func main() {
 	fmt.Println("hello go !")
-	r := router.UserRouter()
+	r := router.InitRouter()
 	r.Run(":8809")
 }

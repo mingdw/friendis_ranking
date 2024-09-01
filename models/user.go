@@ -14,9 +14,9 @@ type User struct {
 	Phone      string `json:"phone"`
 	Status     int    `json:"status"`
 	CreateTime int64  `json:"CreateTime"`
-	UpEditTime int64  `json:"UpEditTime"`
+	EditTime   int64  `json:"EditTime"`
 	Creator    string `json:"Creator"`
-	UpEditor   string `json:"UpEditor"`
+	Editor     string `json:"Editor"`
 }
 
 func (User) TableName() string {
@@ -32,11 +32,13 @@ func initUser(id int) User {
 		Id:         id,
 		Username:   "张三",
 		Password:   "pwdzhangsan",
-		AddTime:    time.Now().Unix(),
-		UpdateTime: time.Now().Unix(),
 		Age:        20,
 		Sex:        0,
 		Phone:      "18710127234",
+		CreateTime: time.Now().Unix(),
+		EditTime:   time.Now().Unix(),
+		Creator:    "系统创建",
+		Editor:     "系统更新",
 	}
 	fmt.Println("user info: ", user)
 	return user
