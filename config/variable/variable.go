@@ -1,10 +1,8 @@
 package variable
 
 import (
-	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/yamlConfig/ymlConfigInterf"
-
 	"log"
 	"os"
 	"strings"
@@ -35,12 +33,15 @@ var (
 	WebsocketServerPingMsg    = "Server->Ping->Client"
 
 	YmlConfigInterf ymlConfigInterf.YmlConfigInterf // 全局配置文件指针
+	YamlConfig      ymlConfigInterf.YmlConfigInterf
+	ENV             string
 
 	//  用户自行定义其他全局变量 ↓
 
 )
 
 func init() {
+	log.Println("全局变量初始化!!!")
 	// 1.初始化程序根目录
 	if curPath, err := os.Getwd(); err == nil {
 		// 路径进行处理，兼容单元测试程序程序启动时的奇怪路径
@@ -50,7 +51,11 @@ func init() {
 			BasePath = curPath
 		}
 	} else {
-		log.Fatal(errorMsg.ErrorsBasePath)
+		log.Println(errorMsg.ErrorsBasePath)
 	}
-	fmt.Println("全局变量初始化开始")
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "dev"
+	}
+	ENV = env
 }

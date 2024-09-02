@@ -1,13 +1,11 @@
 package yamlConfig
 
 import (
-	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/variable"
 	"friends_ranking/config/yamlConfig/ymlConfigInterf"
 	"friends_ranking/container"
 	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -19,35 +17,28 @@ import (
 var lastChangeTime time.Time
 
 func init() {
-	fmt.Println("config.init!!!")
 	lastChangeTime = time.Now()
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "dev"
-	}
-
-	CreateYamlFactory()
-
+	log.Println("config init")
 }
 
 var containerFactory = container.CreateContainersFactory()
 
 func CreateYamlFactory(fileName ...string) ymlConfigInterf.YmlConfigInterf {
-
+	log.Println("当前环境：", variable.ENV)
 	yamlConfig := viper.New()
 	// 配置文件所在目录
 	yamlConfig.AddConfigPath(variable.BasePath + "/resource")
 	// 需要读取的文件名,默认为：config
 	if len(fileName) == 0 {
-		yamlConfig.SetConfigName("config")
+		yamlConfig.SetConfigName("application_" + variable.ENV)
 	} else {
 		yamlConfig.SetConfigName(fileName[0])
 	}
 	//设置配置文件类型(后缀)为 yml
-	yamlConfig.SetConfigType("yml")
+	yamlConfig.SetConfigType("yaml")
 
 	if err := yamlConfig.ReadInConfig(); err != nil {
-		log.Fatal("配置文件不存在")
+		log.Println("配置文件不存在")
 	}
 
 	return &ymlConfig{
