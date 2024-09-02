@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"friends_ranking/config/variable"
 	"friends_ranking/utils/ginRelease"
 
@@ -11,8 +10,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	var router *gin.Engine
-	fmt.Println("cinfig: ", variable.YmlConfigInterf.GetBool("AppDebug"))
-	if variable.YmlConfigInterf.GetBool("AppDebug") == false {
+	if variable.YamlConfig.GetBool("AppDebug") == false {
 		//1.gin自行记录接口访问日志，不需要nginx，如果开启以下3行，那么请屏蔽第 34 行代码
 		//gin.DisableConsoleColor()
 		//f, _ := os.Create(variable.BasePath + variable.ConfigYml.GetString("Logs.GinLogName"))

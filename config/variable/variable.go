@@ -32,9 +32,8 @@ var (
 	WebsocketHandshakeSuccess = `{"code":200,"msg":"ws连接成功","data":""}`
 	WebsocketServerPingMsg    = "Server->Ping->Client"
 
-	YmlConfigInterf ymlConfigInterf.YmlConfigInterf // 全局配置文件指针
-	YamlConfig      ymlConfigInterf.YmlConfigInterf
-	ENV             string
+	YamlConfig ymlConfigInterf.YmlConfigInterf // 全局配置文件指针
+	ENV        string
 
 	//  用户自行定义其他全局变量 ↓
 

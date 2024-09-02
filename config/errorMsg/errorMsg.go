@@ -5,7 +5,7 @@ const (
 	//系统部分
 	ErrorsContainerKeyAlreadyExists string = "该键已经注册在容器中了"
 	ErrorsPublicNotExists           string = "public 目录不存在"
-	ErrorsConfigYamlNotExists       string = "config.yml 配置文件不存在"
+	ErrorsConfigYamlNotExists       string = "application.yaml 配置文件不存在"
 	ErrorsConfigGormNotExists       string = "gorm_v2.yml 配置文件不存在"
 	ErrorsStorageLogsNotExists      string = "storage/logs 目录不存在"
 	ErrorsConfigInitFail            string = "初始化配置文件发生错误"

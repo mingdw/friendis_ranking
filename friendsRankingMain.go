@@ -1,17 +1,16 @@
 package main
 
 import (
+	"embed"
 	"fmt"
-	"friends_ranking/config/variable"
-	"friends_ranking/config/yamlConfig"
+	_ "friends_ranking/bootstrap"
 	"friends_ranking/router"
 )
 
+var yamlFile embed.FS
+
 func main() {
-	fmt.Println("hello go !")
-	yamlConfig.CreateYamlFactory("")
-	applicationName := variable.YamlConfig.GetString("application.name")
-	fmt.Println("applicationaName: ", applicationName)
+	fmt.Println("friends_ranking start...")
 	r := router.InitRouter()
 	r.Run(":8809")
 }
