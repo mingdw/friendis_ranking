@@ -1,6 +1,7 @@
 package variable
 
 import (
+	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/yamlConfig/ymlConfigInterf"
 
@@ -51,4 +52,5 @@ func init() {
 	} else {
 		log.Fatal(errorMsg.ErrorsBasePath)
 	}
+	fmt.Println("全局变量初始化开始")
 }

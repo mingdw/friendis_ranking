@@ -26,6 +26,8 @@ func init() {
 		env = "dev"
 	}
 
+	CreateYamlFactory()
+
 }
 
 var containerFactory = container.CreateContainersFactory()
