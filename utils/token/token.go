@@ -1,38 +1,36 @@
-package token
+package userToken
 
 import (
 	"errors"
+	"friends_ranking/config/variable"
+	Myjwt "friends_ranking/utils/jwt"
+
 	"github.com/dgrijalva/jwt-go"
-	"goskeleton/app/global/consts"
-	"goskeleton/app/global/my_errors"
-	"goskeleton/app/global/variable"
-	"goskeleton/app/http/middleware/my_jwt"
-	"goskeleton/app/model"
-	"goskeleton/app/service/users/token_cache_redis"
+
 	"time"
 )
 
 // CreateUserFactory 创建 userToken 工厂
 func CreateUserFactory() *userToken {
 	return &userToken{
-		userJwt: my_jwt.CreateMyJWT(variable.ConfigYml.GetString("Token.JwtTokenSignKey")),
+		userJwt: Myjwt.CreateMyJWT(variable.YamlConfig.GetString("Token.JwtTokenSignKey")),
 	}
 }
 
 type userToken struct {
-	userJwt *my_jwt.JwtSign
+	userJwt *Myjwt.JwtSign
 }
 
 // GenerateToken 生成token
-func (u *userToken) GenerateToken(userid int64, username string, phone string, expireAt int64) (tokens string, err error) {
+func (u *userToken) GenerateToken(userid string, mobile string, phone string, expireAt int64) (tokens string, err error) {
 
 	// 根据实际业务自定义token需要包含的参数，生成token，注意：用户密码请勿包含在token
-	customClaims := my_jwt.CustomClaims{
-		UserId: userid,
-		Name:   username,
-		Phone:  phone,
+	customClaims := Myjwt.CustomClaims{
+		Type:  userid,
+		Phone: phone,
 		// 特别注意，针对前文的匿名结构体，初始化的时候必须指定键名，并且不带 jwt. 否则报错：Mixture of field: value and value initializers
 		StandardClaims: jwt.StandardClaims{
+			Id:        userid,
 			NotBefore: time.Now().Unix() - 10,       // 生效开始时间
 			ExpiresAt: time.Now().Unix() + expireAt, // 失效截止时间
 		},
@@ -54,7 +52,7 @@ func (u *userToken) RecordLoginToken(userToken, clientIp string) bool {
 // TokenIsMeetRefreshCondition 检查token是否满足刷新条件
 func (u *userToken) TokenIsMeetRefreshCondition(token string) bool {
 	// token基本信息是否有效：1.过期时间在允许的过期范围内;2.基本格式正确
-	customClaims, code := u.isNotExpired(token, variable.ConfigYml.GetInt64("Token.JwtTokenRefreshAllowSec"))
+	customClaims, code := u.isNotExpired(token, variable.YamlConfig.GetInt64("Token.JwtTokenRefreshAllowSec"))
 	switch code {
 	case consts.JwtTokenOK, consts.JwtTokenExpired:
 		//在数据库的存储信息是否也符合过期刷新刷新条件
@@ -69,7 +67,7 @@ func (u *userToken) TokenIsMeetRefreshCondition(token string) bool {
 func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, res bool) {
 	var err error
 	//如果token是有效的、或者在过期时间内，那么执行更新，换取新token
-	if newToken, err = u.userJwt.RefreshToken(oldToken, variable.ConfigYml.GetInt64("Token.JwtTokenRefreshExpireAt")); err == nil {
+	if newToken, err = u.userJwt.RefreshToken(oldToken, variable.YamlConfig.GetInt64("Token.JwtTokenRefreshExpireAt")); err == nil {
 		if customClaims, err := u.userJwt.ParseToken(newToken); err == nil {
 			userId := customClaims.UserId
 			expiresAt := customClaims.ExpiresAt

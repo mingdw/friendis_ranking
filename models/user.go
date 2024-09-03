@@ -17,9 +17,10 @@ type User struct {
 	EditTime   int64  `json:"EditTime"`
 	Creator    string `json:"Creator"`
 	Editor     string `json:"Editor"`
+	dbconn
 }
 
-func (User) TableName() string {
+func (u *User) TableName() string {
 	return "sys_user"
 }
 
