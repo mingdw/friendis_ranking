@@ -1,7 +1,7 @@
 application：
   name: friedns_ranking
   desc: 朋友圈排行榜
-  port：8808
+  port: 8888
   
 Gormv2: # 只针对 gorm  操作数据库有效
   UseDbType: "mysql"  # 备选项 mysql 、sqlserver、 postgresql

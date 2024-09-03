@@ -15,9 +15,11 @@ import (
 // 开发者自行封装的全局变量，请做好并发安全检查与确认
 
 var (
-	BasePath           string       // 定义项目的根目录
-	EventDestroyPrefix = "Destroy_" //  程序退出时需要销毁的事件前缀
-	ConfigKeyPrefix    = "Config_"  //  配置文件键值缓存时，键的前缀
+	BasePath           string              // 定义项目的根目录
+	EventDestroyPrefix        = "Destroy_" //  程序退出时需要销毁的事件前缀
+	ConfigKeyPrefix           = "Config_"  //  配置文件键值缓存时，键的前缀
+	// 表单验证器前缀
+	ValidatorPrefix string = "Form_Validator_" //表单校验器前缀
 
 	// 全局日志指针
 	ZapLog *zap.Logger

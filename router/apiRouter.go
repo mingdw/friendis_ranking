@@ -3,6 +3,7 @@ package router
 import (
 	"friends_ranking/config/variable"
 	"friends_ranking/utils/ginRelease"
+	"net/http"
 
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,34 @@ func InitRouter() *gin.Engine {
 		pprof.Register(router)
 	}
 
+	router.GET("/", func(context *gin.Context) {
+		context.String(http.StatusOK, "Api 模块接口 hello word！")
+	})
+
+	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
+	router.Static("/public", "./public") //  定义静态资源路由与实际目录映射关系
+	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
+
+	//模拟两组路由，一组登陆和注册，不需要校验token，一组受保护的api，需要检验token
+
+	//  创建一个门户类接口路由组
+	vApi := router.Group("/admin/")
+	{
+		// 模拟一个首页路由
+		home := vApi.Group("index/")
+		{
+			home.POST("login", validatorFactory.Create(variable.ValidatorPrefix+"HomeNews"))
+			home.POST("regist", validatorFactory.Create(variable.ValidatorPrefix+"HomeNews"))
+		}
+
+		vApi.Use(authorization.CheckTokenAuth()){
+			user := vApi.Group("user/"){
+				user.POST("query")
+				user.POST("delete")
+				user.POST("add")
+			}
+		}
+	}
 	return router
 
 }

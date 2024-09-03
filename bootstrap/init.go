@@ -32,7 +32,7 @@ func init() {
 			variable.GormDbMysql = dbMysql
 		}
 	}
-
+	log.Println("********************friends_ranking init end**********************")
 }
 
 // 检查项目必须的非编译目录是否存在，避免编译后调用的时候缺失相关目录
@@ -40,7 +40,7 @@ func checkRequiredFolders() {
 
 	log.Println("check RequireFolders, current system profile: ", variable.ENV)
 	//1.检查配置文件是否存在
-	if _, err := os.Stat(variable.BasePath + "\\resource\\application_" + variable.ENV + ".yaml"); err != nil {
+	if _, err := os.Stat(variable.BasePath + "/resource/application_" + variable.ENV + ".yaml"); err != nil {
 		log.Fatal(errorMsg.ErrorsConfigYamlNotExists + err.Error())
 	}
 	log.Println("application yaml folder check end!")

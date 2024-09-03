@@ -1,10 +1,10 @@
-package jwtutil
+package Myjwt
 
 import (
 	"errors"
-	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/globalConst"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -21,14 +21,13 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
-func JWTInstance(key string) *JwtSign {
-	fmt.Println("创建JWT TOKEN")
-	if len(key) <= 0 {
-		key = globalConst.JWTSecretKey
+// 使用工厂创建一个 JWT 结构体
+func CreateMyJWT(signKey string) *JwtSign {
+	if len(signKey) <= 0 {
+		signKey = globalConst.JWTSecretKey
 	}
-
 	return &JwtSign{
-		[]byte(key),
+		[]byte(signKey),
 	}
 }
 
@@ -40,15 +39,14 @@ func (j *JwtSign) CreateToken(claims CustomClaims) (string, error) {
 	return tokenPartA.SignedString(j.SigningKey)
 }
 
-func (j *JwtSign) ParseToken(tokenStr string) (*CustomClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenStr, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+// 解析Token
+func (j *JwtSign) ParseToken(tokenString string) (*CustomClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.SigningKey, nil
 	})
-
 	if token == nil {
 		return nil, errors.New(errorMsg.ErrorsTokenInvalid)
 	}
-
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -64,12 +62,21 @@ func (j *JwtSign) ParseToken(tokenStr string) (*CustomClaims, error) {
 			}
 		}
 	}
-
 labelHere:
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	} else {
 		return nil, errors.New(errorMsg.ErrorsTokenInvalid)
 	}
+}
 
+// 更新token
+func (j *JwtSign) RefreshToken(tokenString string, extraAddSeconds int64) (string, error) {
+
+	if CustomClaims, err := j.ParseToken(tokenString); err == nil {
+		CustomClaims.ExpiresAt = time.Now().Unix() + extraAddSeconds
+		return j.CreateToken(*CustomClaims)
+	} else {
+		return "", err
+	}
 }

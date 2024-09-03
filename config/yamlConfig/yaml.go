@@ -40,7 +40,6 @@ func CreateYamlFactory(fileName ...string) ymlConfigInterf.YmlConfigInterf {
 
 	// 配置文件所在目录
 	y.AddConfigPath(variable.BasePath + "/resource/")
-	y.AddConfigPath("./resource/")
 
 	if err := y.ReadInConfig(); err != nil {
 		log.Fatal("配置文件不存在")
