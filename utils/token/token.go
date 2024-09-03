@@ -41,9 +41,9 @@ func (u *userToken) GenerateToken(userid string, mobile string, phone string, ex
 // RecordLoginToken 用户login成功，记录用户token
 func (u *userToken) RecordLoginToken(userToken, clientIp string) bool {
 	if customClaims, err := u.userJwt.ParseToken(userToken); err == nil {
-		userId := customClaims.UserId
+		userId := customClaims.Id
 		expiresAt := customClaims.ExpiresAt
-		return model.CreateUserFactory("").OauthLoginToken(userId, userToken, expiresAt, clientIp)
+		return user.CreateUserFactory("").OauthLoginToken(userId, userToken, expiresAt, clientIp)
 	} else {
 		return false
 	}
