@@ -38,7 +38,7 @@ var (
 	ENV        string
 
 	//  用户自行定义其他全局变量 ↓
-
+	RedisExpire  = 24 * 60 * 60
 )
 
 func init() {
