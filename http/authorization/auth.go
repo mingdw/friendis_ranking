@@ -26,7 +26,7 @@ func CheckTokenAuth() gin.HandlerFunc {
 		}
 		token := strings.Split(headerParams.Authorization, " ")
 		if len(token) == 2 && len(token[1]) >= 20 {
-			tokenIsEffective := token.CreateUserFactory().IsEffective(token[1])
+			tokenIsEffective := userstoken.CreateUserFactory().IsEffective(token[1])
 			if tokenIsEffective {
 				if customToken, err := userstoken.CreateUserFactory().ParseToken(token[1]); err == nil {
 					key := variable.YamlConfig.GetString("Token.BindContextKeyName")
