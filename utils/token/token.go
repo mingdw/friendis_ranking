@@ -2,6 +2,8 @@ package userToken
 
 import (
 	"errors"
+	"friends_ranking/config/errorMsg"
+	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
 	Myjwt "friends_ranking/utils/jwt"
 
@@ -41,7 +43,7 @@ func (u *userToken) GenerateToken(userid string, mobile string, phone string, ex
 // RecordLoginToken 用户login成功，记录用户token
 func (u *userToken) RecordLoginToken(userToken, clientIp string) bool {
 	if customClaims, err := u.userJwt.ParseToken(userToken); err == nil {
-		userId := customClaims.UserId
+		userId := customClaims.Id
 		expiresAt := customClaims.ExpiresAt
 		return model.CreateUserFactory("").OauthLoginToken(userId, userToken, expiresAt, clientIp)
 	} else {
@@ -54,7 +56,7 @@ func (u *userToken) TokenIsMeetRefreshCondition(token string) bool {
 	// token基本信息是否有效：1.过期时间在允许的过期范围内;2.基本格式正确
 	customClaims, code := u.isNotExpired(token, variable.YamlConfig.GetInt64("Token.JwtTokenRefreshAllowSec"))
 	switch code {
-	case consts.JwtTokenOK, consts.JwtTokenExpired:
+	case globalConst.JwtTokenOK, globalConst.JwtTokenExpired:
 		//在数据库的存储信息是否也符合过期刷新刷新条件
 		if model.CreateUserFactory("").OauthRefreshConditionCheck(customClaims.UserId, token) {
 			return true
@@ -69,7 +71,7 @@ func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, re
 	//如果token是有效的、或者在过期时间内，那么执行更新，换取新token
 	if newToken, err = u.userJwt.RefreshToken(oldToken, variable.YamlConfig.GetInt64("Token.JwtTokenRefreshExpireAt")); err == nil {
 		if customClaims, err := u.userJwt.ParseToken(newToken); err == nil {
-			userId := customClaims.UserId
+			userId := customClaims.Id
 			expiresAt := customClaims.ExpiresAt
 			if model.CreateUserFactory("").OauthRefreshToken(userId, expiresAt, oldToken, newToken, clientIp) {
 				return newToken, true
@@ -84,28 +86,28 @@ func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, re
 // 参数解释：
 // token： 待处理的token值
 // expireAtSec： 过期时间延长的秒数，主要用于用户刷新token时，判断是否在延长的时间范围内，非刷新逻辑默认为0
-func (u *userToken) isNotExpired(token string, expireAtSec int64) (*my_jwt.CustomClaims, int) {
+func (u *userToken) isNotExpired(token string, expireAtSec int64) (*Myjwt.CustomClaims, int) {
 	if customClaims, err := u.userJwt.ParseToken(token); err == nil {
 
 		if time.Now().Unix()-(customClaims.ExpiresAt+expireAtSec) < 0 {
 			// token有效
-			return customClaims, consts.JwtTokenOK
+			return customClaims, globalConst.JwtTokenOK
 		} else {
 			// 过期的token
-			return customClaims, consts.JwtTokenExpired
+			return customClaims, globalConst.JwtTokenExpired
 		}
 	} else {
 		// 无效的token
-		return nil, consts.JwtTokenInvalid
+		return nil, globalConst.JwtTokenInvalid
 	}
 }
 
 // IsEffective 判断token是否有效（未过期+数据库用户信息正常）
 func (u *userToken) IsEffective(token string) bool {
 	customClaims, code := u.isNotExpired(token, 0)
-	if consts.JwtTokenOK == code {
+	if globalConst.JwtTokenOK == code {
 		//1.首先在redis检测是否存在某个用户对应的有效token，如果存在就直接返回，不再继续查询mysql，否则最后查询mysql逻辑，确保万无一失
-		if variable.ConfigYml.GetInt("Token.IsCacheToRedis") == 1 {
+		if variable.YamlConfig.GetInt("Token.IsCacheToRedis") == 1 {
 			tokenRedisFact := token_cache_redis.CreateUsersTokenCacheFactory(customClaims.UserId)
 			if tokenRedisFact != nil {
 				defer tokenRedisFact.ReleaseRedisConn()
@@ -123,11 +125,11 @@ func (u *userToken) IsEffective(token string) bool {
 }
 
 // ParseToken 将 token 解析为绑定时传递的参数
-func (u *userToken) ParseToken(tokenStr string) (CustomClaims my_jwt.CustomClaims, err error) {
+func (u *userToken) ParseToken(tokenStr string) (CustomClaims Myjwt.CustomClaims, err error) {
 	if customClaims, err := u.userJwt.ParseToken(tokenStr); err == nil {
 		return *customClaims, nil
 	} else {
-		return my_jwt.CustomClaims{}, errors.New(my_errors.ErrorsParseTokenFail)
+		return Myjwt.CustomClaims{}, errors.New(errorMsg.ErrorsParseTokenFail)
 	}
 }
 
