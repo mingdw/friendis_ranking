@@ -18,4 +18,8 @@ const (
 	JWTSecretKey = "friends_ranking" //默认jwt加解密密钥
 
 	Profile = "dev" //dev/test/prod
+
+	JwtTokenOK      = 0
+	JwtTokenExpired = 1
+	JwtTokenInvalid = 2
 )

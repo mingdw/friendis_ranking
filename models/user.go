@@ -12,7 +12,7 @@ type User struct {
 	EditTime   int64  `json:"EditTime"`
 	Creator    string `json:"Creator"`
 	Editor     string `json:"Editor"`
-	dbconn
+	Db         dbconn
 }
 
 func (u *User) TableName() string {

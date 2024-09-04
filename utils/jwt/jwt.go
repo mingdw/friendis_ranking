@@ -1,4 +1,4 @@
-package Myjwt
+package jwy
 
 import (
 	"errors"
