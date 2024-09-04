@@ -2,6 +2,8 @@ package router
 
 import (
 	"friends_ranking/config/variable"
+	"friends_ranking/http/authorization"
+	"friends_ranking/http/validator/factory"
 	"friends_ranking/utils/ginRelease"
 	"net/http"
 
@@ -46,12 +48,14 @@ func InitRouter() *gin.Engine {
 		// 模拟一个首页路由
 		home := vApi.Group("index/")
 		{
-			home.POST("login", validatorFactory.Create(variable.ValidatorPrefix+"HomeNews"))
-			home.POST("regist", validatorFactory.Create(variable.ValidatorPrefix+"HomeNews"))
+			home.POST("login", factory.Create(variable.ValidatorPrefix+"HomeNews"))
+			home.POST("regist", factory.Create(variable.ValidatorPrefix+"HomeNews"))
 		}
 
-		vApi.Use(authorization.CheckTokenAuth()){
-			user := vApi.Group("user/"){
+		vApi.Use(authorization.CheckTokenAuth())
+		{
+			user := vApi.Group("user/")
+			{
 				user.POST("query")
 				user.POST("delete")
 				user.POST("add")

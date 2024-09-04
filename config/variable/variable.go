@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/casbin/casbin/v2"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -38,7 +39,10 @@ var (
 	ENV        string
 
 	//  用户自行定义其他全局变量 ↓
-	RedisExpire  = 24 * 60 * 60
+	RedisExpire = 24 * 60 * 60
+
+	//casbin 全局操作指针
+	Enforcer *casbin.SyncedEnforcer
 )
 
 func init() {

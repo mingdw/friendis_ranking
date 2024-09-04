@@ -43,6 +43,7 @@ const (
 	ErrorsTokenInvalid      string = "无效的token"
 	ErrorsTokenNotActiveYet string = "token 尚未激活"
 	ErrorsTokenMalFormed    string = "token 格式不正确"
+	JwtTokenMustValid       string = "token不存在" //提交的 token 格式错误
 
 	//snowflake
 	ErrorsSnowflakeGetIdFail string = "获取snowflake唯一ID过程发生错误"

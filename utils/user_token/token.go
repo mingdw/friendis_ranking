@@ -1,10 +1,12 @@
-package userToken
+package user_token
 
 import (
 	"errors"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
+	"friends_ranking/models"
+	token_cache_redis "friends_ranking/service/user/user_cach_redis"
 	Myjwt "friends_ranking/utils/jwt"
 
 	"github.com/dgrijalva/jwt-go"
@@ -45,7 +47,7 @@ func (u *userToken) RecordLoginToken(userToken, clientIp string) bool {
 	if customClaims, err := u.userJwt.ParseToken(userToken); err == nil {
 		userId := customClaims.Id
 		expiresAt := customClaims.ExpiresAt
-		return user.CreateUserFactory("").OauthLoginToken(userId, userToken, expiresAt, clientIp)
+		return models.CreateUserFactory("").OauthLoginToken(userId, userToken, expiresAt, clientIp)
 	} else {
 		return false
 	}
@@ -58,7 +60,7 @@ func (u *userToken) TokenIsMeetRefreshCondition(token string) bool {
 	switch code {
 	case globalConst.JwtTokenOK, globalConst.JwtTokenExpired:
 		//在数据库的存储信息是否也符合过期刷新刷新条件
-		if model.CreateUserFactory("").OauthRefreshConditionCheck(customClaims.UserId, token) {
+		if models.CreateUserFactory("").OauthRefreshConditionCheck(customClaims.Id, token) {
 			return true
 		}
 	}
@@ -73,7 +75,7 @@ func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, re
 		if customClaims, err := u.userJwt.ParseToken(newToken); err == nil {
 			userId := customClaims.Id
 			expiresAt := customClaims.ExpiresAt
-			if model.CreateUserFactory("").OauthRefreshToken(userId, expiresAt, oldToken, newToken, clientIp) {
+			if models.CreateUserFactory("").OauthRefreshToken(userId, expiresAt, oldToken, newToken, clientIp) {
 				return newToken, true
 			}
 		}
@@ -108,7 +110,7 @@ func (u *userToken) IsEffective(token string) bool {
 	if globalConst.JwtTokenOK == code {
 		//1.首先在redis检测是否存在某个用户对应的有效token，如果存在就直接返回，不再继续查询mysql，否则最后查询mysql逻辑，确保万无一失
 		if variable.YamlConfig.GetInt("Token.IsCacheToRedis") == 1 {
-			tokenRedisFact := token_cache_redis.CreateUsersTokenCacheFactory(customClaims.UserId)
+			tokenRedisFact := token_cache_redis.CreateUsersTokenCacheFactory(customClaims.Id)
 			if tokenRedisFact != nil {
 				defer tokenRedisFact.ReleaseRedisConn()
 				if tokenRedisFact.TokenCacheIsExists(token) {
@@ -117,7 +119,7 @@ func (u *userToken) IsEffective(token string) bool {
 			}
 		}
 		//2.token符合token本身的规则以后，继续在数据库校验是不是符合本系统其他设置，例如：一个用户默认只允许10个账号同时在线（10个token同时有效）
-		if model.CreateUserFactory("").OauthCheckTokenIsOk(customClaims.UserId, token) {
+		if models.CreateUserFactory("").OauthCheckTokenIsOk(customClaims.Id, token) {
 			return true
 		}
 	}
