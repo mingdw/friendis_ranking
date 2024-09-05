@@ -48,17 +48,17 @@ func InitRouter() *gin.Engine {
 		// 模拟一个首页路由
 		home := vApi.Group("index/")
 		{
-			home.POST("login", factory.Create(variable.ValidatorPrefix+"HomeNews"))
-			home.POST("regist", factory.Create(variable.ValidatorPrefix+"HomeNews"))
+			home.POST("login", factory.Create(variable.ValidatorPrefix+"Login"))
+			home.POST("regist", factory.Create(variable.ValidatorPrefix+"Regist"))
 		}
 
 		vApi.Use(authorization.CheckTokenAuth())
 		{
 			user := vApi.Group("user/")
 			{
-				user.POST("query")
-				user.POST("delete")
-				user.POST("add")
+				user.POST("query", factory.Create(variable.ValidatorPrefix+"Query"))
+				user.POST("delete", factory.Create(variable.ValidatorPrefix+"Delete"))
+				user.POST("add", factory.Create(variable.ValidatorPrefix+"Add"))
 			}
 		}
 	}

@@ -34,6 +34,8 @@ const (
 	ErrorsRedisAuthFail     string = "Redis Auth 鉴权失败，密码错误"
 	ErrorsRedisGetConnFail  string = "Redis 从连接池获取一个连接失败，超过最大重试次数"
 	// 表单参数验证器未通过时的错误
+
+	ErrorsValidatorNoPass         string = "基本校验不通过"
 	ErrorsValidatorNotExists      string = "不存在的验证器"
 	ErrorsValidatorTransInitFail  string = "validator的翻译器初始化错误"
 	ErrorNotAllParamsIsBlank      string = "该接口不允许所有参数都为空,请按照接口要求提交必填参数"

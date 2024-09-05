@@ -4,6 +4,7 @@ import (
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/variable"
 	"friends_ranking/config/yamlConfig"
+	"friends_ranking/http/validator/common/register_validator"
 	"friends_ranking/service/sys_log_hook"
 	"friends_ranking/utils/gorm_v2"
 	"friends_ranking/utils/zap_factory"
@@ -16,8 +17,8 @@ func init() {
 	checkRequiredFolders()
 
 	//3.初始化表单参数验证器，注册在容器（Web、Api共用容器）
-	//register_validator.WebRegisterValidator()
-	//register_validator.ApiRegisterValidator()
+	register_validator.WebRegisterValidator()
+	register_validator.ApiRegisterValidator()
 
 	variable.YamlConfig = yamlConfig.CreateYamlFactory()
 	variable.YamlConfig.ConfigFileChangeListen()
