@@ -38,9 +38,11 @@ func CheckTokenAuth() gin.HandlerFunc {
 				context.Next()
 			} else {
 				response.ReturnFail(context, "当前token无效,请重新登陆")
+				return
 			}
 		} else {
 			response.ReturnFail(context, "")
+			return
 		}
 	}
 }

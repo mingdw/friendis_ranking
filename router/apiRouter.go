@@ -1,6 +1,7 @@
 package router
 
 import (
+	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
 	"friends_ranking/http/authorization"
 	"friends_ranking/http/validator/factory"
@@ -41,25 +42,21 @@ func InitRouter() *gin.Engine {
 	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
 
 	//模拟两组路由，一组登陆和注册，不需要校验token，一组受保护的api，需要检验token
-
 	//  创建一个门户类接口路由组
 	vApi := router.Group("/admin/")
 	{
 		// 模拟一个首页路由
 		home := vApi.Group("index/")
 		{
-			home.POST("login", factory.Create(variable.ValidatorPrefix+"Login"))
-			home.POST("regist", factory.Create(variable.ValidatorPrefix+"Regist"))
+			home.POST("login", factory.Create(globalConst.ValidatorPrefix+"Login"))
+			home.POST("regist", factory.Create(globalConst.ValidatorPrefix+"Regist"))
 		}
-
-		vApi.Use(authorization.CheckTokenAuth())
+		user := vApi.Group("user/")
+		user.Use(authorization.CheckTokenAuth())
 		{
-			user := vApi.Group("user/")
-			{
-				user.POST("query", factory.Create(variable.ValidatorPrefix+"Query"))
-				user.POST("delete", factory.Create(variable.ValidatorPrefix+"Delete"))
-				user.POST("add", factory.Create(variable.ValidatorPrefix+"Add"))
-			}
+			user.POST("query", factory.Create(globalConst.ValidatorPrefix+"Query"))
+			user.POST("delete", factory.Create(globalConst.ValidatorPrefix+"Delete"))
+			user.POST("add", factory.Create(globalConst.ValidatorPrefix+"Add"))
 		}
 	}
 	return router

@@ -16,8 +16,10 @@ func WebRegisterValidator() {
 	// Users 模块表单验证器按照 key => value 形式注册在容器，方便路由模块中调用
 	key = globalConst.ValidatorPrefix + "Add"
 	containers.Set(key, checkvalidator.Add{})
+
 	key = globalConst.ValidatorPrefix + "Query"
 	containers.Set(key, checkvalidator.Query{})
+
 	key = globalConst.ValidatorPrefix + "Delete"
 	containers.Set(key, checkvalidator.Delete{})
 }
