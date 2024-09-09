@@ -14,3 +14,11 @@ func (u UserController) GetUserInfo(c *gin.Context) {
 func (u UserController) Query(c *gin.Context) {
 
 }
+
+func (u UserController) Add(c *gin.Context) {
+
+}
+
+func (u UserController) Delete(c *gin.Context) {
+
+}

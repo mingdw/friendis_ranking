@@ -1,11 +1,23 @@
 {
     "configurations": [
+        {
+            "name": "Launch test function",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program": "${workspaceFolder}",
+            "args": [
+                "-test.run",
+                "${workspaceFolder}/friendsRankingMain.go"
+            ]
+        },
+
     {
         "name": "Launch Chrome",
         "request": "launch",
-        "type": "chrome",
-        "url": "http://localhost:8080",
-        "webRoot": "${workspaceFolder}"
+        "type": "go",
+        "mode": "debug",
+        "program": "${workspaceFolder}/friendsRankingMain.go"
     }
     ]
 }

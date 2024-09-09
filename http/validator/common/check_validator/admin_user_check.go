@@ -44,7 +44,7 @@ func (q Query) CheckParams(context *gin.Context) {
 		return
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&controller.IndexController{}).Login(extraAddBindDataContext)
+		(&controller.UserController{}).Query(extraAddBindDataContext)
 	}
 
 }
@@ -64,7 +64,7 @@ func (a Add) CheckParams(context *gin.Context) {
 		return
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&controller.IndexController{}).Register(extraAddBindDataContext)
+		(&controller.UserController{}).Add(extraAddBindDataContext)
 	}
 
 }
@@ -84,7 +84,7 @@ func (d Delete) CheckParams(context *gin.Context) {
 		return
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&controller.IndexController{}).Register(extraAddBindDataContext)
+		(&controller.UserController{}).Delete(extraAddBindDataContext)
 	}
 
 }
