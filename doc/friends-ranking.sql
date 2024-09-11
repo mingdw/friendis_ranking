@@ -1,0 +1,22 @@
+CREATE TABLE `sys_user` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `userName` varchar(32) DEFAULT NULL COMMENT '用户真实姓名',
+  `nickName` varchar(64) DEFAULT NULL COMMENT '用户昵称',
+  `account` varchar(64) DEFAULT NULL COMMENT '账号',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `email` varchar(32) DEFAULT NULL COMMENT '邮箱',
+  `age` int DEFAULT NULL COMMENT '年龄',
+  `phone` varchar(32) DEFAULT NULL COMMENT '电话',
+  `job` varchar(64) DEFAULT NULL COMMENT '职业',
+  `level` int DEFAULT NULL COMMENT '级别',
+  `birthDay` date DEFAULT NULL COMMENT '出生日期',
+  `status` int DEFAULT NULL COMMENT '状态',
+  `registerTime` datetime DEFAULT NULL COMMENT '注册日期',
+  `lastLoginTime` datetime DEFAULT NULL COMMENT '最后登录日期',
+  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `editTime` datetime DEFAULT NULL COMMENT '修改日期',
+  `editTor` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `isDelete` int DEFAULT NULL COMMENT '是否删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
