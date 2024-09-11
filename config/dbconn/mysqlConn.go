@@ -20,9 +20,11 @@ type BaseModel struct {
 func UseDbConn(sqlType string) *gorm.DB {
 	var db *gorm.DB
 	sqlType = strings.Trim(sqlType, " ")
+
 	if sqlType == "" {
 		sqlType = variable.YamlConfig.GetString("Gormv2.UseDbType")
 	}
+	fmt.Println("db conn sqlType: ", sqlType)
 	switch strings.ToLower(sqlType) {
 	case "mysql":
 		if variable.GormDbMysql == nil {

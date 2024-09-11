@@ -11,9 +11,9 @@ import (
 )
 
 type Login struct {
-	UserName string `form:"userName" json:"user_name"  binding:"required,min=1"` // 必填、对于文本,表示它的长度>=1
-	Pass1    string `form:"pass1" json:"pass1" binding:"required,min=6,max=20"`  //  密码为 必填，长度>=6
-	Pass2    string `form:"pass2" json:"pass1" binding:"required,min=6,max=20"`  //  密码为 必填，长度>=6
+	Account string `form:"account" json:"account"  binding:"required,min=1"`   // 必填、对于文本,表示它的长度>=1
+	Pass1   string `form:"pass1" json:"pass1" binding:"required,min=6,max=20"` //  密码为 必填，长度>=6
+	Pass2   string `form:"pass2" json:"pass2" binding:"required,min=6,max=20"` //  密码为 必填，长度>=6
 }
 
 type Regist struct {
@@ -26,10 +26,13 @@ type Regist struct {
 // 验证器语法，参见 Register.go文件，有详细说明
 
 func (l Login) CheckParams(context *gin.Context) {
-
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&l); err != nil {
-		response.ReturnFail(context, errorMsg.ErrorsValidatorNoPass)
+		response.ReturnFail(context, "请求参数不合法")
+		return
+	}
+	if l.Pass1 != l.Pass2 {
+		response.ReturnFail(context, "两次密码不一致")
 		return
 	}
 

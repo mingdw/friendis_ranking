@@ -11,17 +11,27 @@ import (
 )
 
 type User struct {
-	Id         int    `json:"id"`
-	Username   string `json:"username"`
-	Password   string `json:"password"`
-	Age        int    `json:"age"`
-	Sex        int    `json:"sex"`
-	Phone      string `json:"phone"`
-	Status     int    `json:"status"`
-	CreateTime int64  `json:"CreateTime"`
-	EditTime   int64  `json:"EditTime"`
-	Creator    string `json:"Creator"`
-	Editor     string `json:"Editor"`
+	Id       int    `json:"id"`
+	Username string `json:"userName"`
+	NickName string `json:"nickName"`
+	Account  string `json:"account"`
+	Password string `json:"passWord"`
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Phone    string `json:"phone"`
+	Job      string `json:"job"`
+	Level    int    `json:"level"`
+	BirthDay string `json:"birthDay"`
+	Sex      int    `json:"sex"`
+	IsDelete int    `json:"isDelete"`
+
+	Status        int    `json:"status"`
+	RegisterTime  string `json:"registerTime"`
+	LastLoginTime string `json:"lastLoginTime"`
+	CreateTime    int64  `json:"createTime"`
+	EditTime      int64  `json:"editTime"`
+	Creator       string `json:"creator"`
+	Editor        string `json:"editor"`
 	dbconn.BaseModel
 }
 
@@ -36,6 +46,20 @@ func CreateUserFactory(sqlType string) *User {
 		CreatedAt: "",
 		UpdatedAt: "",
 	}}
+}
+
+/*
+*
+根据用户账号查询用户是否存在
+*/
+func (u *User) SelectByAccount(account string) (*User, error) {
+	sql := "select * from sys_user where account=? and isDelete=0 "
+	rersult := u.Raw(sql, account).First(u)
+	if rersult.Error == nil {
+		return u, nil
+	} else {
+		return nil, rersult.Error
+	}
 }
 
 // 记录用户登陆（login）生成的token，每次登陆记录一次token
