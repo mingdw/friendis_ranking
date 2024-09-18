@@ -13,7 +13,7 @@ import (
 type Query struct {
 	UserName string `form:"userName" json:"user_name"  binding:"required,min=1"` // 必填、对于文本,表示它的长度>=1
 	Pass1    string `form:"pass1" json:"pass1" binding:"required,min=6,max=20"`  //  密码为 必填，长度>=6
-	Pass2    string `form:"pass2" json:"pass1" binding:"required,min=6,max=20"`  //  密码为 必填，长度>=6
+	Pass2    string `form:"pass2" json:"pass2" binding:"required,min=6,max=20"`  //  密码为 必填，长度>=6
 }
 
 type Add struct {

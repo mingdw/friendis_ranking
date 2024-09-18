@@ -1,7 +1,6 @@
 package checkvalidator
 
 import (
-	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/http/controller"
 	"friends_ranking/http/data_transfer"
@@ -11,16 +10,23 @@ import (
 )
 
 type Login struct {
-	Account string `form:"account" json:"account"  binding:"required,min=1"`   // 必填、对于文本,表示它的长度>=1
-	Pass1   string `form:"pass1" json:"pass1" binding:"required,min=6,max=20"` //  密码为 必填，长度>=6
-	Pass2   string `form:"pass2" json:"pass2" binding:"required,min=6,max=20"` //  密码为 必填，长度>=6
+	Account string `form:"account" json:"account"  binding:"required,min=1" errMsg:"登陆账户不合法，请重新输入"`           // 必填、对于文本,表示它的长度>=1
+	Pass1   string `form:"pass1" json:"pass1" binding:"required,min=6,max=20" errMsg:"密码长度不得小于6或者大于20"`       //  密码为 必填，长度>=6
+	Pass2   string `form:"pass2" json:"pass2" binding:"required,min=6,max=20,eqfield=Pass1" errMsg:"两次密码不一致"` //  密码为 必填，长度>=6
 }
 
 type Regist struct {
-	UserName string `form:"userName" json:"user_name"  binding:"required,min=1"` // 必填、对于文本,表示它的长度>=1
-	Mobile   string `form:"mobile" json:"mobile"  binding:"required,min=1"`      // 必填、对于文本,表示它的长度>=1
-	Pass1    string `form:"pass" json:"pass" binding:"required,min=6,max=20"`    //  密码为 必填，长度>=6
-	Sex      int32  `form:"sex" json:"sex" binding:"required,min=6,max=20"`      //  密码为 必填，长度>=6
+	UserName string `form:"userName" json:"userName"  binding:"required,min=1,max=24" errMsg:"用户名不能为空，且长度不得超过24位" ` // 必填、对于文本,表示它的长度>=1
+	NickName string `form:"nickName" json:"nickName"  binding:"min=1,max=24" errMsg:"昵称长度不得小于1和不能超过24"`             // 必填、对于文本,表示它的长度>=1
+	Account  string `form:"account" json:"account"  binding:"required,min=6,max=20" errMsg:"账户不能为空，且长度不得超过20位"`     // 必填、对于文本,表示它的长度>=1
+	IdCard   string `form:"idCard" json:"idCard"  binding:"len=18" errMsg:"身份证号不合法" `
+	Password string `form:"password" json:"password" binding:"required,min=6" errMsg:"密码长度不得小于6位"`   //  密码为 必填，长度>=6
+	Email    string `form:"email" json:"email" binding:"email" errMsg:"邮箱地址不合法"`                     //  密码为 必填，长度>=6
+	Age      int    `form:"age" json:"age" binding:"gte=1" errMsg:"年龄不合法"`                           //  密码为 必填，长度>=6
+	Phone    string `form:"phone" json:"phone" binding:"min=6,max=20" errMsg:"电话号码不合法"`              //  密码为 必填，长度>=6
+	Job      string `form:"job" json:"job" binding:"max=32" errMsg:"职位长度不能超过32位"`                    //  密码为 必填，长度>=6
+	BirthDay string `form:"birthDay" json:"birthDay" binding:"datetime=2006-01-02" errMsg:"日期格式不合法"` //  密码为 必填，长度>=6
+
 }
 
 // 验证器语法，参见 Register.go文件，有详细说明
@@ -28,11 +34,7 @@ type Regist struct {
 func (l Login) CheckParams(context *gin.Context) {
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&l); err != nil {
-		response.ReturnFail(context, "请求参数不合法")
-		return
-	}
-	if l.Pass1 != l.Pass2 {
-		response.ReturnFail(context, "两次密码不一致")
+		response.ReturnCheckFail(context, err, &l)
 		return
 	}
 
@@ -51,8 +53,8 @@ func (l Login) CheckParams(context *gin.Context) {
 func (r Regist) CheckParams(context *gin.Context) {
 
 	//1.基本的验证规则没有通过
-	if err := context.ShouldBind(r); err != nil {
-		response.ReturnFail(context, errorMsg.ErrorsValidatorNoPass)
+	if err := context.ShouldBind(&r); err != nil {
+		response.ReturnCheckFail(context, err, &r)
 		return
 	}
 

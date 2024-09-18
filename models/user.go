@@ -12,7 +12,7 @@ import (
 
 type User struct {
 	Id       int    `json:"id"`
-	Username string `json:"userName"`
+	UserName string `json:"userName"`
 	NickName string `json:"nickName"`
 	Account  string `json:"account"`
 	Password string `json:"passWord"`
@@ -24,6 +24,7 @@ type User struct {
 	BirthDay string `json:"birthDay"`
 	Sex      int    `json:"sex"`
 	IsDelete int    `json:"isDelete"`
+	IdCard   string `json:"IdCard"`
 
 	Status        int    `json:"status"`
 	RegisterTime  string `json:"registerTime"`
