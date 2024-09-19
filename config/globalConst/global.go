@@ -89,4 +89,6 @@ const (
 	CaptchaCheckOkMsg             string = "验证码校验通过"
 	CaptchaCheckFailCode          int    = -400355
 	CaptchaCheckFailMsg           string = "验证码校验失败"
+
+	SysAccount string = "admin"
 )

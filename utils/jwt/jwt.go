@@ -16,8 +16,8 @@ type JwtSign struct {
 
 // 自定义JWT payload结构体
 type CustomClaims struct {
-	Type  string `json:"type"` //自定义用户类型，游客、内部用户、合作用户或者其他标识
-	Phone string `json:"phone"`
+	Account string `json:"account"` //自定义用户类型，游客、内部用户、合作用户或者其他标识
+	Status  int    `json:"status"`
 	jwt.StandardClaims
 }
 

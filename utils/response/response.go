@@ -28,10 +28,8 @@ func ReturnJson(c *gin.Context, httpCode int, dataCode int, msg string, data int
 
 func ReturnDefaultOk(c *gin.Context) {
 	var resp = map[string]interface{}{
-		"code":  globalConst.Response_Code_Ok,
-		"msg":   globalConst.Response_Msg_Ok,
-		"data":  "",
-		"count": 0,
+		"code": globalConst.Response_Code_Ok,
+		"msg":  globalConst.Response_Msg_Ok,
 	}
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	c.JSON(200, resp)

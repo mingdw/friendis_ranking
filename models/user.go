@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"friends_ranking/config/dbconn"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
@@ -11,28 +12,28 @@ import (
 )
 
 type User struct {
-	Id       int    `json:"id"`
-	UserName string `json:"userName"`
-	NickName string `json:"nickName"`
-	Account  string `json:"account"`
-	Password string `json:"passWord"`
-	Email    string `json:"email"`
-	Age      int    `json:"age"`
-	Phone    string `json:"phone"`
-	Job      string `json:"job"`
-	Level    int    `json:"level"`
-	BirthDay string `json:"birthDay"`
-	Sex      int    `json:"sex"`
-	IsDelete int    `json:"isDelete"`
-	IdCard   string `json:"IdCard"`
+	Id       int    `json:"id" gorm:"primaryKey"`
+	UserName string `json:"userName" gorm:"column:userName"`
+	NickName string `json:"nickName" gorm:"column:nickName"`
+	Account  string `json:"account"  gorm:"column:account"`
+	Password string `json:"passWord" gorm:"column:passWord"`
+	Email    string `json:"email" gorm:"column:email" `
+	Age      int    `json:"age"  gorm:"column:age" `
+	Phone    string `json:"phone" gorm:"column:phone"`
+	Job      string `json:"job" gorm:"column:job"`
+	Level    int    `json:"level"  gorm:"column:level"`
+	BirthDay string `json:"birthDay"  gorm:"column:birthDay"`
+	Sex      int    `json:"sex"  gorm:"column:sex"`
+	IsDelete int    `json:"isDelete" gorm:"column:isDelete"`
+	IdCard   string `json:"idCard" gorm:"column:idCard"`
 
-	Status        int    `json:"status"`
-	RegisterTime  string `json:"registerTime"`
-	LastLoginTime string `json:"lastLoginTime"`
-	CreateTime    int64  `json:"createTime"`
-	EditTime      int64  `json:"editTime"`
-	Creator       string `json:"creator"`
-	Editor        string `json:"editor"`
+	Status        int    `json:"status" gorm:"column:status"`
+	RegisterTime  string `json:"registerTime" gorm:"column:registerTime"`
+	LastLoginTime string `json:"lastLoginTime" gorm:"column:lastLoginTime"`
+	CreateTime    string `json:"createTime" gorm:"column:createTime"`
+	EditTime      string `json:"editTime" gorm:"column:editTime"`
+	Creator       string `json:"creator" gorm:"column:creator"`
+	Editor        string `json:"editor" gorm:"column:editor"`
 	dbconn.BaseModel
 }
 
@@ -61,6 +62,26 @@ func (u *User) SelectByAccount(account string) (*User, error) {
 	} else {
 		return nil, rersult.Error
 	}
+}
+
+func (u *User) InsertUser(u2 *User) bool {
+	sql := `
+		insert into sys_user (userName, nickName, account, password, idCard, email, age, phone, job, level, birthDay, status, registerTime,  creator,  editTor, isDelete) VALUES (
+		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`
+	fmt.Println("u2 info: ", u2)
+	if u.Exec(sql, u2.UserName, u2.NickName, u2.Account, u2.Password, u2.IdCard, u2.Email, u2.Age, u2.Phone, u2.Job, u2.Level, u2.BirthDay, u2.Status, u2.RegisterTime, u2.Creator, u2.Editor, u2.IsDelete).Error == nil {
+		return true
+	}
+	return false
+}
+
+func (u *User) UpdateUser(u2 *User) bool {
+	err := u.DB.Model(&User{}).Where("id = ?", u2.Id).Updates(u2).Error
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 // 记录用户登陆（login）生成的token，每次登陆记录一次token
