@@ -10,11 +10,13 @@ import (
 )
 
 type BaseModel struct {
-	*gorm.DB  `gorm:"-" json:"-"`
-	Id        int64  `gorm:"primaryKey" json:"id"`
-	CreatedAt string `json:"created_at"` //日期时间字段统一设置为字符串即可
-	UpdatedAt string `json:"updated_at"`
-	//DeletedAt gorm.DeletedAt `json:"deleted_at"`   // 如果开发者需要使用软删除功能，打开本行注释掉的代码即可，同时需要在数据库的所有表增加字段deleted_at 类型为 datetime
+	*gorm.DB   `gorm:"-" json:"-"`
+	Id         int64  `gorm:"primaryKey" json:"id"`
+	CreateTime string `json:"createTime" gorm:"column:createTime"`
+	EditTime   string `json:"editTime" gorm:"column:editTime"`
+	Creator    string `json:"creator" gorm:"column:creator"`
+	Editor     string `json:"editor" gorm:"column:editor"`
+	IsDelete   int64  `json:"isDelete" gorm:"column:isDelete"`
 }
 
 func UseDbConn(sqlType string) *gorm.DB {
@@ -24,7 +26,6 @@ func UseDbConn(sqlType string) *gorm.DB {
 	if sqlType == "" {
 		sqlType = variable.YamlConfig.GetString("Gormv2.UseDbType")
 	}
-	fmt.Println("db conn sqlType: ", sqlType)
 	switch strings.ToLower(sqlType) {
 	case "mysql":
 		if variable.GormDbMysql == nil {

@@ -84,7 +84,7 @@ func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, re
 	return "", false
 }
 
-// 判断token本身是否未过期
+// 判断token本身是否未过期，不校验token的本身的过期时间，token的过期时间为redis的zset当中scro代表的过期时间
 // 参数解释：
 // token： 待处理的token值
 // expireAtSec： 过期时间延长的秒数，主要用于用户刷新token时，判断是否在延长的时间范围内，非刷新逻辑默认为0
@@ -117,10 +117,6 @@ func (u *userToken) IsEffective(token string) bool {
 					return true
 				}
 			}
-		}
-		//2.token符合token本身的规则以后，继续在数据库校验是不是符合本系统其他设置，例如：一个用户默认只允许10个账号同时在线（10个token同时有效）
-		if models.CreateUserFactory("").OauthCheckTokenIsOk(customClaims.Id, token) {
-			return true
 		}
 	}
 	return false

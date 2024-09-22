@@ -16,7 +16,7 @@ type User struct {
 	UserName string `json:"userName" gorm:"column:userName"`
 	NickName string `json:"nickName" gorm:"column:nickName"`
 	Account  string `json:"account"  gorm:"column:account"`
-	Password string `json:"passWord" gorm:"column:passWord"`
+	Password string `json:"password" gorm:"column:password"`
 	Email    string `json:"email" gorm:"column:email" `
 	Age      int    `json:"age"  gorm:"column:age" `
 	Phone    string `json:"phone" gorm:"column:phone"`
@@ -24,16 +24,12 @@ type User struct {
 	Level    int    `json:"level"  gorm:"column:level"`
 	BirthDay string `json:"birthDay"  gorm:"column:birthDay"`
 	Sex      int    `json:"sex"  gorm:"column:sex"`
-	IsDelete int    `json:"isDelete" gorm:"column:isDelete"`
 	IdCard   string `json:"idCard" gorm:"column:idCard"`
 
 	Status        int    `json:"status" gorm:"column:status"`
 	RegisterTime  string `json:"registerTime" gorm:"column:registerTime"`
 	LastLoginTime string `json:"lastLoginTime" gorm:"column:lastLoginTime"`
-	CreateTime    string `json:"createTime" gorm:"column:createTime"`
-	EditTime      string `json:"editTime" gorm:"column:editTime"`
-	Creator       string `json:"creator" gorm:"column:creator"`
-	Editor        string `json:"editor" gorm:"column:editor"`
+
 	dbconn.BaseModel
 }
 
@@ -42,11 +38,17 @@ func (u *User) TableName() string {
 }
 
 func CreateUserFactory(sqlType string) *User {
+	now := time.Now()
+	nowTime := now.Format(globalConst.DateFormat)
+	creator := globalConst.SysAccount
 	return &User{BaseModel: dbconn.BaseModel{
-		DB:        dbconn.UseDbConn(sqlType),
-		Id:        0,
-		CreatedAt: "",
-		UpdatedAt: "",
+		DB:         dbconn.UseDbConn(sqlType),
+		Id:         0,
+		CreateTime: nowTime,
+		EditTime:   nowTime,
+		Creator:    creator,
+		Editor:     creator,
+		IsDelete:   0,
 	}}
 }
 
@@ -66,7 +68,7 @@ func (u *User) SelectByAccount(account string) (*User, error) {
 
 func (u *User) InsertUser(u2 *User) bool {
 	sql := `
-		insert into sys_user (userName, nickName, account, password, idCard, email, age, phone, job, level, birthDay, status, registerTime,  creator,  editTor, isDelete) VALUES (
+		insert into sys_user (userName, nickName, account, password, idCard, email, age, phone, job, level, birthDay, status, registerTime,  creator,  editor, isDelete) VALUES (
 		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		`
 	fmt.Println("u2 info: ", u2)

@@ -54,7 +54,7 @@ func InitRouter() *gin.Engine {
 		user := vApi.Group("user/")
 		user.Use(authorization.CheckTokenAuth())
 		{
-			user.POST("query", factory.Create(globalConst.ValidatorPrefix+"Query"))
+			user.GET("query/:{userId}", factory.Create(globalConst.ValidatorPrefix+"Query"))
 			user.POST("delete", factory.Create(globalConst.ValidatorPrefix+"Delete"))
 			user.POST("add", factory.Create(globalConst.ValidatorPrefix+"Add"))
 		}

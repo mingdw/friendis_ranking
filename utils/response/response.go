@@ -62,6 +62,7 @@ func ReturnFail(c *gin.Context, erroMsg string) {
 	}
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	c.JSON(200, resp)
+	c.Abort()
 }
 
 func ReturnCheckFail(c *gin.Context, err error, obj any) {
@@ -76,6 +77,7 @@ func ReturnCheckFail(c *gin.Context, err error, obj any) {
 	}
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	c.JSON(200, resp)
+	c.Abort()
 }
 
 func _GetValidMsg(err error, obj any) string {

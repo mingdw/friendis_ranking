@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/casbin/casbin/v2"
+	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -36,13 +37,16 @@ var (
 	WebsocketServerPingMsg    = "Server->Ping->Client"
 
 	YamlConfig ymlConfigInterf.YmlConfigInterf // 全局配置文件指针
-	ENV        string
+
+	ENV string
 
 	//  用户自行定义其他全局变量 ↓
 	RedisExpire = 24 * 60 * 60
 
 	//casbin 全局操作指针
 	Enforcer *casbin.SyncedEnforcer
+
+	RedisPool *redis.Pool
 )
 
 func init() {

@@ -91,4 +91,7 @@ const (
 	CaptchaCheckFailMsg           string = "验证码校验失败"
 
 	SysAccount string = "admin"
+
+	TokenExpire int = 2 * 60 * 60 //redis当中token过期时间
+
 )

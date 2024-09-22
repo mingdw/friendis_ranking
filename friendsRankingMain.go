@@ -1,14 +1,13 @@
 package main
 
 import (
-	"embed"
 	_ "friends_ranking/bootstrap"
+	"friends_ranking/config/variable"
 	"friends_ranking/router"
 )
 
-var yamlFile embed.FS
-
 func main() {
 	r := router.InitRouter()
-	r.Run(":8809")
+	_ = r.Run(variable.YamlConfig.GetString("Application.Port"))
+
 }

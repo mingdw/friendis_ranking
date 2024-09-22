@@ -1,6 +1,8 @@
 package authorization
 
 import (
+	"fmt"
+
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 
@@ -24,10 +26,10 @@ func CheckTokenAuth() gin.HandlerFunc {
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
 			response.ReturnFail(context, "当前请求头中token不存在")
-			context.Abort()
 			return
 		}
 		token := strings.Split(headerParams.Authorization, " ")
+		fmt.Println("token: ", token)
 		if len(token) == 2 && len(token[1]) >= 20 {
 			tokenIsEffective := user_token.CreateUserFactory().IsEffective(token[1])
 			if tokenIsEffective {
@@ -38,13 +40,11 @@ func CheckTokenAuth() gin.HandlerFunc {
 				}
 				context.Next()
 			} else {
-				response.ReturnFail(context, "当前token无效,请重新登陆")
-				context.Abort()
+				response.ReturnFail(context, "当前token已过期,请重新登陆")
 				return
 			}
 		} else {
 			response.ReturnFail(context, "")
-			context.Abort()
 			return
 		}
 	}

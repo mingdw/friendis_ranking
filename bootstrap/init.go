@@ -7,6 +7,7 @@ import (
 	"friends_ranking/http/validator/common/register_validator"
 	"friends_ranking/service/sys_log_hook"
 	"friends_ranking/utils/gorm_v2"
+	"friends_ranking/utils/redis_factory"
 	"friends_ranking/utils/zap_factory"
 	"log"
 	"os"
@@ -22,6 +23,7 @@ func init() {
 
 	variable.YamlConfig = yamlConfig.CreateYamlFactory()
 	variable.YamlConfig.ConfigFileChangeListen()
+	variable.RedisPool = redis_factory.InitRedisClientPool()
 
 	// 5.初始化全局日志句柄，并载入日志钩子处理函数
 	variable.ZapLog = zap_factory.CreateZapFactory(sys_log_hook.ZapLogHandler)

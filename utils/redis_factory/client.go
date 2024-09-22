@@ -1,8 +1,10 @@
 package redis_factory
 
 import (
+	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/variable"
+	"friends_ranking/config/yamlConfig/ymlConfigInterf"
 	"friends_ranking/utils/event_manage"
 	"time"
 
@@ -11,12 +13,17 @@ import (
 )
 
 var redisPool *redis.Pool
+var configYml ymlConfigInterf.YmlConfigInterf
 
 // 处于程序底层的包，init 初始化的代码段的执行会优先于上层代码，因此这里读取配置项不能使用全局配置项变量
 func init() {
-	//redisPool = initRedisClientPool()
+
+	fmt.Println("redis client init")
+	//configYml = yamlConfig.CreateYamlFactory()
+	//redisPool = InitRedisClientPool()
 }
-func initRedisClientPool() *redis.Pool {
+func InitRedisClientPool() *redis.Pool {
+	fmt.Println("Redis maxIdLe: ", variable.YamlConfig)
 	redisPool = &redis.Pool{
 		MaxIdle:     variable.YamlConfig.GetInt("Redis.MaxIdle"),                        //最大空闲数
 		MaxActive:   variable.YamlConfig.GetInt("Redis.MaxActive"),                      //最大活跃数
@@ -52,6 +59,7 @@ func initRedisClientPool() *redis.Pool {
 // 从连接池获取一个redis连接
 func GetOneRedisClient() *RedisClient {
 	maxRetryTimes := variable.YamlConfig.GetInt("Redis.ConnFailRetryTimes")
+	fmt.Println("redis config info: ", maxRetryTimes)
 	var oneConn redis.Conn
 	for i := 1; i <= maxRetryTimes; i++ {
 		oneConn = redisPool.Get()
@@ -60,7 +68,7 @@ func GetOneRedisClient() *RedisClient {
 		if _, replyErr := oneConn.Do("time"); replyErr != nil {
 			//fmt.Printf("连接已经失效(出错)：%+v\n", replyErr.Error())
 			// 如果已有的redis连接池获取连接出错(官方库的说法是连接不可用)，那么继续使用从新初始化连接池
-			initRedisClientPool()
+			InitRedisClientPool()
 			oneConn = redisPool.Get()
 		}
 
