@@ -33,13 +33,22 @@ func InitRouter() *gin.Engine {
 		pprof.Register(router)
 	}
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Api 模块接口 hello word！")
+	router.LoadHTMLGlob("template/**/*")
+	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
+	router.Static("/static", "./static") //  定义静态资源路由与实际目录映射关系
+	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"title": "Main website",
+		})
 	})
 
-	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
-	router.Static("/public", "./public") //  定义静态资源路由与实际目录映射关系
-	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
+	router.GET("/admin/admin.html", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "admin.html", gin.H{
+			"title": "admin",
+		})
+	})
 
 	//模拟两组路由，一组登陆和注册，不需要校验token，一组受保护的api，需要检验token
 	//  创建一个门户类接口路由组
