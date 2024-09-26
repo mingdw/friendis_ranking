@@ -32,21 +32,26 @@ func InitRouter() *gin.Engine {
 		router = gin.Default()
 		pprof.Register(router)
 	}
-
-	router.LoadHTMLGlob("template/**/*")
+	router.LoadHTMLGlob("web/template/**/*")
 	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
-	router.Static("/static", "./static") //  定义静态资源路由与实际目录映射关系
+	router.Static("/static", ".web/static") //  定义静态资源路由与实际目录映射关系
+	//router.Static("/pages", "./")        //  定义静态资源路由与实际目录映射关系
 	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
-
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"title": "Main website",
 		})
 	})
 
-	router.GET("/admin/admin.html", func(c *gin.Context) {
+	router.GET("/admin", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin.html", gin.H{
-			"title": "admin",
+			"title": "Main website",
+		})
+	})
+
+	router.GET("/login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"title": "Main website",
 		})
 	})
 
