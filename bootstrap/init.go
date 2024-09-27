@@ -49,7 +49,7 @@ func checkRequiredFolders() {
 	log.Println("application yaml folder check end!")
 
 	//2.检查public目录是否存在
-	if _, err := os.Stat(variable.BasePath + "/web/"); err != nil {
+	if _, err := os.Stat(variable.BasePath + "/static/"); err != nil {
 		log.Fatal(errorMsg.ErrorsPublicNotExists + err.Error())
 	}
 	log.Println("public  folder check end!")
