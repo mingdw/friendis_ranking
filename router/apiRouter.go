@@ -79,6 +79,12 @@ func webApiInit(router *gin.Engine) {
 		})
 	})
 
+	router.GET("/regist", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "regist.html", gin.H{
+			"title": "Main website",
+		})
+	})
+
 	router.GET("/indexMain", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "lyear_main.html", gin.H{
 			"title": "Main website",

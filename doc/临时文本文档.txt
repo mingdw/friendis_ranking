@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>表单验证 - 光年(Light Year Admin)后台管理系统模板</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
+<meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
+<meta name="author" content="yinqi">
+<link href="http://lyear.itshubao.com/iframe/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://example.itshubao.com/demo/css/materialdesignicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="http://libs.itshubao.com/bootstrapvalidator/css/bootstrapValidator.min.css"/>
+<!--标签插件-->
+<link rel="stylesheet" href="http://lyear.itshubao.com/iframe/js/jquery-tags-input/jquery.tagsinput.min.css">
+<link href="http://lyear.itshubao.com/iframe/css/style.min.css" rel="stylesheet">
+</head>
+  
+<body>
+<div class="container-fluid">
+  
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header"><h4>表单验证插件 bootstrap-validate</h4></div>
+        <div class="card-body">
+          
+          <form action="#!" method="post" id="example-from" onsubmit="return false;">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email">邮箱</label>
+                  <input type="text" class="form-control" placeholder="正确的邮箱地址" name="example-email" id="email">
+                </div>
+                <div class="form-group">
+                  <label for="password">密码</label>
+                  <input type="password" class="form-control" placeholder="密码" name="example-pwd" id="pwd">
+                </div>
+                <div class="form-group">
+                  <label for="confirmpwd">确认密码</label>
+                  <input type="password" class="form-control" placeholder="确认密码" name="example-confirmpwd" id="confirmpwd">
+                </div>
+                <div class="form-group">
+                  <label for="nickname">昵称</label>
+                  <input type="text" class="form-control" placeholder="昵称" name="example-nickname" id="nickname">
+                </div>
+                <div class="form-group">
+                  <label for="fileload">上传文件</label>
+                  <input type="file" class="form-control" name="example-fileload" id="fileload">
+                </div>
+                <div class="form-group">
+                  <label for="sex">性别</label>
+                  <div class="radio clearfix">
+                    <label class="radio-inline">
+                      <input type="radio" name="example-sex" value="1">
+                      男
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="example-sex" value="2">
+                      女
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="example-sex" value="3">
+                      保密
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>熟悉的开发平台</label>
+                  <div class="checkbox clearfix">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="1" name="example-lang"> Java EE
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="2" name="example-lang"> Java SE
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="3" name="example-lang"> IOS/Objective-C
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="4" name="example-lang"> Android
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="5" name="example-lang"> C/C++
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="tags">标签</label>
+                  <input type="text" class="form-control js-tags-input" name="example-tags" placeholder="请输入标签" value="" id="tags">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="url">网址</label>
+                  <input type="text" class="form-control" placeholder="url" name="example-url" id="url">
+                </div>
+                <div class="form-group">
+                  <label for="phone">手机号码</label>
+                  <input type="text" class="form-control" placeholder="" name="example-phone" id="phone">
+                </div>
+                <div class="form-group">
+                  <label for="profession">你是一名</label>
+                    <select class="form-control" name="example-profession" id="example-profession">
+                    <option value>请选择</option>
+                    <option value="1">平面设计</option>
+                    <option value="2">程序员</option>
+                    <option value="3">前端工程师</option>
+                    <option value="4">产品经理</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="synopsis">简介</label>
+                  <textarea class="form-control" name="example-synopsis" id="synopsis"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>目前状态</label>
+                  <div class="clearfix">
+                    <label class="lyear-radio radio-inline radio-primary">
+                      <input type="radio" name="example-job-status" value="1"><span>在职</span>
+                    </label>
+                    <label class="lyear-radio radio-inline radio-primary">
+                      <input type="radio" name="example-job-status" value="2"><span>学生</span>
+                    </label>
+                    <label class="lyear-radio radio-inline radio-primary">
+                      <input type="radio" name="example-job-status" value="3"><span>找工作中</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>业余爱好</label>
+                  <div class="clearfix">
+                    <label class="lyear-checkbox checkbox-inline checkbox-primary">
+                      <input type="checkbox" name="example-hobby"><span>篮球</span>
+                    </label>
+                    <label class="lyear-checkbox checkbox-inline checkbox-primary">
+                      <input type="checkbox" name="example-hobby"><span>足球</span>
+                    </label>
+                    <label class="lyear-checkbox checkbox-inline checkbox-primary">
+                      <input type="checkbox" name="example-hobby"><span>排球</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>是否开启</label>
+                  <div class="clearfix">
+                    <label class="lyear-switch switch-primary">
+                      <input type="checkbox" name="example-switch">
+                      <span></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <button type="submit" class="btn btn-primary">确认提交</button>
+              </div>
+            </div>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<script type="text/javascript" src="http://lyear.itshubao.com/iframe/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://lyear.itshubao.com/iframe/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script type="text/javascript" src="http://libs.itshubao.com//bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+</body>
+</html>

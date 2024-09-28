@@ -18,6 +18,17 @@
     <link rel="stylesheet" href="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
     <!--日期选择插件-->
     <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+
+    <!--表单验证-->
+    <link rel="stylesheet" href="static/js/bootstrapvalidator/css/bootstrapValidator.min.css" />
+
+    <!--标签-->
+    <link rel="stylesheet" href="static/js/jquery-tags-input/jquery.tagsinput.min.css">
+
+
+
+
+    <!--日期选择插件-->
     <style>
         body {
             background-color: #fff;
@@ -125,6 +136,16 @@
                 padding: 30px;
             }
         }
+
+        .has-feedback label~.form-control-feedback {
+            top: 28px;
+        }
+
+        .has-feedback label.lyear-checkbox~.form-control-feedback,
+        .has-feedback label.lyear-radio~.form-control-feedback,
+        .has-feedback label.lyear-switch~.form-control-feedback {
+            top: 20px;
+        }
     </style>
 </head>
 <script type="text/javascript" src="static/js/jquery.min.js"></script>
@@ -137,22 +158,92 @@
 <script src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 <script src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script type="text/javascript" src="static/js/main.min.js"></script>
+
+<script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#registform").hide();
-
+        loginvalid();
     });
 
-    function registShow() {
-        var ageSelect = $("#age")
-        var html = "";
-        for (var i = 0; i < 100; i++) {
-            html = html + "<option value='" + i + "'>" + i + "</option>"
-        }
-        ageSelect.append(html)
-        $("#registform").show();
-        $("#loginform").hide();
+
+    function loginvalid() {
+        $('#loginform').bootstrapValidator({
+            excluded: [':disabled'],
+            message: '该值无效',
+            feedbackIcons: {
+                valid: 'mdi mdi-check',
+                invalid: 'mdi mdi-close',
+                validating: 'mdi mdi-refresh'
+            },
+            fields: {
+                'username': {
+                    message: '用户名不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '用户名长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+
+                'password': {
+                    message: '密码无效',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '密码长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+                'password2': {
+                    validators: {
+                        notEmpty: {
+                            message: '确认密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '确认密码必须大于6个字符且小于30个字符'
+                        },
+                        identical: {
+                            field: 'password',
+                            message: '两次输入的密码不相符'
+                        }
+                    }
+                }
+
+            }
+        }).on('success.form.bv', function (e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            // Get the form instance
+            var $form = $(e.target);
+
+            // Get the BootstrapValidator instance
+            var bv = $form.data('bootstrapValidator');
+
+            // Use Ajax to submit form data
+            $.post($form.attr('action'), $form.serialize(), function (result) {
+                // ... Process the result ...
+            }, 'json');
+        });
+
     }
+
+
+
+
+
 </script>
 
 <body>
@@ -168,20 +259,20 @@
             <div class="lyear-logo text-center">
                 <a href="#!"><img src="static/images/logo-sidebar.png" alt="logo" /></a>
             </div>
-            <form action="#!" method="post">
+            <form action="#!" method="post" id="loginContentForm">
                 <div class="form-group">
                     <label for="username">用户名</label>
-                    <input type="text" class="form-control" name="username" placeholder="请输入您的用户名">
+                    <input type="text" class="form-control" name="username" id="username" placeholder="请输入您的用户名">
                 </div>
 
                 <div class="form-group">
                     <label for="password">密码</label>
-                    <input type="password" class="form-control" name="password" placeholder="请输入您的密码">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="请输入您的密码">
                 </div>
 
                 <div class="form-group">
-                    <label for="password">确认密码</label>
-                    <input type="password" class="form-control" name="password" placeholder="请确认您的密码">
+                    <label for="password2">确认密码</label>
+                    <input type="password" class="form-control" name="password2" id="password2" placeholder="请确认您的密码">
                 </div>
                 <div class="form-group">
                     <label for="captcha">验证码</label>
@@ -202,7 +293,7 @@
                         <input type="checkbox" checked=""><span>2天内自动登录</span>
                     </label>
                 </div>
-                <p class="forgot-pass"><a href="javascript:registShow()">没有账号,去注册？</a></p>
+                <p class="forgot-pass"><a id="toRegist" href="regist">没有账号,去注册？</a></p>
                 <div class="form-group">
                     <button class="btn btn-block btn-primary" type="submit">立即登录</button>
                 </div>
@@ -213,98 +304,6 @@
             </form>
 
         </div>
-
-
-        <div class="lyear-login-right" id="registform">
-
-            <div class="lyear-logo text-center">
-                <a href="#!"><img src="static/images/logo-sidebar.png" alt="logo" /></a>
-            </div>
-            <form class="form-horizontal" action="#!" method="post">
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="username">用户名:</label>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" id="username" placeholder="请输入您的用户名">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="password">密码:</label>
-                    <div class="col-md-7">
-                        <input type="password" class="form-control" id="password" placeholder="请输入您的密码">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="password2">确认密码:</label>
-                    <div class="col-md-7">
-                        <input type="password" class="form-control" id="password2" placeholder="请确认您的密码">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="nickName">昵称:</label>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" id="nickName" placeholder="请输入您的昵称">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="email">email:</label>
-                    <div class="col-md-7">
-                        <input type="email" class="form-control" id="email" placeholder="请输入邮箱">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" id="ageLabel">年龄:</label>
-                    <div class="col-md-7">
-                        <select class="form-control" id="age" size="1">
-                            <option value="0">请选择</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="phone">电话号码:</label>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" id="phone" placeholder="请输入电话号码">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="job">职业:</label>
-                    <div class="col-md-7">
-                        <input type="text" class="form-control" id="job" placeholder="请输入职业">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="birthDay">出生日期:</label>
-                    <div class="col-md-7">
-                        <input class="form-control js-datepicker m-b-10" type="text" id="birthDay" name="birthDay"
-                            placeholder="出生日期1" value="" data-date-format="yyyy-mm-dd" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="lyear-checkbox checkbox-primary m-t-10">
-                        <input type="checkbox" checked=""><span>2天内自动登录</span>
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <button class="btn btn-block btn-primary" type="submit">立即注册</button>
-                </div>
-                <footer class="text-center">
-                    <p class="m-b-0">Copyright © 2020 <a href="http://lyear.itshubao.com">IT书包</a>. All right reserved
-                    </p>
-                </footer>
-            </form>
-
-        </div>
-    </div>
-
 
 </body>
 

@@ -4,6 +4,7 @@ CREATE TABLE `sys_user` (
   `nickName` varchar(64) DEFAULT NULL COMMENT '用户昵称',
   `account` varchar(64) DEFAULT NULL COMMENT '账号',
   `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `idCard` varchar(64) DEFAULT NULL,
   `email` varchar(32) DEFAULT NULL COMMENT '邮箱',
   `age` int DEFAULT NULL COMMENT '年龄',
   `phone` varchar(32) DEFAULT NULL COMMENT '电话',
@@ -13,10 +14,10 @@ CREATE TABLE `sys_user` (
   `status` int DEFAULT NULL COMMENT '状态',
   `registerTime` datetime DEFAULT NULL COMMENT '注册日期',
   `lastLoginTime` datetime DEFAULT NULL COMMENT '最后登录日期',
-  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
-  `editTime` datetime DEFAULT NULL COMMENT '修改日期',
-  `editTor` varchar(64) DEFAULT NULL COMMENT '修改人',
+  `editTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改日期',
+  `editor` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '修改人',
   `isDelete` int DEFAULT NULL COMMENT '是否删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;git 
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

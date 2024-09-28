@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>超级年会后台管理登录</title>
+    <link rel="icon" href="favicon.ico" type="image/ico">
+    <meta name="keywords" content="login">
+    <meta name="description" content="后台管理登录地址">
+    <meta name="author" content="yinqi">
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="static/css/style.min.css" rel="stylesheet">
+    <link href="static/css/materialdesignicons.min.css" rel="stylesheet">
+    <!--时间选择插件-->
+    <link rel="stylesheet" href="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+    <!--日期选择插件-->
+    <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+
+    <!--表单验证-->
+    <link rel="stylesheet" href="static/js/bootstrapvalidator/css/bootstrapValidator.min.css" />
+
+    <!--标签-->
+    <link rel="stylesheet" href="static/js/jquery-tags-input/jquery.tagsinput.min.css">
+
+
+
+
+    <!--日期选择插件-->
+    <style>
+        body {
+            background-color: #fff;
+        }
+
+        .lyear-login-box {
+            position: relative;
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            -webkit-transition: 0.5s;
+            -o-transition: 0.5s;
+            transition: 0.5s;
+        }
+
+        .lyear-login-left {
+            width: 50%;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            position: fixed;
+            height: 100%;
+            z-index: 555;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .lyear-overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .lyear-logo {
+            margin-bottom: 50px;
+        }
+
+        .lyear-featured {
+            z-index: 12;
+            position: absolute;
+            bottom: 0;
+            padding: 30px;
+            width: 100%;
+        }
+
+        .lyear-featured h4 {
+            color: #fff;
+            line-height: 32px;
+        }
+
+        .lyear-featured h4 small {
+            color: #fff;
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .lyear-login-right {
+            margin-left: 50%;
+            position: relative;
+            z-index: 999;
+            padding: 100px;
+            background-color: #fff;
+        }
+
+        .forgot-pass {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #cfcfcf;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .lyear-login-right {
+                padding: 50px;
+            }
+        }
+
+        @media screen and (max-width: 820px) {
+            .lyear-login-left {
+                width: 100%;
+                position: relative;
+                z-index: 999;
+                height: 300px;
+            }
+
+            .lyear-login-right {
+                margin-left: 0;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .lyear-login-right {
+                padding: 50px;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .lyear-login-right {
+                padding: 30px;
+            }
+        }
+
+        .has-feedback label~.form-control-feedback {
+            top: 28px;
+        }
+
+        .has-feedback label.lyear-checkbox~.form-control-feedback,
+        .has-feedback label.lyear-radio~.form-control-feedback,
+        .has-feedback label.lyear-switch~.form-control-feedback {
+            top: 20px;
+        }
+    </style>
+</head>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+<!--时间选择插件-->
+<script src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+<!--日期选择插件-->
+<script src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="static/js/main.min.js"></script>
+
+<script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // 保存每个div的原始内容
+        var ageSelect = $("#age")
+        var html = "";
+        for (var i = 0; i < 100; i++) {
+            html = html + "<option value='" + i + "'>" + i + "</option>"
+        }
+        ageSelect.append(html);
+        registValid();
+
+    });
+
+
+    function loginvalid() {
+        $('#loginform').bootstrapValidator({
+            excluded: [':disabled'],
+            message: '该值无效',
+            feedbackIcons: {
+                valid: 'mdi mdi-check',
+                invalid: 'mdi mdi-close',
+                validating: 'mdi mdi-refresh'
+            },
+            fields: {
+                'username': {
+                    message: '用户名不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '用户名长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+
+                'password': {
+                    message: '密码无效',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '密码长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+                'password2': {
+                    validators: {
+                        notEmpty: {
+                            message: '确认密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '确认密码必须大于6个字符且小于30个字符'
+                        },
+                        identical: {
+                            field: 'password',
+                            message: '两次输入的密码不相符'
+                        }
+                    }
+                }
+
+            }
+        }).on('success.form.bv', function (e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            // Get the form instance
+            var $form = $(e.target);
+
+            // Get the BootstrapValidator instance
+            var bv = $form.data('bootstrapValidator');
+
+            // Use Ajax to submit form data
+            $.post($form.attr('action'), $form.serialize(), function (result) {
+                // ... Process the result ...
+            }, 'json');
+        });
+
+    }
+
+
+    function registValid() {
+        $('#registform').bootstrapValidator({
+            excluded: [':disabled'],
+            message: '该值无效',
+            feedbackIcons: {
+                valid: 'mdi mdi-check',
+                invalid: 'mdi mdi-close',
+                validating: 'mdi mdi-refresh'
+            },
+            fields: {
+                'email': {
+                    validators: {
+                        emailAddress: {
+                            message: '请输入正确的邮箱地址'
+                        },
+                        /* 使用ajax交互
+                        remote: {
+                            //ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true} 
+                            url: 'exist2.do',//验证地址
+                            message: '邮箱已存在', // 提示消息
+                            delay : 2000, // 每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                            type: 'POST'  // 请求方式
+                        }
+                        */
+                    }
+                },
+
+
+                'username': {
+                    message: '用户名不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '用户名长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+
+                'password': {
+                    message: '密码无效',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '密码长度必须大于6个字符且小于30个字符'
+                        }
+                    }
+                },
+                'password2': {
+                    validators: {
+                        notEmpty: {
+                            message: '确认密码不能为空'
+                        },
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '确认密码必须大于6个字符且小于30个字符'
+                        },
+                        identical: {
+                            field: 'password',
+                            message: '两次输入的密码不相符'
+                        }
+                    }
+                },
+                'nickname': {
+                    message: '昵称无效',
+                    validators: {
+
+                        stringLength: {
+                            min: 6,
+                            max: 30,
+                            message: '昵称长度必须大于2个字符且小于30个字符'
+                        }
+                    }
+                },
+
+                'sex': {
+                    validators: {
+                        notEmpty: {
+                            message: '请选择您的性别'
+                        }
+                    }
+                },
+                'phone': {
+                    validators: {
+                        regexp: {
+                            regexp: /^1\d{10}$/,
+                            message: '手机号格式错误'
+                        }
+                    }
+                },
+                'job': {
+                    validators: {
+                        stringLength: {
+                            max: 30,
+                            message: '职位长度小于30个字符'
+                        }
+                    }
+                }
+
+            }
+        }).on('success.form.bv', function (e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            // Get the form instance
+            var $form = $(e.target);
+
+            // Get the BootstrapValidator instance
+            var bv = $form.data('bootstrapValidator');
+
+            // Use Ajax to submit form data
+            $.post($form.attr('action'), $form.serialize(), function (result) {
+                // ... Process the result ...
+            }, 'json');
+        });
+    }
+</script>
+
+<body>
+    <div class="lyear-login-box">
+        <div class="lyear-login-left" style="background-image: url(static/images/login-bg-4.jpg)">
+            <div class="lyear-overlay"></div>
+            <div class="lyear-featured">
+                <h4>愿你有好运气，如果没有，愿你在不幸中学会慈悲；愿你被很多人爱，如果没有，愿你在寂寞中学会宽容。<small> - 刘瑜《愿你慢慢长大》</small></h4>
+            </div>
+        </div>
+
+        <div class="lyear-login-right" id="registform">
+            <div class="lyear-logo text-center">
+                <a href="#!"><img src="static/images/logo-sidebar.png" alt="logo" /></a>
+            </div>
+            <form class="form-horizontal" action="#!" method="post" id="registContentForm">
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="username">用户名:</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="请输入您的用户名">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="password">密码:</label>
+                    <div class="col-md-7">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="请输入您的密码">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="password2">确认密码:</label>
+                    <div class="col-md-7">
+                        <input type="password2" class="form-control" id="password2" name="password2"
+                            placeholder="请确认您的密码">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="nickName">昵称:</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="nickName" name="nickName" placeholder="请输入您的昵称">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="email">email:</label>
+                    <div class="col-md-7">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="请输入邮箱">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" id="ageLabel">年龄:</label>
+                    <div class="col-md-7">
+                        <select class="form-control" id="age" name="age" size="1">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" id="ageLabel">性别:</label>
+                    <div class="col-md-7">
+                        <label class="lyear-radio radio-inline radio-primary">
+                            <input type="radio" name="status" value="0"><span>男</span>
+                        </label>
+                        <label class="lyear-radio radio-inline radio-primary">
+                            <input type="radio" name="status" value="1" checked><span>女</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="phone">电话号码:</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="请输入电话号码">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="job">职业:</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="job" name="job" placeholder="请输入职业">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="birthDay">出生日期:</label>
+                    <div class="col-md-7">
+                        <input class="form-control js-datepicker m-b-10" type="text" id="birthDay" name="birthDay"
+                            placeholder="出生日期1" value="" data-date-format="yyyy-mm-dd" />
+                    </div>
+                </div>
+                <p class="forgot-pass"><a id="toLogin" href="login">已有账号,去登陆？</a></p>
+                <div class="form-group">
+                    <button class="btn btn-block btn-primary" type="submit">立即注册</button>
+                </div>
+                <footer class="text-center">
+                    <p class="m-b-0">Copyright © 2020 <a href="http://lyear.itshubao.com">IT书包</a>. All right reserved
+                    </p>
+                </footer>
+            </form>
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>
