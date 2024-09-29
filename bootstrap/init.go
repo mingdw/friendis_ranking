@@ -20,6 +20,7 @@ func init() {
 	//3.初始化表单参数验证器，注册在容器（Web、Api共用容器）
 	register_validator.WebRegisterValidator()
 	register_validator.ApiRegisterValidator()
+	register_validator.CommonRegisterValidator()
 
 	variable.YamlConfig = yamlConfig.CreateYamlFactory()
 	variable.YamlConfig.ConfigFileChangeListen()

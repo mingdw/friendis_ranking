@@ -162,11 +162,52 @@
 <script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
 <script type="text/javascript">
+    var basePath = "http://localhost:8808"
+    var verfyCode = {
+        verfyCodeKey: generateUUID(),
+        verfyCodeValue: ""
+    }
+
     $(document).ready(function () {
+        //登录前端校验
         loginvalid();
+        //获取默认验证码
+        var code = getVerfyCode(verfyCode.verfyCodeKey)
+        drawPic(code)
+
+        //验证码刷新绑定
+        $('#canvas').click(function () {
+            var key = generateUUID();
+            var code = getVerfyCode(key)
+            drawPic(code)
+            verfyCode.verfyCodeKey = key
+            verfyCode.verfyCodeValue = code
+        })
+
+
     });
 
+    //调用获取验证码接口
+    function getVerfyCode(key) {
+        $.ajax({
+            url: basePath + "/common/getVerfyCode?key=" + key,
+            method: 'Get',
+            async: false,
+            success: function (data) {
+                if (data.code == 200) {
+                    verfyCode.verfyCodeValue = data.data
+                }
+            },
+            error: function (xhr, status, error) {
+                console.info("获取验证码失败： " + verfyCode.verfyCodeKey)
+            }
 
+        });
+
+        return verfyCode.verfyCodeValue
+    }
+
+    //登录前端校验项
     function loginvalid() {
         $('#loginform').bootstrapValidator({
             excluded: [':disabled'],
@@ -240,10 +281,82 @@
 
     }
 
+    //二维码图片生成
+    function drawPic(code) {
+        let arr = Array.from(code);
+        var canvas = document.getElementById("canvas");
+        var width = 150;
+        var height = 33;
+        //获取该canvas的2D绘图环境 
+        if (canvas != null) {
+            var ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'bottom';
+            /**绘制背景色**/
+            ctx.fillStyle = randomColor(180, 240);
+            //颜色若太深可能导致看不清
+            ctx.fillRect(0, 0, width, height);
+            /**绘制文字**/
+
+            //生成四个验证码
+            for (var i = 0; i <= arr.length; i++) {
+                var txt = arr[i];
+                ctx.fillStyle = randomColor(50, 160);
+                //随机生成字体颜色
+                ctx.font = randomNum(15, 40) + 'px SimHei';
+                //随机生成字体大小
+                var x = 10 + i * 25;
+                var y = randomNum(25, 35);
+                var deg = randomNum(-45, 45);
+                //修改坐标原点和旋转角度
+                ctx.translate(x, y);
+                ctx.rotate(deg * Math.PI / 180);
+                ctx.fillText(arr[i], 0, 0);
+                //恢复坐标原点和旋转角度
+                ctx.rotate(-deg * Math.PI / 180);
+                ctx.translate(-x, -y);
+            }
+
+            /**绘制干扰线**/
+            for (var i = 0; i < 3; i++) {
+                ctx.strokeStyle = randomColor(40, 180);
+                ctx.beginPath();
+                ctx.moveTo(randomNum(0, width / 2), randomNum(0, height / 2));
+                ctx.lineTo(randomNum(0, width / 2), randomNum(0, height));
+                ctx.stroke();
+            }
+            /**绘制干扰点**/
+            for (var i = 0; i < 20; i++) {
+                ctx.fillStyle = randomColor(255);
+                ctx.beginPath();
+                ctx.arc(randomNum(0, width), randomNum(0, height), 1, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+        return code;
+    }
+
+    function randomColor(min, max) {
+        var r = randomNum(min, max);
+        var g = randomNum(min, max);
+        var b = randomNum(min, max);
+        return "rgb(" + r + "," + g + "," + b + ")";
+
+    }
+
+    function randomNum(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
 
 
-
-
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    }
 </script>
 
 <body>
@@ -275,15 +388,13 @@
                     <input type="password" class="form-control" name="password2" id="password2" placeholder="请确认您的密码">
                 </div>
                 <div class="form-group">
-                    <label for="captcha">验证码</label>
+                    <label for="canvas">验证码</label>
                     <div class="row">
                         <div class="col-xs-7">
-                            <input type="text" name="captchaCode" class="form-control" placeholder="验证码">
+                            <input type="text" name="captchaCode" class="form-control" placeholder="请输入验证码">
                         </div>
                         <div class="col-xs-5">
-                            <img src="static/images/captcha.png" class="pull-right" id="captcha"
-                                style="cursor: pointer;" onclick="this.src=this.src+'?d='+Math.random();" title="点击刷新"
-                                alt="captcha">
+                            <canvas id="canvas" title="点击刷新" class="pull-right" style="cursor: pointer;"></canvas>
                         </div>
                     </div>
                 </div>

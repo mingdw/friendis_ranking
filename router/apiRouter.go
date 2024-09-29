@@ -44,6 +44,7 @@ func InitRouter() *gin.Engine {
 	})
 
 	webApiInit(router)
+	commonAPIInit(router)
 	//模拟两组路由，一组登陆和注册，不需要校验token，一组受保护的api，需要检验token
 	//  创建一个门户类接口路由组
 	vApi := router.Group("/admin/")
@@ -67,12 +68,6 @@ func InitRouter() *gin.Engine {
 }
 
 func webApiInit(router *gin.Engine) {
-	router.GET("/admin", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "admin.html", gin.H{
-			"title": "Main website",
-		})
-	})
-
 	router.GET("/login", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"title": "Main website",
@@ -96,4 +91,8 @@ func webApiInit(router *gin.Engine) {
 			"title": "Main website",
 		})
 	})
+}
+
+func commonAPIInit(router *gin.Engine) {
+	router.GET("/common/getVerfyCode", factory.Create(globalConst.ValidatorPrefix+"GetVerfyCode"))
 }
