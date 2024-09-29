@@ -11,7 +11,7 @@ func GetVerfyCode(key string) string {
 	var code = ""
 	for i := 0; i <= 5; i++ {
 
-		code = code + string(letters[rand.Intn(64)])
+		code = code + string(letters[rand.Intn(62)])
 	}
 	redCli := redis_factory.GetOneRedisClient()
 	redisKey := "verfyCode: " + key

@@ -146,6 +146,68 @@
         .has-feedback label.lyear-switch~.form-control-feedback {
             top: 20px;
         }
+
+        .ui-slider-wrap {
+            background: #ececec;
+            position: relative;
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .ui-slider-wrap .ui-slider-bg {
+            width: 0;
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .ui-slider-wrap .ui-slider-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: move;
+            text-align: center;
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.125);
+            background: #fff;
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .ui-slider-wrap .ui-slider-btn {
+            background: #fff;
+        }
+
+        .ui-slider-wrap .ui-slider-btn:before {
+            display: inline-block;
+            font: normal normal normal 24px/1 "Material Design Icons";
+            font-size: inherit;
+            text-rendering: auto;
+            line-height: inherit;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            content: "\f13e";
+        }
+
+        .ui-slider-wrap .ui-slider-btn.success:before {
+            content: "\f12c";
+        }
+
+        .ui-slider-wrap .ui-slider-text {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #4d5259;
+        }
+
+        .ui-slider-wrap .ui-slider-no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none
+        }
     </style>
 </head>
 <script type="text/javascript" src="static/js/jquery.min.js"></script>
@@ -161,6 +223,8 @@
 
 <script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="http://libs.itshubao.com/jquery.sliderVerification.min.js"></script>
+
 <script type="text/javascript">
     var basePath = "http://localhost:8808"
     var verfyCode = {
@@ -171,20 +235,22 @@
     $(document).ready(function () {
         //登录前端校验
         loginvalid();
-        //获取默认验证码
-        var code = getVerfyCode(verfyCode.verfyCodeKey)
-        drawPic(code)
 
-        //验证码刷新绑定
-        $('#canvas').click(function () {
-            var key = generateUUID();
-            var code = getVerfyCode(key)
-            drawPic(code)
-            verfyCode.verfyCodeKey = key
-            verfyCode.verfyCodeValue = code
-        })
-
-
+        $("#slider-verification").slider({
+            width: 340,                     // width
+            height: 38,                     // height
+            sliderBg: "#f9fafb",            // 滑块背景颜色
+            color: "#8b95a5",               // 文字颜色
+            fontSize: 14,                   // 文字大小
+            bgColor: "#15c377",             // 背景颜色
+            textMsg: "按住滑块，拖拽验证",     // 提示文字
+            successMsg: "验证通过了哦",       // 验证成功提示文字
+            successColor: "#fff",           // 滑块验证成功提示文字颜色
+            time: 400,                      // 返回时间
+            callback: function (result) {    // 回调函数，true(成功),false(失败)
+                $(".resultSpan").text(result);
+            }
+        });
     });
 
     //调用获取验证码接口
@@ -285,8 +351,7 @@
     function drawPic(code) {
         let arr = Array.from(code);
         var canvas = document.getElementById("canvas");
-        var width = 150;
-        var height = 33;
+
         //获取该canvas的2D绘图环境 
         if (canvas != null) {
             var ctx = canvas.getContext('2d');
@@ -367,54 +432,63 @@
                 <h4>愿你有好运气，如果没有，愿你在不幸中学会慈悲；愿你被很多人爱，如果没有，愿你在寂寞中学会宽容。<small> - 刘瑜《愿你慢慢长大》</small></h4>
             </div>
         </div>
-        <div class="lyear-login-right" id="loginform">
 
+        <div class="lyear-login-right" id="loginform">
             <div class="lyear-logo text-center">
                 <a href="#!"><img src="static/images/logo-sidebar.png" alt="logo" /></a>
             </div>
-            <form action="#!" method="post" id="loginContentForm">
+            <form class="form-horizontal" action="#!" method="post" id="registContentForm">
                 <div class="form-group">
-                    <label for="username">用户名</label>
-                    <input type="text" class="form-control" name="username" id="username" placeholder="请输入您的用户名">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="请输入您的密码">
-                </div>
-
-                <div class="form-group">
-                    <label for="password2">确认密码</label>
-                    <input type="password" class="form-control" name="password2" id="password2" placeholder="请确认您的密码">
-                </div>
-                <div class="form-group">
-                    <label for="canvas">验证码</label>
-                    <div class="row">
-                        <div class="col-xs-7">
-                            <input type="text" name="captchaCode" class="form-control" placeholder="请输入验证码">
-                        </div>
-                        <div class="col-xs-5">
-                            <canvas id="canvas" title="点击刷新" class="pull-right" style="cursor: pointer;"></canvas>
-                        </div>
+                    <label class="col-md-3 control-label" for="username">用户名:</label>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="请输入您的用户名">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="lyear-checkbox checkbox-primary m-t-10">
-                        <input type="checkbox" checked=""><span>2天内自动登录</span>
-                    </label>
+                    <label class="col-md-3 control-label" for="password">密码:</label>
+                    <div class="col-md-7">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="请输入您的密码">
+                    </div>
                 </div>
-                <p class="forgot-pass"><a id="toRegist" href="regist">没有账号,去注册？</a></p>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="password2">确认密码:</label>
+                    <div class="col-md-7">
+                        <input type="password2" class="form-control" id="password2" name="password2"
+                            placeholder="请确认您的密码">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="password2">验证:</label>
+                    <div class="col-md-7">
+                        <div id="slider-verification" class="slider"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="password2"></label>
+                    <div class="col-md-7">
+                        <label class="lyear-checkbox checkbox-primary m-t-10">
+                            <input type="checkbox"><span>2天内自动登录</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <button class="btn btn-block btn-primary" type="submit">立即登录</button>
                 </div>
                 <footer class="text-center">
+                    <p class="forgot-pass"><a id="toRegist" href="regist">没有账号,去注册？</a></p>
                     <p class="m-b-0">Copyright © 2020 <a href="http://lyear.itshubao.com">IT书包</a>. All right reserved
                     </p>
                 </footer>
             </form>
 
         </div>
+    </div>
 
 </body>
 
