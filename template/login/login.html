@@ -188,7 +188,7 @@
         }
 
         .ui-slider-wrap .ui-slider-btn.success:before {
-            content: "\f12c";
+            content: "";
         }
 
         .ui-slider-wrap .ui-slider-text {
@@ -223,55 +223,47 @@
 
 <script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
-<script type="text/javascript" src="http://libs.itshubao.com/jquery.sliderVerification.min.js"></script>
+<script type="text/javascript" src="static/js/jquery.sliderVerification.min.js"></script>
+<script type="text/javascript" src="static/js/popper.min.js"></script>
+<script type="text/javascript" src="static/js/layer/layer.min.js"></script>
+
 
 <script type="text/javascript">
     var basePath = "http://localhost:8808"
-    var verfyCode = {
-        verfyCodeKey: generateUUID(),
-        verfyCodeValue: ""
-    }
+    var verfyResult = false
 
     $(document).ready(function () {
         //登录前端校验
         loginvalid();
 
         $("#slider-verification").slider({
-            width: 340,                     // width
-            height: 38,                     // height
-            sliderBg: "#f9fafb",            // 滑块背景颜色
-            color: "#8b95a5",               // 文字颜色
-            fontSize: 14,                   // 文字大小
-            bgColor: "#15c377",             // 背景颜色
-            textMsg: "按住滑块，拖拽验证",     // 提示文字
-            successMsg: "验证通过了哦",       // 验证成功提示文字
-            successColor: "#fff",           // 滑块验证成功提示文字颜色
-            time: 400,                      // 返回时间
-            callback: function (result) {    // 回调函数，true(成功),false(失败)
-                $(".resultSpan").text(result);
+            width: 304, // width
+            height: 38, // height
+            sliderBg: "#f9fafb", // 滑块背景颜色
+            color: "#8b95a5", // 文字颜色
+            fontSize: 14, // 文字大小
+            bgColor: "#15c377", // 背景颜色
+            textMsg: "按住滑块，拖拽验证", // 提示文字
+            successMsg: "验证通过了哦", // 验证成功提示文字
+            successColor: "#fff", // 滑块验证成功提示文字颜色
+            time: 400, // 返回时间
+            callback: function (result) { // 回调函数，true(成功),false(失败)
+                verfyResult = true
+                if (result) {
+                    $("#sliderResult").val(result)
+                    $("#sliderResult").change();
+                    //手动触发校验也可以，但是存在提交按钮还是禁用的bug
+                    // $('#loginform').bootstrapValidator('enableFieldValidators', 'sliderResult',
+                    //     true);
+                }
             }
         });
+
+
+
+
     });
 
-    //调用获取验证码接口
-    function getVerfyCode(key) {
-        $.ajax({
-            url: basePath + "/common/getVerfyCode?key=" + key,
-            method: 'Get',
-            async: false,
-            success: function (data) {
-                if (data.code == 200) {
-                    verfyCode.verfyCodeValue = data.data
-                }
-            },
-            error: function (xhr, status, error) {
-                console.info("获取验证码失败： " + verfyCode.verfyCodeKey)
-            }
-
-        });
-
-        return verfyCode.verfyCodeValue
-    }
 
     //登录前端校验项
     function loginvalid() {
@@ -326,6 +318,15 @@
                             message: '两次输入的密码不相符'
                         }
                     }
+                },
+                'sliderResult': {
+                    message: '请拖动滑动块完成校验',
+                    trigger: "change", //监听change动作
+                    validators: {
+                        notEmpty: {
+                            message: '请拖动滑动块完成校验'
+                        },
+                    }
                 }
 
             }
@@ -333,94 +334,37 @@
             // Prevent form submission
             e.preventDefault();
 
-            // Get the form instance
-            var $form = $(e.target);
+            var postData = {
+                account: $('#username').val(),
+                pass1: $('#password').val(),
+                pass2: $('#password2').val()
+            };
 
-            // Get the BootstrapValidator instance
-            var bv = $form.data('bootstrapValidator');
+            var json = JSON.stringify(postData)
+            console.info("表单提交数据： " + json)
+            $.ajax({
+                type: 'POST',
+                url: basePath + "/admin/index/login",
+                data: json,
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.code == 200) {
+                        //跳转页面
 
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function (result) {
-                // ... Process the result ...
-            }, 'json');
+                    } else {
+                        layer.alert(response.msg, {
+                            icon: 'error',
+                            skin: 'lyear-skin-danger',
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
         });
 
-    }
-
-    //二维码图片生成
-    function drawPic(code) {
-        let arr = Array.from(code);
-        var canvas = document.getElementById("canvas");
-
-        //获取该canvas的2D绘图环境 
-        if (canvas != null) {
-            var ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'bottom';
-            /**绘制背景色**/
-            ctx.fillStyle = randomColor(180, 240);
-            //颜色若太深可能导致看不清
-            ctx.fillRect(0, 0, width, height);
-            /**绘制文字**/
-
-            //生成四个验证码
-            for (var i = 0; i <= arr.length; i++) {
-                var txt = arr[i];
-                ctx.fillStyle = randomColor(50, 160);
-                //随机生成字体颜色
-                ctx.font = randomNum(15, 40) + 'px SimHei';
-                //随机生成字体大小
-                var x = 10 + i * 25;
-                var y = randomNum(25, 35);
-                var deg = randomNum(-45, 45);
-                //修改坐标原点和旋转角度
-                ctx.translate(x, y);
-                ctx.rotate(deg * Math.PI / 180);
-                ctx.fillText(arr[i], 0, 0);
-                //恢复坐标原点和旋转角度
-                ctx.rotate(-deg * Math.PI / 180);
-                ctx.translate(-x, -y);
-            }
-
-            /**绘制干扰线**/
-            for (var i = 0; i < 3; i++) {
-                ctx.strokeStyle = randomColor(40, 180);
-                ctx.beginPath();
-                ctx.moveTo(randomNum(0, width / 2), randomNum(0, height / 2));
-                ctx.lineTo(randomNum(0, width / 2), randomNum(0, height));
-                ctx.stroke();
-            }
-            /**绘制干扰点**/
-            for (var i = 0; i < 20; i++) {
-                ctx.fillStyle = randomColor(255);
-                ctx.beginPath();
-                ctx.arc(randomNum(0, width), randomNum(0, height), 1, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-        }
-        return code;
-    }
-
-    function randomColor(min, max) {
-        var r = randomNum(min, max);
-        var g = randomNum(min, max);
-        var b = randomNum(min, max);
-        return "rgb(" + r + "," + g + "," + b + ")";
-
-    }
-
-    function randomNum(min, max) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
-
-    function generateUUID() {
-        var d = new Date().getTime();
-        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-        return uuid;
     }
 </script>
 
@@ -455,17 +399,18 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label" for="password2">确认密码:</label>
                     <div class="col-md-7">
-                        <input type="password2" class="form-control" id="password2" name="password2"
+                        <input type="password" class="form-control" id="password2" name="password2"
                             placeholder="请确认您的密码">
                     </div>
                 </div>
-
 
                 <div class="form-group">
                     <label class="col-md-3 control-label" for="password2">验证:</label>
                     <div class="col-md-7">
                         <div id="slider-verification" class="slider"></div>
+                        <input type="text" hidden value="" id="sliderResult" name="sliderResult">
                     </div>
+
                 </div>
 
                 <div class="form-group">
