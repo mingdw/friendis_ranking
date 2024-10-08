@@ -18,8 +18,8 @@ func Register(user *models.User, c *gin.Context) {
 	//先检查注册的账号是否存在
 
 	userModels := models.CreateUserFactory("")
-	account := user.Account
-	ruser, err := userModels.SelectByAccount(account)
+	userName := user.UserName
+	ruser, err := userModels.SelectByUserName(userName)
 	if err != nil {
 		response.ReturnFail(c, "根据账号查询出错")
 		return

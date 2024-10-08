@@ -25,7 +25,7 @@ func CheckTokenAuth() gin.HandlerFunc {
 
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ReturnFail(context, "当前请求头中token不存在")
+			response.ReturnFail(context, "权限不足，请重新登录")
 			return
 		}
 		token := strings.Split(headerParams.Authorization, " ")

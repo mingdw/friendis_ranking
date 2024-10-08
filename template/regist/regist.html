@@ -161,7 +161,12 @@
 
 <script type="text/javascript" src="static/js/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="static/js/popper.min.js"></script>
+<script type="text/javascript" src="static/js/layer/layer.min.js"></script>
 <script type="text/javascript">
+    var basePath = "http://localhost:8808"
+
+
     $(document).ready(function () {
         // 保存每个div的原始内容
         var ageSelect = $("#age")
@@ -173,81 +178,6 @@
         registValid();
 
     });
-
-
-    function loginvalid() {
-        $('#loginform').bootstrapValidator({
-            excluded: [':disabled'],
-            message: '该值无效',
-            feedbackIcons: {
-                valid: 'mdi mdi-check',
-                invalid: 'mdi mdi-close',
-                validating: 'mdi mdi-refresh'
-            },
-            fields: {
-                'username': {
-                    message: '用户名不能为空',
-                    validators: {
-                        notEmpty: {
-                            message: '用户名不能为空'
-                        },
-                        stringLength: {
-                            min: 6,
-                            max: 30,
-                            message: '用户名长度必须大于6个字符且小于30个字符'
-                        }
-                    }
-                },
-
-                'password': {
-                    message: '密码无效',
-                    validators: {
-                        notEmpty: {
-                            message: '密码不能为空'
-                        },
-                        stringLength: {
-                            min: 6,
-                            max: 30,
-                            message: '密码长度必须大于6个字符且小于30个字符'
-                        }
-                    }
-                },
-                'password2': {
-                    validators: {
-                        notEmpty: {
-                            message: '确认密码不能为空'
-                        },
-                        stringLength: {
-                            min: 6,
-                            max: 30,
-                            message: '确认密码必须大于6个字符且小于30个字符'
-                        },
-                        identical: {
-                            field: 'password',
-                            message: '两次输入的密码不相符'
-                        }
-                    }
-                }
-
-            }
-        }).on('success.form.bv', function (e) {
-            // Prevent form submission
-            e.preventDefault();
-
-            // Get the form instance
-            var $form = $(e.target);
-
-            // Get the BootstrapValidator instance
-            var bv = $form.data('bootstrapValidator');
-
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function (result) {
-                // ... Process the result ...
-            }, 'json');
-        });
-
-    }
-
 
     function registValid() {
         $('#registform').bootstrapValidator({
@@ -277,16 +207,16 @@
                 },
 
 
-                'username': {
+                'userName': {
                     message: '用户名不能为空',
                     validators: {
                         notEmpty: {
                             message: '用户名不能为空'
                         },
                         stringLength: {
-                            min: 6,
-                            max: 30,
-                            message: '用户名长度必须大于6个字符且小于30个字符'
+                            min: 2,
+                            max: 32,
+                            message: '用户名长度必须大于2个字符且小于30个字符'
                         }
                     }
                 },
@@ -299,7 +229,7 @@
                         },
                         stringLength: {
                             min: 6,
-                            max: 30,
+                            max: 32,
                             message: '密码长度必须大于6个字符且小于30个字符'
                         }
                     }
@@ -311,7 +241,7 @@
                         },
                         stringLength: {
                             min: 6,
-                            max: 30,
+                            max: 32,
                             message: '确认密码必须大于6个字符且小于30个字符'
                         },
                         identical: {
@@ -320,14 +250,22 @@
                         }
                     }
                 },
-                'nickname': {
+                'nickName': {
                     message: '昵称无效',
                     validators: {
-
                         stringLength: {
-                            min: 6,
-                            max: 30,
+                            min: 2,
+                            max: 32,
                             message: '昵称长度必须大于2个字符且小于30个字符'
+                        }
+                    }
+                },
+
+                'age': {
+                    message: '昵称无效',
+                    validators: {
+                        digits: {
+                            message: '年龄必须是数字'
                         }
                     }
                 },
@@ -339,6 +277,8 @@
                         }
                     }
                 },
+
+
                 'phone': {
                     validators: {
                         regexp: {
@@ -350,7 +290,7 @@
                 'job': {
                     validators: {
                         stringLength: {
-                            max: 30,
+                            max: 32,
                             message: '职位长度小于30个字符'
                         }
                     }
@@ -360,17 +300,58 @@
         }).on('success.form.bv', function (e) {
             // Prevent form submission
             e.preventDefault();
-
-            // Get the form instance
-            var $form = $(e.target);
-
-            // Get the BootstrapValidator instance
-            var bv = $form.data('bootstrapValidator');
-
-            // Use Ajax to submit form data
-            $.post($form.attr('action'), $form.serialize(), function (result) {
-                // ... Process the result ...
-            }, 'json');
+            var postData = {
+                userName: $('#userName').val(),
+                password: $('#password').val(),
+                // password2: $('#password2').val(),
+                nickName: $('#nickName').val(),
+                email: $('#email').val(),
+                age: parseInt($('#age').val()),
+                phone: $('#phone').val(),
+                job: $('#job').val(),
+                birthDay: $('#birthDay').val(),
+                sex: 1,
+                idCard: "",
+                account: ""
+            };
+            var json = JSON.stringify(postData)
+            console.info("表单提交数据： " + json)
+            $.ajax({
+                type: 'POST',
+                url: basePath + "/admin/index/regist",
+                data: json,
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.code == 200) {
+                        layer.alert('注册成功,请去登录页面进行登录', {
+                            icon: 'success',
+                            skin: 'lyear-skin-success',
+                            title: '注册提示',
+                            closeBtn: 1,
+                            btn: ['确定', '取消'],
+                            yes: function (index, layero) {
+                                window.location.href = basePath + "/login"
+                                layer.close(index)
+                            },
+                            cancle: function (index, layero) {
+                                layer.close(index)
+                            }
+                        })
+                    } else {
+                        layer.alert(response.msg, {
+                            icon: 'error',
+                            skin: 'lyear-skin-danger',
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    layer.alert('系统错误', {
+                        icon: 'error',
+                        skin: 'lyear-skin-danger',
+                        title: '注册提示',
+                    })
+                }
+            });
         });
     }
 </script>
@@ -390,9 +371,9 @@
             </div>
             <form class="form-horizontal" action="#!" method="post" id="registContentForm">
                 <div class="form-group">
-                    <label class="col-md-3 control-label" for="username">用户名:</label>
+                    <label class="col-md-3 control-label" for="userName">用户名:</label>
                     <div class="col-md-7">
-                        <input type="text" class="form-control" id="username" name="username" placeholder="请输入您的用户名">
+                        <input type="text" class="form-control" id="userName" name="userName" placeholder="请输入您的用户名">
                     </div>
                 </div>
 
@@ -406,7 +387,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label" for="password2">确认密码:</label>
                     <div class="col-md-7">
-                        <input type="password2" class="form-control" id="password2" name="password2"
+                        <input type="password" class="form-control" id="password2" name="password2"
                             placeholder="请确认您的密码">
                     </div>
                 </div>
@@ -469,7 +450,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-block btn-primary" type="submit">立即注册</button>
+                    <button class="btn btn-block btn-primary" type="toRegist">立即注册</button>
                 </div>
                 <footer class="text-center">
                     <p class="forgot-pass"><a id="toLogin" href="login">已有账号,去登陆？</a></p>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>搜索布局2 - 光年(Light Year Admin)后台管理系统模板</title>
+  <link rel="icon" href="favicon.ico" type="image/ico">
+  <meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
+  <meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
+  <meta name="author" content="yinqi">
+  <link href="static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/css/materialdesignicons.min.css" rel="stylesheet">
+  <!--日期选择插件-->
+  <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+  <link href="static/css/style.min.css" rel="stylesheet">
+</head>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<!--日期选择插件-->
+<script type="text/javascript" src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script>
+  $(function () {
+    $("[data-provide = 'datepicker']").each(function () {
+      var options = {
+        language: 'zh-CN', // 默认简体中文
+        multidateSeparator: ', ', // 默认多个日期用,分隔
+      }
+
+      if ($(this).prop("tagName") != 'INPUT') {
+        options.inputs = [$(this).find('input:first'), $(this).find('input:last')];
+      }
+      $(this).datepicker(options);
+    });
+
+    //初始化查询结果
+
+  });
+
+
+  function searchList() {
+    layer.msg('数据加载中，请稍等...', {
+      icon: 'success',
+      skin: 'lyear-skin-success',
+      time: 1
+    })
+
+    var postData = {
+      userName: $('#userName').val(),
+      pass1: $('#password').val(),
+      pass2: $('#password2').val()
+    };
+
+    var json = JSON.stringify(postData)
+    console.info("表单提交数据： " + json)
+
+    $.ajax({
+      type: 'POST',
+      url: basePath + "/admin/api/activity/list",
+      data: json,
+      contentType: 'application/json',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        'Content-Type': 'application/json'
+      },
+      success: function (response, status, xhr) {
+
+      },
+      error: function (response) {
+
+      }
+    })
+
+  }
+</script>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <div class="card-toolbar clearfix">
+            <form class="form-inline" action="#!" method="post">
+              <div class="form-group m-b-5">
+                <input class="form-control" type="email" name="keywords" placeholder="请输入活动编码或者名称..">
+              </div>
+              <div class="form-group m-b-5">
+                <div class="input-group" data-provide='datepicker'>
+                  <input class="form-control" type="text" name="start_time" value="" placeholder="开始时间">
+                  <span class="input-group-addon no-border-lr">~</span>
+                  <input class="form-control" type="text" name="end_time" value="" placeholder="结束时间">
+                </div>
+              </div>
+              <!-- <div class="form-group m-b-5">
+                <input class="form-control" type="text" name="usernbame" placeholder="请输入手机号..">
+              </div> -->
+              <div class="form-group m-b-5">
+                <select name="type" class="form-control">
+                  <option value="">活动状态</option>
+                  <option value="1">未开始</option>
+                  <option value="2">进心中</option>
+                  <option value="3">已结束</option>
+                </select>
+              </div>
+              <a class="btn btn-default m-b-5" href="#!"><i class="mdi mdi-magnify"></i> 搜索</a>
+              <a class="btn btn-primary m-b-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
+              <a class="btn btn-danger m-b-5" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
+              <button class="btn btn-secondary m-b-5" type="reset"><i class="mdi mdi-delete"></i> 重置</button>
+            </form>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="activityTable">
+                <thead>
+                  <tr>
+                    <th>
+                      <label class="lyear-checkbox checkbox-primary">
+                        <input type="checkbox" id="check-all"><span></span>
+                      </label>
+                    </th>
+                    <th>序号</th>
+                    <th>编码</th>
+                    <th>名称</th>
+                    <th>描述</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <label class="lyear-checkbox checkbox-primary">
+                        <input type="checkbox" name="ids[]" value="1"><span></span>
+                      </label>
+                    </td>
+                    <td>1</td>
+                    <td>第01章 天涯思君不可忘</td>
+                    <td>《倚天屠龙记》</td>
+                    <td>金庸</td>
+                    <td>36</td>
+                    <td>
+                      <font class="text-success">正常</font>
+                    </td>
+                    <td>
+                      <div class="btn-group">
+                        <a class="btn btn-xs btn-default" href="#!" title="编辑" data-toggle="tooltip"><i
+                            class="mdi mdi-pencil"></i></a>
+                        <a class="btn btn-xs btn-default" href="#!" title="查看" data-toggle="tooltip"><i
+                            class="mdi mdi-eye"></i></a>
+                        <a class="btn btn-xs btn-default" href="#!" title="删除" data-toggle="tooltip"><i
+                            class="mdi mdi-window-close"></i></a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul class="pagination">
+              <li class="disabled"><span>«</span></li>
+              <li class="active"><span>1</span></li>
+              <li><a href="#1">2</a></li>
+              <li><a href="#1">3</a></li>
+              <li><a href="#1">4</a></li>
+              <li><a href="#1">5</a></li>
+              <li><a href="#1">6</a></li>
+              <li><a href="#1">7</a></li>
+              <li><a href="#1">8</a></li>
+              <li class="disabled"><span>...</span></li>
+              <li><a href="#!">14452</a></li>
+              <li><a href="#!">14453</a></li>
+              <li><a href="#!">»</a></li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+</body>
+
+</html>

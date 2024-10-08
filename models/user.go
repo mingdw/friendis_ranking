@@ -56,9 +56,9 @@ func CreateUserFactory(sqlType string) *User {
 *
 根据用户账号查询用户是否存在
 */
-func (u *User) SelectByAccount(account string) (*User, error) {
-	sql := "select * from sys_user where account=? and isDelete=0 "
-	rersult := u.Raw(sql, account).First(u)
+func (u *User) SelectByUserName(userName string) (*User, error) {
+	sql := "select * from sys_user where userName=? and isDelete=0 "
+	rersult := u.Raw(sql, userName).First(u)
 	if rersult.Error == nil {
 		return u, nil
 	} else {

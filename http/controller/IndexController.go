@@ -11,6 +11,7 @@ import (
 	"friends_ranking/utils/md5_encrypt"
 	"friends_ranking/utils/response"
 	"friends_ranking/utils/user_token"
+	"math/rand"
 	"strconv"
 	"time"
 
@@ -21,9 +22,9 @@ type IndexController struct {
 }
 
 func (index IndexController) Login(c *gin.Context) {
-	account := c.GetString(globalConst.ValidatorPrefix + "account")
+	userName := c.GetString(globalConst.ValidatorPrefix + "userName")
 	userModels := models.CreateUserFactory("")
-	user, err := userModels.SelectByAccount(account)
+	user, err := userModels.SelectByUserName(userName)
 	jsonBytes, _ := json.Marshal(user)
 	jsonStr := string(jsonBytes)
 	fmt.Println("select user：", jsonStr)
@@ -76,7 +77,7 @@ func (index IndexController) Login(c *gin.Context) {
 func (index IndexController) Register(c *gin.Context) {
 	userName := c.GetString(globalConst.ValidatorPrefix + "userName")
 	nickName := c.GetString(globalConst.ValidatorPrefix + "nickName")
-	account := c.GetString(globalConst.ValidatorPrefix + "account")
+
 	idCard := c.GetString(globalConst.ValidatorPrefix + "idCard")
 	password := c.GetString(globalConst.ValidatorPrefix + "password")
 	email := c.GetString(globalConst.ValidatorPrefix + "email")
@@ -84,16 +85,24 @@ func (index IndexController) Register(c *gin.Context) {
 	phone := c.GetString(globalConst.ValidatorPrefix + "phone")
 	job := c.GetString(globalConst.ValidatorPrefix + "job")
 	birthDay := c.GetString(globalConst.ValidatorPrefix + "birthDay")
+	sex := c.GetInt(globalConst.ValidatorPrefix + "sex")
 	level := 0
 	status := 0
 	now := time.Now()
 	nowTime := now.Format(globalConst.DateFormat)
 	registerTime := nowTime
 	creator := globalConst.SysAccount
+
+	ac := ""
+	for i := 0; i < 10; i++ {
+		ac = ac + strconv.Itoa(rand.Intn(10))
+	}
+	account := now.Format("20060102150405") + ac
 	bm := dbconn.BaseModel{
 		Editor:  creator,
 		Creator: creator,
 	}
+
 	userDetail := &models.User{
 		UserName:     userName,
 		NickName:     nickName,
@@ -109,6 +118,7 @@ func (index IndexController) Register(c *gin.Context) {
 		Status:       status,
 		RegisterTime: registerTime,
 		BaseModel:    bm,
+		Sex:          sex,
 	}
 	fmt.Println("user ionfo: ", &userDetail)
 	userService.Register(userDetail, c)

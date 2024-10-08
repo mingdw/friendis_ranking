@@ -34,7 +34,8 @@ func InitRouter() *gin.Engine {
 	}
 	router.LoadHTMLGlob("template/**/*")
 	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
-	router.Static("/static", "./static") //  定义静态资源路由与实际目录映射关系
+	router.Static("/static", "./static")            //  定义静态资源路由与实际目录映射关系
+	router.Static("/admin/page/static", "./static") //  定义静态资源路由与实际目录映射关系
 	//router.Static("/pages", "./")        //  定义静态资源路由与实际目录映射关系
 	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
 	router.GET("/", func(c *gin.Context) {
@@ -44,7 +45,6 @@ func InitRouter() *gin.Engine {
 	})
 
 	webApiInit(router)
-	commonAPIInit(router)
 	//模拟两组路由，一组登陆和注册，不需要校验token，一组受保护的api，需要检验token
 	//  创建一个门户类接口路由组
 	vApi := router.Group("/admin/")
@@ -55,14 +55,8 @@ func InitRouter() *gin.Engine {
 			home.POST("login", factory.Create(globalConst.ValidatorPrefix+"Login"))
 			home.POST("regist", factory.Create(globalConst.ValidatorPrefix+"Regist"))
 		}
-		user := vApi.Group("user/")
-		user.Use(authorization.CheckTokenAuth())
-		{
-			user.GET("query/:{userId}", factory.Create(globalConst.ValidatorPrefix+"Query"))
-			user.POST("delete", factory.Create(globalConst.ValidatorPrefix+"Delete"))
-			user.POST("add", factory.Create(globalConst.ValidatorPrefix+"Add"))
-		}
 	}
+	adminApiInit(router)
 	return router
 
 }
@@ -80,19 +74,56 @@ func webApiInit(router *gin.Engine) {
 		})
 	})
 
-	router.GET("/indexMain", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "lyear_main.html", gin.H{
-			"title": "Main website",
+	page := router.Group("/admin/page")
+	//page.Use(authorization.CheckTokenAuth())
+	{
+		page.GET("/indexMain", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "admin.html", gin.H{
+				"title": "Main website",
+			})
 		})
-	})
 
-	router.GET("/lyear_main.html", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "lyear_main.html", gin.H{
-			"title": "Main website",
+		page.GET("/dash_board.html", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "dash_board.html", gin.H{
+				"title": "Main website",
+			})
 		})
-	})
+
+		//活动配置
+		page.GET("/activity.html", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "activity.html", gin.H{
+				"title": "Main website",
+			})
+		})
+
+		//奖品
+		page.GET("/prizeIndex.html", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "prizeIndex.html", gin.H{
+				"title": "Main website",
+			})
+		})
+
+		page.GET("/awards.html", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "awards.html", gin.H{
+				"title": "Main website",
+			})
+		})
+
+		//人员
+		page.GET("/personIndex.html", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "personIndex.html", gin.H{
+				"title": "Main website",
+			})
+		})
+	}
 }
 
-func commonAPIInit(router *gin.Engine) {
-	router.GET("/common/getVerfyCode", factory.Create(globalConst.ValidatorPrefix+"GetVerfyCode"))
+// 后台管理后端api相关接口
+func adminApiInit(router *gin.Engine) {
+	page := router.Group("/admin/api")
+	page.Use(authorization.CheckTokenAuth())
+	{
+		page.POST("/activity/list", factory.Create(globalConst.ValidatorPrefix+"ActivityList"))
+	}
+
 }
