@@ -21,6 +21,7 @@ func init() {
 	register_validator.WebRegisterValidator()
 	register_validator.ApiRegisterValidator()
 	register_validator.CommonRegisterValidator()
+	register_validator.AdminActivityValidator()
 
 	variable.YamlConfig = yamlConfig.CreateYamlFactory()
 	variable.YamlConfig.ConfigFileChangeListen()

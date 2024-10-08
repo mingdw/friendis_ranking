@@ -32,9 +32,8 @@
       }
       $(this).datepicker(options);
     });
-
     //初始化查询结果
-
+    searchList()
   });
 
 
@@ -64,53 +63,53 @@
       queryParams: getParams, //携带参数
       dataType: "json",
       columns: [{
-          title: '发行机构',
-          field: 'CompanyShortname',
-          align: 'center',
-          valign: 'middle'
-        },
-        {
-          title: '产品简称',
-          field: 'ProductShortname',
-          align: 'center',
-          valign: 'middle',
-        },
-        {
-          title: '预期年收益',
-          field: 'IncomeRate',
-          align: 'center',
-          formatter: function (value, row, index) {
-            return value + "0%";
-          }
-        },
-        {
-          title: '起始资金',
-          field: 'AmountLow',
-          align: 'center'
-        },
-        {
-          title: '产品期限',
-          field: 'Term',
-          align: 'center',
-        },
-        {
-          title: '付息方式',
-          field: 'ServicingWay',
-          align: 'center',
-        },
-        {
-          title: '投资领域',
-          field: 'InvestmentField',
-          align: 'center',
-        },
-        {
-          title: '预约',
-          field: 'id',
-          align: 'center',
-          formatter: function (value, row, index) {
-            return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">预约</a> ';
-          }
+        title: '发行机构',
+        field: 'CompanyShortname',
+        align: 'center',
+        valign: 'middle'
+      },
+      {
+        title: '产品简称',
+        field: 'ProductShortname',
+        align: 'center',
+        valign: 'middle',
+      },
+      {
+        title: '预期年收益',
+        field: 'IncomeRate',
+        align: 'center',
+        formatter: function (value, row, index) {
+          return value + "0%";
         }
+      },
+      {
+        title: '起始资金',
+        field: 'AmountLow',
+        align: 'center'
+      },
+      {
+        title: '产品期限',
+        field: 'Term',
+        align: 'center',
+      },
+      {
+        title: '付息方式',
+        field: 'ServicingWay',
+        align: 'center',
+      },
+      {
+        title: '投资领域',
+        field: 'InvestmentField',
+        align: 'center',
+      },
+      {
+        title: '预约',
+        field: 'id',
+        align: 'center',
+        formatter: function (value, row, index) {
+          return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">预约</a> ';
+        }
+      }
       ],
     })
 

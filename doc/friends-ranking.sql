@@ -20,4 +20,21 @@ CREATE TABLE `sys_user` (
   `editor` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '修改人',
   `isDelete` int DEFAULT NULL COMMENT '是否删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `sys_activity` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `code` varchar(32) DEFAULT NULL COMMENT '活动编码',
+  `title` varchar(64) DEFAULT NULL COMMENT '活动标题',
+  `desc` varchar(64) DEFAULT NULL COMMENT '活动描述',
+  `startTime`  date NOT NULL COMMENT '开始时间',
+  `endTime`  date NOT NULL COMMENT '结束时间',
+  `status` int Not NULL DEFAULT 0 COMMENT '活动状态',
+  `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `creator` varchar(64) DEFAULT NULL COMMENT '创建人',
+  `editTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改日期',
+  `editor` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '修改人',
+  `isDelete` int DEFAULT NULL COMMENT '是否删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
