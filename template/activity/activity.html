@@ -45,32 +45,83 @@
       time: 1
     })
 
-    var postData = {
-      userName: $('#userName').val(),
-      pass1: $('#password').val(),
-      pass2: $('#password2').val()
-    };
-
-    var json = JSON.stringify(postData)
-    console.info("表单提交数据： " + json)
-
-    $.ajax({
-      type: 'POST',
+    $("#activity").bootstrapTable({
       url: basePath + "/admin/api/activity/list",
-      data: json,
-      contentType: 'application/json',
+      striped: true, //條紋行 
+      sidePagination: "server", //服务器分页 
+      showRefresh: true, //刷新功能 
+      clickToSelect: false, //选择行即选择checkbox 
+      singleSelect: true, //仅允许单选 
+      pagination: true, //启用分页  
+      pageCount: 10, //每页行数 
+      pageIndex: 0, //起始页 
+      pageList: [10, 25, 50, 100], //可供选择的每页的行数
+      escape: true, //过滤危险字符 
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem("token"),
         'Content-Type': 'application/json'
       },
-      success: function (response, status, xhr) {
-
-      },
-      error: function (response) {
-
-      }
+      queryParams: getParams, //携带参数
+      dataType: "json",
+      columns: [{
+          title: '发行机构',
+          field: 'CompanyShortname',
+          align: 'center',
+          valign: 'middle'
+        },
+        {
+          title: '产品简称',
+          field: 'ProductShortname',
+          align: 'center',
+          valign: 'middle',
+        },
+        {
+          title: '预期年收益',
+          field: 'IncomeRate',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return value + "0%";
+          }
+        },
+        {
+          title: '起始资金',
+          field: 'AmountLow',
+          align: 'center'
+        },
+        {
+          title: '产品期限',
+          field: 'Term',
+          align: 'center',
+        },
+        {
+          title: '付息方式',
+          field: 'ServicingWay',
+          align: 'center',
+        },
+        {
+          title: '投资领域',
+          field: 'InvestmentField',
+          align: 'center',
+        },
+        {
+          title: '预约',
+          field: 'id',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">预约</a> ';
+          }
+        }
+      ],
     })
 
+  }
+
+  //默认加载时携带参数 
+  function getParams(parm) {
+    return {
+      page: (parm.offset / parm.limit) + 1,
+      rows: 10
+    };
   }
 </script>
 
@@ -112,7 +163,7 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered" id="activityTable">
-                <thead>
+                <!-- <thead>
                   <tr>
                     <th>
                       <label class="lyear-checkbox checkbox-primary">
@@ -152,7 +203,7 @@
                             class="mdi mdi-window-close"></i></a>
                       </div>
                     </td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>
