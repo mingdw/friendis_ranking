@@ -30,22 +30,21 @@ type ActivityAdd struct {
 
 // 验证器语法，参见 Register.go文件，有详细说明
 
-func (l ActivityList) CheckParams(context *gin.Context) {
+func (ac ActivityList) CheckParams(context *gin.Context) {
 	body, err := context.GetRawData()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("ac请求参数", string(body))
 	context.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 	//1.基本的验证规则没有通过
-	if err := context.ShouldBind(&l); err != nil {
-		response.ReturnCheckFail(context, err, &l)
+	if err := context.ShouldBind(&ac); err != nil {
+		response.ReturnCheckFail(context, err, &ac)
 		return
 	}
 
 	//  该函数主要是将本结构体的字段（成员）按照 consts.ValidatorPrefix+ json标签对应的 键 => 值 形式绑定在上下文，便于下一步（控制器）可以直接通过 context.Get(键) 获取相关值
-	extraAddBindDataContext := data_transfer.DataAddContext(l, globalConst.ValidatorPrefix, context)
+	extraAddBindDataContext := data_transfer.DataAddContext(ac, globalConst.ValidatorPrefix, context)
 	if extraAddBindDataContext == nil {
 		response.ReturnFail(context, "userLogin表单验证器json化失败")
 		return

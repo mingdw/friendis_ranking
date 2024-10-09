@@ -17,7 +17,6 @@ func (index ActivityController) QueryList(c *gin.Context) {
 	status := c.GetInt(globalConst.ValidatorPrefix + "status")
 	startTime := c.GetString(globalConst.ValidatorPrefix + "startTime")
 	endTime := c.GetString(globalConst.ValidatorPrefix + "endTime")
-
 	limit := c.GetInt(globalConst.ValidatorPrefix + "limit")
 	pageSize := c.GetInt(globalConst.ValidatorPrefix + "pageSize")
 	fmt.Println("activity pageSize： ", pageSize, "; limit: ", limit, ", code: ", code)
@@ -27,6 +26,6 @@ func (index ActivityController) QueryList(c *gin.Context) {
 		StartTime: startTime,
 		EndTime:   endTime,
 	}
-	activityService.List(activity, limit, pageSize, c)
+	activityService.List(activity, 0, 10, c)
 
 }
