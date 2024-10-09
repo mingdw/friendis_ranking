@@ -34,6 +34,15 @@ func (u *userTokenCacheRedis) SetTokenCache(tokenExpire int64, token string) boo
 	return false
 }
 
+func (u *userTokenCacheRedis) GetTokenScore(token string) int64 {
+	if score, err := u.redisClient.Int64(u.redisClient.Execute("zscore", u.userTokenKey, md5_encrypt.MD5(token))); err == nil {
+		return score
+	} else {
+		variable.ZapLog.Error("获取当前token有效时间出错", zap.Error(err))
+	}
+	return -1
+}
+
 // DelOverMaxOnlineCache 删除缓存,删除超过系统允许最大在线数量之外的用户
 func (u *userTokenCacheRedis) DelOverMaxOnlineCache() bool {
 	// 首先先删除过期的token

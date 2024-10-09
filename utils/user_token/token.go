@@ -2,6 +2,7 @@ package user_token
 
 import (
 	"errors"
+	"fmt"
 	"friends_ranking/config/errorMsg"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
@@ -90,8 +91,10 @@ func (u *userToken) RefreshToken(oldToken, clientIp string) (newToken string, re
 // expireAtSec： 过期时间延长的秒数，主要用于用户刷新token时，判断是否在延长的时间范围内，非刷新逻辑默认为0
 func (u *userToken) isNotExpired(token string, expireAtSec int64) (*Myjwt.CustomClaims, int) {
 	if customClaims, err := u.userJwt.ParseToken(token); err == nil {
-
-		if time.Now().Unix()-(customClaims.ExpiresAt+expireAtSec) < 0 {
+		tokenRedisFact := token_cache_redis.CreateUsersTokenCacheFactory(customClaims.Id)
+		expiresAt := tokenRedisFact.GetTokenScore(token)
+		fmt.Println("redis 获取超时时间", expiresAt)
+		if time.Now().Unix()-(expiresAt) < 0 {
 			// token有效
 			return customClaims, globalConst.JwtTokenOK
 		} else {

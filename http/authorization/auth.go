@@ -2,11 +2,13 @@ package authorization
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 
 	"friends_ranking/config/errorMsg"
+	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
 	"friends_ranking/utils/response"
 	"friends_ranking/utils/user_token"
@@ -25,7 +27,8 @@ func CheckTokenAuth() gin.HandlerFunc {
 
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ReturnFail(context, "权限不足，请重新登录")
+
+			response.ReturnFailCus(context, strconv.Itoa(globalConst.Response_Code_JWTError), "权限不足，请重新登录")
 			return
 		}
 		token := strings.Split(headerParams.Authorization, " ")
@@ -40,11 +43,11 @@ func CheckTokenAuth() gin.HandlerFunc {
 				}
 				context.Next()
 			} else {
-				response.ReturnFail(context, "当前token已过期,请重新登陆")
+				response.ReturnFailCus(context, strconv.Itoa(globalConst.Response_Code_JWTError), "当前token已过期,请重新登陆")
 				return
 			}
 		} else {
-			response.ReturnFail(context, "")
+			response.ReturnFail(context, "token不合法")
 			return
 		}
 	}

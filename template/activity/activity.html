@@ -9,16 +9,31 @@
   <meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
   <meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
   <meta name="author" content="yinqi">
+  <link href="static/js/bootstrap-table/bootstrap-table.min.css">
   <link href="static/css/bootstrap.min.css" rel="stylesheet">
   <link href="static/css/materialdesignicons.min.css" rel="stylesheet">
   <!--日期选择插件-->
   <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
   <link href="static/css/style.min.css" rel="stylesheet">
+
+
+  <style>
+    .modal-dialog {
+      width: 500px;
+      height: 1200px;
+    }
+  </style>
+
 </head>
 <script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/js/perfect-scrollbar.min.js"></script>
 <!--日期选择插件-->
 <script type="text/javascript" src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="static/js/layer/layer.min.js"></script>
+<script type="text/javascript" src="static/js/main.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table.min.js"></script>
 <script>
   $(function () {
     $("[data-provide = 'datepicker']").each(function () {
@@ -32,23 +47,36 @@
       }
       $(this).datepicker(options);
     });
+
+
+    $("#searchButton").on("click", function () {
+      // 事件处理代码
+      console.info("click info")
+      searchList()
+    });
+
+    //你太狂初始化
+    $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget)
+      var recipient = button.data('whatever')
+      var modal = $(this)
+      modal.find('.modal-title').text("新增活动")
+      modal.find('.modal-body input').val(recipient)
+    })
     //初始化查询结果
     searchList()
   });
 
 
   function searchList() {
-    layer.msg('数据加载中，请稍等...', {
-      icon: 'success',
-      skin: 'lyear-skin-success',
-      time: 1
-    })
-
-
-    $("#activity").bootstrapTable({
+    var authorization = 'Bearer ' + localStorage.getItem("token")
+    $("#activityTable").bootstrapTable('destroy')
+    $("#activityTable").bootstrapTable({
+      method: "POST",
       url: basePath + "/admin/api/activity/list",
-      striped: true, //條紋行 
+
       sidePagination: "server", //服务器分页 
+      striped: true, //隔行换色
       showRefresh: true, //刷新功能 
       clickToSelect: false, //选择行即选择checkbox 
       singleSelect: true, //仅允许单选 
@@ -57,71 +85,104 @@
       pageIndex: 0, //起始页 
       pageList: [10, 25, 50, 100], //可供选择的每页的行数
       escape: true, //过滤危险字符 
-      headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem("token"),
-        'Content-Type': 'application/json'
+      ajaxOptions: {
+        headers: {
+          "Authorization": authorization,
+          'Content-Type': 'application/json'
+        }
       },
       queryParams: getParams, //携带参数
       dataType: "json",
       columns: [{
-        title: '发行机构',
-        field: 'CompanyShortname',
-        align: 'center',
-        valign: 'middle'
-      },
-      {
-        title: '产品简称',
-        field: 'ProductShortname',
-        align: 'center',
-        valign: 'middle',
-      },
-      {
-        title: '预期年收益',
-        field: 'IncomeRate',
-        align: 'center',
-        formatter: function (value, row, index) {
-          return value + "0%";
+          title: '活动编号',
+          field: 'code',
+          align: 'center',
+          valign: 'middle'
+        },
+        {
+          title: '活动标题',
+          field: 'title',
+          align: 'center',
+          valign: 'middle',
+        },
+        {
+          title: '活动描述',
+          field: 'desc',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return value + "0%";
+          }
+        },
+        {
+          title: '活动状态',
+          field: 'status',
+          align: 'center'
+        },
+        {
+          title: '开始时间',
+          field: 'startTime',
+          align: 'center',
+        },
+        {
+          title: '结束时间',
+          field: 'endTime',
+          align: 'center',
+        },
+
+        {
+          title: '操作',
+          field: 'id',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id +
+              '\')">删除</a><a href="#" mce_href="#" onclick="reserve(\'' + row.id +
+              '\')">开始</a> <a href="#" mce_href="#" onclick="reserve(\'' + row.id +
+              '\')">结束活动</a><a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">编辑</a>';
+          }
         }
-      },
-      {
-        title: '起始资金',
-        field: 'AmountLow',
-        align: 'center'
-      },
-      {
-        title: '产品期限',
-        field: 'Term',
-        align: 'center',
-      },
-      {
-        title: '付息方式',
-        field: 'ServicingWay',
-        align: 'center',
-      },
-      {
-        title: '投资领域',
-        field: 'InvestmentField',
-        align: 'center',
-      },
-      {
-        title: '预约',
-        field: 'id',
-        align: 'center',
-        formatter: function (value, row, index) {
-          return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">预约</a> ';
-        }
-      }
       ],
+      onLoadSuccess: function (response) {
+        if (response.code == 200) {
+          layer.alert('查询成功', {
+            icon: 'success',
+            skin: 'lyear-skin-success',
+            title: '查询提示'
+
+          })
+        } else {
+
+          layer.alert(response.msg, {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+            time: 3000
+          });
+          if (response.code == "-400100") {
+            window.location.href = basePath
+          }
+        }
+      },
+
+      onLoadError: function (response) {
+        layer.alert(response.msg, {
+          icon: 'error',
+          skin: 'lyear-skin-danger',
+        })
+      }
     })
 
   }
 
   //默认加载时携带参数 
   function getParams(parm) {
-    return {
-      page: (parm.offset / parm.limit) + 1,
-      rows: 10
-    };
+    var data = {
+      limit: 10,
+      pageSize: (parm.offset / parm.limit) + 1,
+      code: $("#code").val(),
+      startTime: $("#startTime").val(),
+      endTime: $("#endTime").val(),
+      status: Number($("#status").val())
+    }
+    return JSON.stringify(data)
   }
 </script>
 
@@ -132,33 +193,88 @@
         <div class="card">
 
           <div class="card-toolbar clearfix">
-            <form class="form-inline" action="#!" method="post">
+            <form class="form-inline" action="javascript:void(0)" id="activity">
               <div class="form-group m-b-5">
-                <input class="form-control" type="email" name="keywords" placeholder="请输入活动编码或者名称..">
+                <input class="form-control" type="text" id="code" placeholder="请输入活动编码或者名称..">
               </div>
               <div class="form-group m-b-5">
                 <div class="input-group" data-provide='datepicker'>
-                  <input class="form-control" type="text" name="start_time" value="" placeholder="开始时间">
+                  <input class="form-control" type="text" id="startTime" value="" placeholder="开始时间"
+                    data-date-format="yyyy-mm-dd">
                   <span class="input-group-addon no-border-lr">~</span>
-                  <input class="form-control" type="text" name="end_time" value="" placeholder="结束时间">
+                  <input class="form-control" type="text" id="endTime" value="" placeholder="结束时间"
+                    data-date-format="yyyy-mm-dd">
                 </div>
               </div>
               <!-- <div class="form-group m-b-5">
                 <input class="form-control" type="text" name="usernbame" placeholder="请输入手机号..">
               </div> -->
               <div class="form-group m-b-5">
-                <select name="type" class="form-control">
+                <select id="status" class="form-control">
                   <option value="">活动状态</option>
                   <option value="1">未开始</option>
                   <option value="2">进心中</option>
                   <option value="3">已结束</option>
                 </select>
               </div>
-              <a class="btn btn-default m-b-5" href="#!"><i class="mdi mdi-magnify"></i> 搜索</a>
-              <a class="btn btn-primary m-b-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
-              <a class="btn btn-danger m-b-5" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
-              <button class="btn btn-secondary m-b-5" type="reset"><i class="mdi mdi-delete"></i> 重置</button>
+              <button class="btn  btn-default  mb-2" id="searchButton" type="submit"><i class="mdi mdi-magnify"></i>
+                搜索</button>
+              <button class="btn  btn-primary  mb-2" id="addButton" data-toggle="modal" data-target="#exampleModal"
+                data-whatever="@mdo"><i class="mdi mdi mdi-plus"></i> 新增</button>
+              <button class="btn btn-danger mb-2" id="deleteButton"><i class="mdi mdi-window-close"></i> 删除</button>
+              <button class="btn btn-secondary mb-2" type="reset"><i class="mdi mdi-delete"></i> 重置</button>
+
             </form>
+          </div>
+
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="exampleModalLabel">新增活动</h4>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="title">活动标题:</label>
+                      <div class="col-md-7">
+                        <input type="text" class="form-control" id="title" name="phone" placeholder="请输入活动标题">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="desc">活动描述:</label>
+                      <div class="col-md-7">
+                        <textarea class="form-control" id="desc"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="startTime">活动开始时间:</label>
+                      <div class="col-md-7">
+                        <input class="form-control js-datepicker m-b-10" type="text" id="startTime" name="startTime"
+                          placeholder="活动开始时间" value="" data-date-format="yyyy-mm-dd" />
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="endTime">活动结束时间:</label>
+                      <div class="col-md-7">
+                        <input class="form-control js-datepicker m-b-10" type="text" id="endTime" name="startTime"
+                          placeholder="活动结束时间" value="" data-date-format="yyyy-mm-dd" />
+                      </div>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                  <button type="button" class="btn btn-primary">确定</button>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="card-body">
             <div class="table-responsive">

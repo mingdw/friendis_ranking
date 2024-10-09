@@ -17,6 +17,8 @@ type ActivityList struct {
 	StartTime string `form:"startTime" json:"startTime"` //  密码为 必填，长度>=6
 	EndTime   string `form:"endTime" json:"endTime"`     //  密码为 必填，长度>=6
 	Status    int    `form:"status" json:"status"`
+	Limit     int    `form:"limit" json:"limit"`
+	PageSize  int    `form:"pageSize" json:"pageSize"`
 }
 
 type ActivityAdd struct {
@@ -29,6 +31,13 @@ type ActivityAdd struct {
 // 验证器语法，参见 Register.go文件，有详细说明
 
 func (l ActivityList) CheckParams(context *gin.Context) {
+	body, err := context.GetRawData()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("ac请求参数", string(body))
+	context.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBind(&l); err != nil {
 		response.ReturnCheckFail(context, err, &l)
@@ -42,7 +51,7 @@ func (l ActivityList) CheckParams(context *gin.Context) {
 		return
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&controller.IndexController{}).Login(extraAddBindDataContext)
+		(&controller.ActivityController{}).QueryList(extraAddBindDataContext)
 	}
 
 }

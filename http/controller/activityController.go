@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/models"
 	activityService "friends_ranking/service/activity/crud"
@@ -11,7 +12,7 @@ import (
 type ActivityController struct {
 }
 
-func (index IndexController) QueryList(c *gin.Context) {
+func (index ActivityController) QueryList(c *gin.Context) {
 	code := c.GetString(globalConst.ValidatorPrefix + "code")
 	status := c.GetInt(globalConst.ValidatorPrefix + "status")
 	startTime := c.GetString(globalConst.ValidatorPrefix + "startTime")
@@ -19,6 +20,7 @@ func (index IndexController) QueryList(c *gin.Context) {
 
 	limit := c.GetInt(globalConst.ValidatorPrefix + "limit")
 	pageSize := c.GetInt(globalConst.ValidatorPrefix + "pageSize")
+	fmt.Println("activity pageSize： ", pageSize, "; limit: ", limit, ", code: ", code)
 	activity := &models.Activity{
 		Code:      code,
 		Status:    status,
