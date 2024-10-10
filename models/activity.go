@@ -1,10 +1,12 @@
 package models
 
 import (
+	"fmt"
 	"friends_ranking/config/dbconn"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -84,4 +86,52 @@ func (activity *Activity) Show(code, startTime, endTime string, status, pageSize
 	}
 
 	return 0, nil
+}
+
+func (activity *Activity) Add(ac *Activity) bool {
+	sql := "insert into sys_activity(code,title,desc,startTime,endTime,status,isDelete,creator,editor) values(?,?,?,?,?,?,?,?)"
+	if res := activity.Exec(sql, ac.Code, ac.Title, ac.Desc, ac.StartTime, ac.EndTime, 0, 0, ac.Creator, ac.Editor); res.RowsAffected >= 0 {
+		return true
+	}
+	return false
+}
+
+func (activity *Activity) Update(ac *Activity) bool {
+	sql := "select * from sys_activity where id=? and isDelete=0 "
+	rersult := activity.Raw(sql, ac.Id).First(activity)
+	if rersult.Error == nil {
+		if ac.Title != "" {
+			activity.Title = ac.Title
+		}
+		if ac.Desc != "" {
+			activity.Desc = ac.Desc
+		}
+		if ac.StartTime != "" {
+			activity.StartTime = ac.StartTime
+		}
+		if ac.EndTime != "" {
+			activity.EndTime = ac.EndTime
+		}
+
+		err := activity.DB.Model(&Activity{}).Where("id = ?", ac.Id).Updates(activity).Error
+		if err == nil {
+			return true
+		}
+
+	}
+	return false
+}
+
+func (activity *Activity) Delete(ids []int) bool {
+	sql := "delete from  sys_activity where id in(?) "
+	strs := make([]string, len(ids))
+	for i, v := range ids {
+		strs[i] = fmt.Sprintf("%d", v)
+	}
+	idsStr := "'" + strings.Join(strs, "','") + "'"
+	if res := activity.Exec(sql, idsStr); res.RowsAffected >= 0 {
+		return true
+	}
+	return false
+
 }

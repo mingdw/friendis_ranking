@@ -20,6 +20,7 @@
 <script type="text/javascript" src="static/js/jquery.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
 <!--日期选择插件-->
 <script type="text/javascript" src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
@@ -33,13 +34,14 @@
 <script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table-zh-CN.min.js"></script>
 <script>
+  var authorization = 'Bearer ' + localStorage.getItem("token")
   $(function () {
     $("[data-provide = 'datepicker']").each(function () {
       var options = {
         language: 'zh-CN', // 默认简体中文
         multidateSeparator: ', ', // 默认多个日期用,分隔
         dateFormat: 'YYYY-MM-DD HH:mm:ss',
-        timePicker:true
+        timePicker: true
       }
 
       if ($(this).prop("tagName") != 'INPUT') {
@@ -56,10 +58,108 @@
 
     $("#addSave").on("click", function () {
       //新增处理逻辑
-      searchList()
+      var param = {
+        title: $('#activityAddForm input[name=title]').val(),
+        desc: $('#activityAddForm input[name=desc]').val(),
+        startTime: $('#activityAddForm input[name=startTime]').val(),
+        endTime: $('#activityAddForm input[name=endTime]').val(),
+      }
+      var json = JSON.stringify(param)
+      $.ajax({
+        type: 'POST',
+        url: basePath + "/admin/api/activity/add",
+        data: json,
+        contentType: 'application/json',
+
+        success: function (response) {
+          if (response.code == 200) {
+            layer.alert('新增成功', {
+              icon: 'success',
+              skin: 'lyear-skin-success',
+              title: '新增提示',
+              closeBtn: 1,
+              btn: ['确定', '取消'],
+              yes: function (index, layero) {
+                searchList()
+              },
+              cancle: function (index, layero) {
+                layer.close(index)
+              }
+            })
+          } else {
+            layer.alert(response.msg, {
+              icon: 'error',
+              skin: 'lyear-skin-danger',
+            })
+          }
+        },
+        error: function (xhr, status, error) {
+          layer.alert('系统错误', {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+            title: '新增提示',
+          })
+        }
+      });
     });
 
+    $("#deleteButton").on("click", function () {
+      var rows = $("#activityTable").bootstrapTable('getSelections');
+      console.log(rows);
+      if (rows.length == 0) {// rows 主要是为了判断是否选中，下面的else内容才是主要
+        layer.alert('未选择删除的行，请重新选择', {
+          icon: 'error',
+          skin: 'lyear-skin-danger',
+        })
+        return;
+      } else {
+        var arrays = new Array();// 声明一个数组
+        $(rows).each(function () {// 通过获得别选中的来进行遍历
+          arrays.push(this.id);// STOREID为获得到的整条数据中指定的一列
+        });
+        var ids = arrays.join(','); // 获得要删除的id
+        $.ajax({
+          type: 'POST',
+          url: basePath + "/admin/api/activity/delete",
+          data: ids,
+          contentType: 'application/json',
+          headers: {
+            "Authorization": authorization,
+            'Content-Type': 'application/json'
+          },
+          success: function (response) {
+            if (response.code == 200) {
+              layer.alert('删除成功', {
+                icon: 'success',
+                skin: 'lyear-skin-success',
+                title: '删除提示',
+                closeBtn: 1,
+                btn: ['确定', '取消'],
+                yes: function (index, layero) {
+                  searchList()
+                },
+                cancle: function (index, layero) {
+                  layer.close(index)
+                }
+              })
+            } else {
+              layer.alert(response.msg, {
+                icon: 'error',
+                skin: 'lyear-skin-danger',
+              })
+            }
+          },
+          error: function (xhr, status, error) {
+            layer.alert('系统错误', {
+              icon: 'error',
+              skin: 'lyear-skin-danger',
+              title: '删除提示',
+            })
+          }
+        });
 
+      }
+    });
 
     //新增校验逻辑
     addValidator()
@@ -68,98 +168,102 @@
     searchList()
   });
 
-  function addValidator(){
+  function addValidator() {
     $('#activityAddForm').bootstrapValidator({
-            excluded: [':disabled'],
-            message: '该值无效',
-            feedbackIcons: {
-                valid: 'mdi mdi-check',
-                invalid: 'mdi mdi-close',
-                validating: 'mdi mdi-refresh'
+      excluded: [':disabled'],
+      message: '该值无效',
+      feedbackIcons: {
+        valid: 'mdi mdi-check',
+        invalid: 'mdi mdi-close',
+        validating: 'mdi mdi-refresh'
+      },
+      fields: {
+        'title': {
+          message: '活动标题不能为空',
+          validators: {
+            notEmpty: {
+              message: '活动标题不能为空'
             },
-            fields: {
-                'title': {
-                    message: '活动标题不能为空',
-                    validators: {
-                        notEmpty: {
-                            message: '活动标题不能为空'
-                        },
-                        stringLength: {
-                            max: 64,
-                            message: '活动标题不能超过64个字符'
-                        }
-                    }
-                },
-
-                'startTime': {
-                    message: '活动开始时间不能为空',
-                    validators: {
-                        notEmpty: {
-                            message: '活动开始时间不能为空'
-                        }
-                    }
-                },
-
-                'endTime': {
-                    message: '活动结束时间不能为空',
-                    validators: {
-                        notEmpty: {
-                            message: '活动结束时间不能为空'
-                        }
-                    }
-                }
+            stringLength: {
+              max: 64,
+              message: '活动标题不能超过64个字符'
             }
-        }).on('success.form.bv', function (e) {
-            // Prevent form submission
-            e.preventDefault();
-            var postData = {
-                title: $('#title').val(),
-                startTime: $('#startTime').val(),
-                // password2: $('#password2').val(),
-                endTime: $('#nickName').val(),
-                desc: $('#desc').val(),
-            };
-            var json = JSON.stringify(postData)
-            console.info("表单提交数据： " + json)
-            $.ajax({
-                type: 'POST',
-                url: basePath + "/admin/index/regist",
-                data: json,
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response.code == 200) {
-                        layer.alert('新增成功', {
-                            icon: 'success',
-                            skin: 'lyear-skin-success',
-                            title: '新增提示',
-                            closeBtn: 1,
-                            btn: ['确定', '取消'],
-                            yes: function (index, layero) {
-                               searchList()
-                            },
-                            cancle: function (index, layero) {
-                                layer.close(index)
-                            }
-                        })
-                    } else {
-                        layer.alert(response.msg, {
-                            icon: 'error',
-                            skin: 'lyear-skin-danger',
-                        })
-                    }
-                },
-                error: function (xhr, status, error) {
-                    layer.alert('系统错误', {
-                        icon: 'error',
-                        skin: 'lyear-skin-danger',
-                        title: '新增提示',
-                    })
-                }
-            });
-        });
+          }
+        },
+
+        'startTime': {
+          message: '活动开始时间不能为空',
+          validators: {
+            notEmpty: {
+              message: '活动开始时间不能为空'
+            }
+          }
+        },
+
+        'endTime': {
+          message: '活动结束时间不能为空',
+          validators: {
+            notEmpty: {
+              message: '活动结束时间不能为空'
+            }
+          }
+        }
+      }
+    }).on('success.form.bv', function (e) {
+      // Prevent form submission
+      e.preventDefault();
+      var postData = {
+        title: $('#title').val(),
+        startTime: $('#startTime').val(),
+        // password2: $('#password2').val(),
+        endTime: $('#nickName').val(),
+        desc: $('#desc').val(),
+      };
+      var json = JSON.stringify(postData)
+      console.info("表单提交数据： " + json)
+      $.ajax({
+        type: 'POST',
+        url: basePath + "/admin/api/activity/add",
+        data: json,
+        contentType: 'application/json',
+        headers: {
+          "Authorization": authorization,
+          'Content-Type': 'application/json'
+        },
+        success: function (response) {
+          if (response.code == 200) {
+            layer.alert('新增成功', {
+              icon: 'success',
+              skin: 'lyear-skin-success',
+              title: '新增提示',
+              closeBtn: 1,
+              btn: ['确定', '取消'],
+              yes: function (index, layero) {
+                searchList()
+              },
+              cancle: function (index, layero) {
+                layer.close(index)
+              }
+            })
+          } else {
+            layer.alert(response.msg, {
+              icon: 'error',
+              skin: 'lyear-skin-danger',
+            })
+          }
+        },
+        error: function (xhr, status, error) {
+          layer.alert('系统错误', {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+            title: '新增提示',
+          })
+        }
+      });
+    });
   }
   function searchList() {
-    var authorization = 'Bearer ' + localStorage.getItem("token")
+
     $("#activityTable").bootstrapTable('destroy')
     $("#activityTable").bootstrapTable({
       method: "POST",
@@ -181,11 +285,11 @@
           'Content-Type': 'application/json'
         }
       },
-      queryParamsType:'',
+      queryParamsType: '',
       queryParams: getParams, //携带参数
       responseHandler: function (res) {
-        console.info("查询结果: "+JSON.stringify(res))
-        if(res.code != 200){
+        console.info("查询结果: " + JSON.stringify(res))
+        if (res.code != 200) {
           layer.alert(res.msg, {
             icon: 'error',
             skin: 'lyear-skin-danger',
@@ -193,15 +297,15 @@
             closeBtn: 1,
             btn: ['确定', '取消'],
             yes: function (index, layero) {
-                layer.close(index)
-                top.location.href = basePath + "/login"
+              layer.close(index)
+              top.location.href = basePath + "/login"
             },
             cancle: function (index, layero) {
-                layer.close(index)
+              layer.close(index)
             }
 
-        })
-          
+          })
+
         }
 
         // 对返回参数进行处理
@@ -215,8 +319,15 @@
         {
           checkbox: true
         },
+
         {
-          title: '活动编号',
+          title: '序号', field: '', align: 'center', formatter: function (value, row, index) {
+            return index + 1;
+          }
+        }
+        ,
+        {
+          title: '编码',
           field: 'code',
           align: 'center',
           valign: 'middle'
@@ -264,7 +375,7 @@
         }
       ],
       onLoadSuccess: function () {
-       
+
       },
 
       onLoadError: function (response) {
@@ -304,9 +415,13 @@
               </div>
               <div class="form-group m-b-5">
                 <div class="input-group">
-                    <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
+                  <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime"
+                    placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
+                    data-format="YYYY-MM-DD HH:mm:ss" />
                   <span class="input-group-addon no-border-lr">~</span>
-                  <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime" placeholder="结束时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
+                  <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime"
+                    placeholder="结束时间" value="" data-side-by-side="true" data-locale="zh-cn"
+                    data-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
               </div>
               <!-- <div class="form-group m-b-5">
@@ -357,15 +472,19 @@
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="startTime">活动开始时间:</label>
                       <div class="col-md-7">
-                          <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
-                        
+                        <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime"
+                          placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
+                          data-format="YYYY-MM-DD HH:mm:ss" />
+
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="endTime">活动结束时间:</label>
                       <div class="col-md-7">
-                      <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
+                        <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime"
+                          placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
+                          data-format="YYYY-MM-DD HH:mm:ss" />
                       </div>
                     </div>
 
