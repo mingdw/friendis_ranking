@@ -53,6 +53,15 @@
       // 事件处理代码
       searchList()
     });
+
+    $("#addSave").on("click", function () {
+      //新增处理逻辑
+      searchList()
+    });
+
+
+
+    //新增校验逻辑
     addValidator()
 
     //初始化查询结果
@@ -365,7 +374,7 @@
 
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                  <button type="button" class="btn btn-primary">确定</button>
+                  <button type="button" class="btn btn-primary" id="addSave">确定</button>
                 </div>
               </div>
             </div>

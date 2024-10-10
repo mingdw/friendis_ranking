@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"friends_ranking/models"
 	activityService "friends_ranking/service/activity/crud"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +23,14 @@ func (index ActivityController) QueryList(c *gin.Context, code, startTime, endTi
 }
 
 func (index ActivityController) Add(c *gin.Context, title, desc, startTime, endTime string) {
-	time := time.Now().Format("20060102150405")
+	//time := time.Now().Format("20060102150405")
+
+}
+
+func (index ActivityController) Update(c *gin.Context, title, desc, startTime, endTime string, id int) {
+	//gengxin
+}
+
+func (index ActivityController) Delete(c *gin.Context, ids []int) {
 
 }
