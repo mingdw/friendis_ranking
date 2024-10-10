@@ -93,6 +93,9 @@ func (u *userToken) isNotExpired(token string, expireAtSec int64) (*Myjwt.Custom
 	if customClaims, err := u.userJwt.ParseToken(token); err == nil {
 		tokenRedisFact := token_cache_redis.CreateUsersTokenCacheFactory(customClaims.Id)
 		expiresAt := tokenRedisFact.GetTokenScore(token)
+		if expiresAt == -1 {
+			return nil, globalConst.JwtTokenInvalid
+		}
 		fmt.Println("redis 获取超时时间", expiresAt)
 		if time.Now().Unix()-(expiresAt) < 0 {
 			// token有效

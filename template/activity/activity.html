@@ -23,6 +23,11 @@
 <!--日期选择插件-->
 <script type="text/javascript" src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<!-- 时间选择插件-->
+<script type="text/javascript" src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+
 <script type="text/javascript" src="static/js/layer/layer.min.js"></script>
 <script type="text/javascript" src="static/js/main.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table.min.js"></script>
@@ -33,6 +38,8 @@
       var options = {
         language: 'zh-CN', // 默认简体中文
         multidateSeparator: ', ', // 默认多个日期用,分隔
+        dateFormat: 'YYYY-MM-DD HH:mm:ss',
+        timePicker:true
       }
 
       if ($(this).prop("tagName") != 'INPUT') {
@@ -44,20 +51,110 @@
 
     $("#searchButton").on("click", function () {
       // 事件处理代码
-      console.info("click info")
       searchList()
     });
+    addValidator()
 
     //初始化查询结果
     searchList()
   });
 
+  function addValidator(){
+    $('#activityAddForm').bootstrapValidator({
+            excluded: [':disabled'],
+            message: '该值无效',
+            feedbackIcons: {
+                valid: 'mdi mdi-check',
+                invalid: 'mdi mdi-close',
+                validating: 'mdi mdi-refresh'
+            },
+            fields: {
+                'title': {
+                    message: '活动标题不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '活动标题不能为空'
+                        },
+                        stringLength: {
+                            max: 64,
+                            message: '活动标题不能超过64个字符'
+                        }
+                    }
+                },
 
+                'startTime': {
+                    message: '活动开始时间不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '活动开始时间不能为空'
+                        }
+                    }
+                },
+
+                'endTime': {
+                    message: '活动结束时间不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '活动结束时间不能为空'
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv', function (e) {
+            // Prevent form submission
+            e.preventDefault();
+            var postData = {
+                title: $('#title').val(),
+                startTime: $('#startTime').val(),
+                // password2: $('#password2').val(),
+                endTime: $('#nickName').val(),
+                desc: $('#desc').val(),
+            };
+            var json = JSON.stringify(postData)
+            console.info("表单提交数据： " + json)
+            $.ajax({
+                type: 'POST',
+                url: basePath + "/admin/index/regist",
+                data: json,
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.code == 200) {
+                        layer.alert('新增成功', {
+                            icon: 'success',
+                            skin: 'lyear-skin-success',
+                            title: '新增提示',
+                            closeBtn: 1,
+                            btn: ['确定', '取消'],
+                            yes: function (index, layero) {
+                               searchList()
+                            },
+                            cancle: function (index, layero) {
+                                layer.close(index)
+                            }
+                        })
+                    } else {
+                        layer.alert(response.msg, {
+                            icon: 'error',
+                            skin: 'lyear-skin-danger',
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    layer.alert('系统错误', {
+                        icon: 'error',
+                        skin: 'lyear-skin-danger',
+                        title: '新增提示',
+                    })
+                }
+            });
+        });
+  }
   function searchList() {
     var authorization = 'Bearer ' + localStorage.getItem("token")
     $("#activityTable").bootstrapTable('destroy')
     $("#activityTable").bootstrapTable({
       method: "POST",
+      dataType: 'json',
       url: basePath + "/admin/api/activity/list",
       sidePagination: "server", //服务器分页 
       striped: true, //隔行换色
@@ -67,7 +164,7 @@
       pagination: true, //启用分页  
       pageSize: 10, //每页行数 
       pageNumber: 1, //起始页 
-      pageList: [5, 10, 20, 50, 100], //可供选择的每页的行数
+      pageList: [10, 20, 50, 100], //可供选择的每页的行数
       escape: true, //过滤危险字符 
       ajaxOptions: {
         headers: {
@@ -75,9 +172,29 @@
           'Content-Type': 'application/json'
         }
       },
+      queryParamsType:'',
       queryParams: getParams, //携带参数
-      dataType: "json",
       responseHandler: function (res) {
+        console.info("查询结果: "+JSON.stringify(res))
+        if(res.code != 200){
+          layer.alert(res.msg, {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+            title: '错误提示',
+            closeBtn: 1,
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                layer.close(index)
+                top.location.href = basePath + "/login"
+            },
+            cancle: function (index, layero) {
+                layer.close(index)
+            }
+
+        })
+          
+        }
+
         // 对返回参数进行处理
         return {
           "total": res.count,
@@ -137,28 +254,12 @@
           }
         }
       ],
-      onLoadSuccess: function (response) {
-        if (response.code == 200) {
-          layer.alert('查询成功', {
-            icon: 'success',
-            skin: 'lyear-skin-success',
-            title: '查询提示'
-
-          })
-        } else {
-          if (response.code == "-400100") {
-            layer.alert(response.msg, {
-              icon: 'error',
-              skin: 'lyear-skin-danger',
-              time: 3000
-            });
-            window.location.href = basePath
-          }
-        }
+      onLoadSuccess: function () {
+       
       },
 
       onLoadError: function (response) {
-        layer.alert(response.msg, {
+        layer.alert('系统错误', {
           icon: 'error',
           skin: 'lyear-skin-danger',
         })
@@ -170,12 +271,12 @@
   //默认加载时携带参数 
   function getParams(parm) {
     var data = {
-      limit: parm.limit,
+      limit: parm.pageSize,
       pageSize: parm.pageNumber,
       code: $("#code").val(),
       startTime: $("#startTime").val(),
       endTime: $("#endTime").val(),
-      status: Number($("#status").val())
+      status: parseInt($("#status option:selected").val())
     }
     return JSON.stringify(data)
   }
@@ -193,12 +294,10 @@
                 <input class="form-control" type="text" id="code" placeholder="请输入活动编码或者名称..">
               </div>
               <div class="form-group m-b-5">
-                <div class="input-group" data-provide='datepicker'>
-                  <input class="form-control" type="text" id="startTime" value="" placeholder="开始时间"
-                    data-date-format="yyyy-mm-dd">
+                <div class="input-group">
+                    <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
                   <span class="input-group-addon no-border-lr">~</span>
-                  <input class="form-control" type="text" id="endTime" value="" placeholder="结束时间"
-                    data-date-format="yyyy-mm-dd">
+                  <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime" placeholder="结束时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
                 </div>
               </div>
               <!-- <div class="form-group m-b-5">
@@ -231,7 +330,7 @@
                   <h4 class="modal-title" id="exampleModalLabel">新增活动</h4>
                 </div>
                 <div class="modal-body">
-                  <form class="form-horizontal">
+                  <form class="form-horizontal" id="activityAddForm">
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="title">活动标题:</label>
                       <div class="col-md-7">
@@ -249,16 +348,15 @@
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="startTime">活动开始时间:</label>
                       <div class="col-md-7">
-                        <input class="form-control js-datepicker m-b-10" type="text" id="startTime" name="startTime"
-                          placeholder="活动开始时间" value="" data-date-format="yyyy-mm-dd" />
+                          <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
+                        
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="endTime">活动结束时间:</label>
                       <div class="col-md-7">
-                        <input class="form-control js-datepicker m-b-10" type="text" id="endTime" name="startTime"
-                          placeholder="活动结束时间" value="" data-date-format="yyyy-mm-dd" />
+                      <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn" data-format="YYYY-MM-DD HH:mm:ss" />
                       </div>
                     </div>
 

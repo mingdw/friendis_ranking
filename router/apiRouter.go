@@ -124,6 +124,12 @@ func adminApiInit(router *gin.Engine) {
 	page.Use(authorization.CheckTokenAuth())
 	{
 		page.POST("/activity/list", factory.Create(globalConst.ValidatorPrefix+"ActivityList"))
+
+		page.POST("/activity/add", factory.Create(globalConst.ValidatorPrefix+"ActivityAdd"))
+
+		page.POST("/activity/update", factory.Create(globalConst.ValidatorPrefix+"ActivityUpdate"))
+
+		page.POST("/activity/delete", factory.Create(globalConst.ValidatorPrefix+"ActivityDelete"))
 	}
 
 }

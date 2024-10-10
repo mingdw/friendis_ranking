@@ -61,7 +61,7 @@ func (activity *Activity) counts(code, startTime, endTime string, status int) (c
 }
 
 // 查询（根据关键词模糊查询）
-func (activity *Activity) Show(code, startTime, endTime string, status, limitStart, limitItems int) (counts int64, temp []Activity) {
+func (activity *Activity) Show(code, startTime, endTime string, status, pageSize, limit int) (counts int64, temp []Activity) {
 	if counts = activity.counts(code, startTime, endTime, status); counts > 0 {
 		sql := "SELECT  *  FROM  sys_activity  WHERE isDelete=0 "
 		if code != "" {
@@ -76,6 +76,8 @@ func (activity *Activity) Show(code, startTime, endTime string, status, limitSta
 			sql += " and startTime >=" + startTime + " and  startTime <=" + endTime
 		}
 		sql += " LIMIT ?,?"
+		limitStart := (pageSize - 1) * limit
+		limitItems := limitStart + limit
 		if res := activity.Raw(sql, limitStart, limitItems).Find(&temp); res.RowsAffected > 0 {
 			return counts, temp
 		}

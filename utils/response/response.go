@@ -52,6 +52,7 @@ func ReturnDeFaultFail(c *gin.Context) {
 	}
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	c.JSON(200, resp)
+	c.Abort()
 }
 
 func ReturnFail(c *gin.Context, erroMsg string) {
