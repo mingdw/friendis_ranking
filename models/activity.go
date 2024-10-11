@@ -125,11 +125,12 @@ func (activity *Activity) Update(ac *Activity) bool {
 func (activity *Activity) Delete(ids []int) bool {
 	sql := "delete from  sys_activity where id in(?) "
 	strs := make([]string, len(ids))
-	for i, v := range ids {
-		strs[i] = fmt.Sprintf("%d", v)
+	for k, v := range ids {
+		strs[k] = fmt.Sprintf("%d", v)
 	}
-	idsStr := "'" + strings.Join(strs, "','") + "'"
-	if res := activity.Exec(sql, idsStr); res.RowsAffected >= 0 {
+	idsStr := strings.Join(strs, ",")
+	fmt.Println("ids: ", idsStr)
+	if res := activity.Raw(sql, idsStr); res.RowsAffected >= 0 {
 		return true
 	}
 	return false

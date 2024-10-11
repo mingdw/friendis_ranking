@@ -117,47 +117,10 @@
         $(rows).each(function () {// 通过获得别选中的来进行遍历
           arrays.push(this.id);// STOREID为获得到的整条数据中指定的一列
         });
-        var ids = arrays.join(','); // 获得要删除的id
-        $.ajax({
-          type: 'POST',
-          url: basePath + "/admin/api/activity/delete",
-          data: ids,
-          contentType: 'application/json',
-          headers: {
-            "Authorization": authorization,
-            'Content-Type': 'application/json'
-          },
-          success: function (response) {
-            if (response.code == 200) {
-              layer.alert('删除成功', {
-                icon: 'success',
-                skin: 'lyear-skin-success',
-                title: '删除提示',
-                closeBtn: 1,
-                btn: ['确定', '取消'],
-                yes: function (index, layero) {
-                  searchList()
-                },
-                cancle: function (index, layero) {
-                  layer.close(index)
-                }
-              })
-            } else {
-              layer.alert(response.msg, {
-                icon: 'error',
-                skin: 'lyear-skin-danger',
-              })
-            }
-          },
-          error: function (xhr, status, error) {
-            layer.alert('系统错误', {
-              icon: 'error',
-              skin: 'lyear-skin-danger',
-              title: '删除提示',
-            })
-          }
-        });
-
+        var param = {
+          ids:arrays
+        }
+        deleteIds(JSON.stringify(param))
       }
     });
 
@@ -349,7 +312,20 @@
         {
           title: '活动状态',
           field: 'status',
-          align: 'center'
+          align: 'center',
+          formatter : function(value,row,index){
+            var a = ""
+            if(value ==0){
+
+            }else if(value==1){
+                a = "<span class=\"label label-default\">未开始</span>";
+            }else if(value==2){
+                a = "<span class=\"label label-success\">进行中</span>";
+            }else if(value ==3){
+                a = "<span class=\"label label-yellow\">已结束</span>"; 
+            }
+            return a
+          }
         },
         {
           title: '开始时间',
@@ -367,10 +343,22 @@
           field: 'id',
           align: 'center',
           formatter: function (value, row, index) {
-            return '<a href="#" mce_href="#" onclick="reserve(\'' + row.id +
-              '\')">删除</a><a href="#" mce_href="#" onclick="reserve(\'' + row.id +
-              '\')">开始</a> <a href="#" mce_href="#" onclick="reserve(\'' + row.id +
-              '\')">结束活动</a><a href="#" mce_href="#" onclick="reserve(\'' + row.id + '\')">编辑</a>';
+            var startHtml = "<a class=\"btn btn-xs btn-success\" href=\"#!\" title=\"开启\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-circle-outline\">开启</i></a>&nbsp";
+            var endTimeHtml = "<a class=\"btn btn-xs btn-warning\" href=\"#!\" title=\"结束\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-pause\">结束</i></a>&nbsp";
+            var editHtml = "<a class=\"btn btn-xs btn-primary\" href=\"#!\" title=\"编辑\" data-toggle=\"tooltip\"><i class=\"mdi mdi-pencil\">编辑</i></a>&nbsp";
+            var removeHtml =  "<a class=\"btn btn-xs btn btn-danger\" href=\"#!\" title=\"删除\" data-toggle=\"tooltip\"><i class=\"mdi mdi-window-close\">删除</i></a>";
+            var status = row.status
+            var resultHtml = "";
+            if(status==0){//初始化状态: 展示按钮 开启、编辑、删除
+              resultHtml = startHtml+ endTimeHtml+editHtml + removeHtml
+            }else if(status ==1){
+              resultHtml = startHtml+ editHtml + removeHtml
+            }else if(status ==2){
+              resultHtml = endTimeHtml+ editHtml + removeHtml
+            }else if(status==3){
+              resultHtml =  editHtml + removeHtml
+            }
+            return resultHtml
           }
         }
       ],
@@ -399,6 +387,63 @@
       status: parseInt($("#status option:selected").val())
     }
     return JSON.stringify(data)
+  }
+
+  //删除请求
+  function deleteIds(ids){
+    layer.alert('您确定要删除这些活动吗？', {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+            title: '删除提示',
+            closeBtn: 1,
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+              $.ajax({
+          type: 'POST',
+          url: basePath + "/admin/api/activity/delete",
+          data: ids,
+          contentType: 'application/json',
+          headers: {
+            "Authorization": authorization,
+            'Content-Type': 'application/json'
+          },
+          success: function (response) {
+            if (response.code == 200) {
+              layer.alert('删除成功', {
+                icon: 'success',
+                skin: 'lyear-skin-success',
+                title: '删除提示',
+                closeBtn: 1,
+                btn: ['确定', '取消'],
+                yes: function (index, layero) {
+                  searchList()
+                },
+                cancle: function (index, layero) {
+                  layer.close(index)
+                }
+              })
+            } else {
+              layer.alert(response.msg, {
+                icon: 'error',
+                skin: 'lyear-skin-danger',
+              })
+            }
+          },
+          error: function (xhr, status, error) {
+            layer.alert('系统错误', {
+              icon: 'error',
+              skin: 'lyear-skin-danger',
+              title: '删除提示',
+            })
+          }
+        });
+            },
+            cancle: function (index, layero) {
+              layer.close(index)
+            }
+
+          })
+  
   }
 </script>
 
