@@ -56,6 +56,12 @@
       searchList()
     });
 
+    $("#addButton").on("click", function () {
+      //每次新增都重置模态框的内容
+    });
+
+    
+
     $("#addSave").on("click", function () {
       //新增处理逻辑
       var param = {
@@ -84,12 +90,7 @@
               btn: ['确定', '取消'],
               yes: function (index, layero) {
                 layer.close(index)
-                
-                var clone_modal = $('#exampleModal').clone();
-                $('#activityAddForm').on('hide.bs.modal', function () {
-                  $(this).remove();
-                  $('.vt-topinfo').after(clone_modal);
-                });
+                $('#exampleModal').modal('hide')
                 searchList()
               },
               cancle: function (index, layero) {
