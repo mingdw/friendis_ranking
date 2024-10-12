@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"friends_ranking/models"
 	activityService "friends_ranking/service/activity/crud"
 	"math/rand"
@@ -25,6 +26,7 @@ func (index ActivityController) QueryList(c *gin.Context, code, startTime, endTi
 
 func (index ActivityController) Add(c *gin.Context, title, desc, startTime, endTime string) {
 	code := "AC" + time.Now().Format("20060102150405") + randNum(4)
+	fmt.Println("title: ", title, "desc: ", desc, "; starttime: ", startTime, "; endtime: ", endTime)
 	activity := &models.Activity{
 		Code:      code,
 		Title:     title,

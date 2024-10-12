@@ -24,6 +24,7 @@ func ReturnJson(c *gin.Context, httpCode int, dataCode int, msg string, data int
 		"count": count,
 	}
 	c.JSON(httpCode, resp)
+	c.Abort()
 }
 
 func ReturnDefaultOk(c *gin.Context) {
@@ -33,6 +34,7 @@ func ReturnDefaultOk(c *gin.Context) {
 	}
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	c.JSON(200, resp)
+	c.Abort()
 }
 
 func ReturnSuccess(c *gin.Context, data interface{}, count int64) {
@@ -43,6 +45,7 @@ func ReturnSuccess(c *gin.Context, data interface{}, count int64) {
 		"count": count,
 	}
 	c.JSON(200, resp)
+	c.Abort()
 }
 
 func ReturnDeFaultFail(c *gin.Context) {

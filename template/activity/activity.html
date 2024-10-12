@@ -60,7 +60,7 @@
       //新增处理逻辑
       var param = {
         title: $('#activityAddForm input[name=title]').val(),
-        desc: $('#activityAddForm input[name=desc]').val(),
+        desc: $('#activityAddForm textarea[name=desc]').val(),
         startTime: $('#activityAddForm input[name=startTime]').val(),
         endTime: $('#activityAddForm input[name=endTime]').val(),
       }
@@ -70,7 +70,10 @@
         url: basePath + "/admin/api/activity/add",
         data: json,
         contentType: 'application/json',
-
+        headers: {
+          "Authorization": authorization,
+          'Content-Type': 'application/json'
+        },
         success: function (response) {
           if (response.code == 200) {
             layer.alert('新增成功', {
@@ -80,6 +83,13 @@
               closeBtn: 1,
               btn: ['确定', '取消'],
               yes: function (index, layero) {
+                layer.close(index)
+                
+                var clone_modal = $('#exampleModal').clone();
+                $('#activityAddForm').on('hide.bs.modal', function () {
+                  $(this).remove();
+                  $('.vt-topinfo').after(clone_modal);
+                });
                 searchList()
               },
               cancle: function (index, layero) {
@@ -123,14 +133,14 @@
         deleteIds(JSON.stringify(param))
       }
     });
-
     //新增校验逻辑
     addValidator()
-
     //初始化查询结果
     searchList()
   });
 
+  
+  
   function addValidator() {
     $('#activityAddForm').bootstrapValidator({
       excluded: [':disabled'],
@@ -202,6 +212,7 @@
               closeBtn: 1,
               btn: ['确定', '取消'],
               yes: function (index, layero) {
+               
                 searchList()
               },
               cancle: function (index, layero) {
@@ -251,7 +262,6 @@
       queryParamsType: '',
       queryParams: getParams, //携带参数
       responseHandler: function (res) {
-        console.info("查询结果: " + JSON.stringify(res))
         if (res.code != 200) {
           layer.alert(res.msg, {
             icon: 'error',
@@ -341,7 +351,7 @@
         {
           title: '操作',
           field: 'id',
-          align: 'center',
+          align: 'left',
           formatter: function (value, row, index) {
             var startHtml = "<a class=\"btn btn-xs btn-success\" href=\"#!\" title=\"开启\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-circle-outline\">开启</i></a>&nbsp";
             var endTimeHtml = "<a class=\"btn btn-xs btn-warning\" href=\"#!\" title=\"结束\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-pause\">结束</i></a>&nbsp";
@@ -416,6 +426,7 @@
                 closeBtn: 1,
                 btn: ['确定', '取消'],
                 yes: function (index, layero) {
+                  layer.close(index)
                   searchList()
                 },
                 cancle: function (index, layero) {
@@ -503,14 +514,14 @@
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="title">活动标题:</label>
                       <div class="col-md-7">
-                        <input type="text" class="form-control" id="title" name="phone" placeholder="请输入活动标题">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="请输入活动标题">
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="col-md-3 control-label" for="desc">活动描述:</label>
                       <div class="col-md-7">
-                        <textarea class="form-control" id="desc"></textarea>
+                        <textarea class="form-control" id="desc" name="desc"></textarea>
                       </div>
                     </div>
 

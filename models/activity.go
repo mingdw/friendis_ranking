@@ -1,12 +1,10 @@
 package models
 
 import (
-	"fmt"
 	"friends_ranking/config/dbconn"
 	"friends_ranking/config/globalConst"
 	"friends_ranking/config/variable"
 	"strconv"
-	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -16,7 +14,7 @@ type Activity struct {
 	Id        int    `json:"id" gorm:"primaryKey"`
 	Code      string `json:"code" gorm:"column:code"`
 	Title     string `json:"title" gorm:"column:title"`
-	Desc      string `json:"desc"  gorm:"column:desc"`
+	Desc      string `json:"desc"  gorm:"column:ac_desc"`
 	StartTime string `json:"startTime" gorm:"column:startTime"`
 	EndTime   string `json:"endTime" gorm:"column:endTime" `
 	Status    int    `json:"status"  gorm:"column:status" `
@@ -89,8 +87,8 @@ func (activity *Activity) Show(code, startTime, endTime string, status, pageSize
 }
 
 func (activity *Activity) Add(ac *Activity) bool {
-	sql := "insert into sys_activity(code,title,desc,startTime,endTime,status,isDelete,creator,editor) values(?,?,?,?,?,?,?,?)"
-	if res := activity.Exec(sql, ac.Code, ac.Title, ac.Desc, ac.StartTime, ac.EndTime, 0, 0, ac.Creator, ac.Editor); res.RowsAffected >= 0 {
+	sql := "insert into sys_activity(code,title,ac_desc,startTime,endTime,status,isDelete,creator,editor) values(?,?,?,?,?,?,?,?,?)"
+	if res := activity.Exec(sql, ac.Code, ac.Title, ac.Desc, ac.StartTime, ac.EndTime, 1, 0, activity.Creator, activity.Editor); res.RowsAffected >= 0 {
 		return true
 	}
 	return false
@@ -123,14 +121,14 @@ func (activity *Activity) Update(ac *Activity) bool {
 }
 
 func (activity *Activity) Delete(ids []int) bool {
-	sql := "delete from  sys_activity where id in(?) "
-	strs := make([]string, len(ids))
-	for k, v := range ids {
-		strs[k] = fmt.Sprintf("%d", v)
-	}
-	idsStr := strings.Join(strs, ",")
-	fmt.Println("ids: ", idsStr)
-	if res := activity.Raw(sql, idsStr); res.RowsAffected >= 0 {
+	// sql := "delete from  sys_activity where id in(?) "
+	// strs := make([]string, len(ids))
+	// for k, v := range ids {
+	// 	strs[k] = fmt.Sprintf("%d", v)
+	// }
+	// idsStr := strings.Join(strs, ",")
+	// fmt.Println("ids: ", idsStr)
+	if res := activity.Table("sys_activity").Where("id in(?)", ids).Delete(nil); res.RowsAffected >= 0 {
 		return true
 	}
 	return false

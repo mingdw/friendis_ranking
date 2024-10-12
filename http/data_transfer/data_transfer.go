@@ -30,7 +30,8 @@ func DataAddContext(validatorInterface interf.ValidatorInterface, extraAddDataPr
 				context.Set(extraAddDataPrefix+"created_at", curDateTime)
 				context.Set(extraAddDataPrefix+"updated_at", curDateTime)
 				context.Set(extraAddDataPrefix+"deleted_at", curDateTime)
-
+				context.Set(extraAddDataPrefix+"creator", globalConst.SysAccount)
+				context.Set(extraAddDataPrefix+"editor", globalConst.SysAccount)
 				return context
 			}
 		}

@@ -21,6 +21,7 @@ func Add(activity *models.Activity, c *gin.Context) {
 	activityModels := models.CreateActivityFactory("")
 	if activityModels.Add(activity) {
 		response.ReturnDefaultOk(c)
+		return
 	}
 	response.ReturnDeFaultFail(c)
 }
@@ -29,6 +30,7 @@ func Update(activity *models.Activity, c *gin.Context) {
 	activityModels := models.CreateActivityFactory("")
 	if activityModels.Update(activity) {
 		response.ReturnDefaultOk(c)
+		return
 	}
 	response.ReturnDeFaultFail(c)
 }
@@ -37,6 +39,7 @@ func Delete(ids []int, c *gin.Context) {
 	activityModels := models.CreateActivityFactory("")
 	if activityModels.Delete(ids) {
 		response.ReturnDefaultOk(c)
+		return
 	}
 	response.ReturnDeFaultFail(c)
 }
