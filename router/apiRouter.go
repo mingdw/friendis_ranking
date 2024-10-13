@@ -130,6 +130,8 @@ func adminApiInit(router *gin.Engine) {
 		page.POST("/activity/update", factory.Create(globalConst.ValidatorPrefix+"ActivityUpdate"))
 
 		page.POST("/activity/delete", factory.Create(globalConst.ValidatorPrefix+"ActivityDelete"))
+
+		page.POST("/activity/updateStatus", factory.Create(globalConst.ValidatorPrefix+"ActivityUpdateStatus"))
 	}
 
 }

@@ -27,4 +27,7 @@ func AdminActivityValidator() {
 	key = globalConst.ValidatorPrefix + "ActivityDelete"
 	containers.Set(key, checkvalidator.ActivityDelete{})
 
+	key = globalConst.ValidatorPrefix + "ActivityUpdateStatus"
+	containers.Set(key, checkvalidator.ActivityUpDateStatus{})
+
 }

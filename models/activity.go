@@ -1,23 +1,20 @@
 package models
 
 import (
+	"fmt"
 	"friends_ranking/config/dbconn"
 	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"strconv"
 	"time"
-
-	"go.uber.org/zap"
 )
 
 type Activity struct {
-	Id        int    `json:"id" gorm:"primaryKey"`
-	Code      string `json:"code" gorm:"column:code"`
-	Title     string `json:"title" gorm:"column:title"`
-	Desc      string `json:"desc"  gorm:"column:ac_desc"`
-	StartTime string `json:"startTime" gorm:"column:startTime"`
-	EndTime   string `json:"endTime" gorm:"column:endTime" `
-	Status    int    `json:"status"  gorm:"column:status" `
+	Id        int       `json:"id" gorm:"primaryKey"`
+	Code      string    `json:"code" gorm:"column:code"`
+	Title     string    `json:"title" gorm:"column:title"`
+	Desc      string    `json:"desc"  gorm:"column:ac_desc"`
+	StartTime time.Time `json:"startTime" gorm:"column:startTime"`
+	EndTime   time.Time `json:"endTime" gorm:"column:endTime" `
+	Status    int       `json:"status"  gorm:"column:status" `
 	dbconn.BaseModel
 }
 
@@ -40,97 +37,55 @@ func CreateActivityFactory(sqlType string) *Activity {
 	}}
 }
 
-// 查询数据之前统计条数
-func (activity *Activity) counts(code, startTime, endTime string, status int) (counts int64) {
-	sql := "SELECT  count(*) as counts  FROM  sys_activity  WHERE isDelete=0 "
+// 查询（根据关键词模糊查询）
+func (activity *Activity) Show(code string, startTime, endTime time.Time, status, pageSize, limit int) (counts int64, temp []Activity) {
+	// 计算总记录数并执行分页查询
+	sql := activity.Model(&Activity{}).Where("isDelete = ?", 0)
 	if code != "" {
-		sql += " and (code like '%" + code + "%' or title like '%" + code + "')"
+		codeStr := "%" + code + "%"
+		sql.Where("code like ? or title like?", codeStr, codeStr)
 	}
 
 	if status != 0 {
-		sql += " and status =" + strconv.Itoa(status)
+		sql.Where("status = ?", status)
 	}
 
-	if startTime != "" && endTime != "" {
-		sql += " and startTime >=" + startTime + " and  startTime <=" + endTime
+	if !startTime.IsZero() && !endTime.IsZero() {
+		sql.Where(" startTime>= ? and startTime<=?", startTime, endTime)
 	}
-	if res := activity.Raw(sql).First(&counts); res.Error != nil {
-		variable.ZapLog.Error("Activity - counts 查询数据条数出错", zap.Error(res.Error))
-	}
-	return counts
-}
-
-// 查询（根据关键词模糊查询）
-func (activity *Activity) Show(code, startTime, endTime string, status, pageSize, limit int) (counts int64, temp []Activity) {
-	if counts = activity.counts(code, startTime, endTime, status); counts > 0 {
-		sql := "SELECT  *  FROM  sys_activity  WHERE isDelete=0 "
-		if code != "" {
-			sql += " and (code like '%" + code + "%' or title like '%" + code + "')"
-		}
-
-		if status != 0 {
-			sql += " and status =" + strconv.Itoa(status)
-		}
-
-		if startTime != "" && endTime != "" {
-			sql += " and startTime >=" + startTime + " and  startTime <=" + endTime
-		}
-		sql += " LIMIT ?,?"
-		limitStart := (pageSize - 1) * limit
-		limitItems := limitStart + limit
-		if res := activity.Raw(sql, limitStart, limitItems).Find(&temp); res.RowsAffected > 0 {
-			return counts, temp
-		}
-	}
-
-	return 0, nil
+	sql.Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Find(&temp)
+	return
 }
 
 func (activity *Activity) Add(ac *Activity) bool {
-	sql := "insert into sys_activity(code,title,ac_desc,startTime,endTime,status,isDelete,creator,editor) values(?,?,?,?,?,?,?,?,?)"
-	if res := activity.Exec(sql, ac.Code, ac.Title, ac.Desc, ac.StartTime, ac.EndTime, 1, 0, activity.Creator, activity.Editor); res.RowsAffected >= 0 {
-		return true
+	ac.Creator = activity.Creator
+	ac.Editor = activity.Editor
+	ac.CreateTime = activity.CreateTime
+	ac.EditTime = activity.EditTime
+	if err := activity.Create(&ac).Error; err != nil {
+		return false
 	}
-	return false
+	fmt.Println("新增 成功")
+	return true
 }
 
 func (activity *Activity) Update(ac *Activity) bool {
-	sql := "select * from sys_activity where id=? and isDelete=0 "
-	rersult := activity.Raw(sql, ac.Id).First(activity)
-	if rersult.Error == nil {
-		if ac.Title != "" {
-			activity.Title = ac.Title
-		}
-		if ac.Desc != "" {
-			activity.Desc = ac.Desc
-		}
-		if ac.StartTime != "" {
-			activity.StartTime = ac.StartTime
-		}
-		if ac.EndTime != "" {
-			activity.EndTime = ac.EndTime
-		}
-
-		err := activity.DB.Model(&Activity{}).Where("id = ?", ac.Id).Updates(activity).Error
-		if err == nil {
-			return true
-		}
-
+	if err := activity.DB.Model(&Activity{}).Where("id = ?", ac.Id).Updates(ac); err.RowsAffected >= 0 {
+		return true
 	}
 	return false
 }
 
 func (activity *Activity) Delete(ids []int) bool {
-	// sql := "delete from  sys_activity where id in(?) "
-	// strs := make([]string, len(ids))
-	// for k, v := range ids {
-	// 	strs[k] = fmt.Sprintf("%d", v)
-	// }
-	// idsStr := strings.Join(strs, ",")
-	// fmt.Println("ids: ", idsStr)
 	if res := activity.Table("sys_activity").Where("id in(?)", ids).Delete(nil); res.RowsAffected >= 0 {
 		return true
 	}
 	return false
+}
 
+func (activity *Activity) UpdateStatus(id, status int) bool {
+	if res := activity.Table("sys_activity").Where("id = ?", id).Update("status", status); res.RowsAffected >= 0 {
+		return true
+	}
+	return false
 }

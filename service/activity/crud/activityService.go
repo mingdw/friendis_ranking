@@ -43,3 +43,12 @@ func Delete(ids []int, c *gin.Context) {
 	}
 	response.ReturnDeFaultFail(c)
 }
+
+func UpdateStatus(id, status int, c *gin.Context) {
+	activityModels := models.CreateActivityFactory("")
+	if activityModels.UpdateStatus(id, status) {
+		response.ReturnDefaultOk(c)
+		return
+	}
+	response.ReturnDeFaultFail(c)
+}

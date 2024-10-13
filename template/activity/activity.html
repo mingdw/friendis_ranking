@@ -14,6 +14,8 @@
   <link href="static/css/materialdesignicons.min.css" rel="stylesheet">
   <!--日期选择插件-->
   <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+  <link rel="stylesheet" href="static/js/bootstrap-daterangepicker/daterangepicker.css">
+
   <link href="static/css/style.min.css" rel="stylesheet">
 
 </head>
@@ -21,54 +23,48 @@
 <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/js/perfect-scrollbar.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
-<!--日期选择插件-->
-<script type="text/javascript" src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-<script type="text/javascript" src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-<!-- 时间选择插件-->
-<script type="text/javascript" src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
-<script type="text/javascript" src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
-
 <script type="text/javascript" src="static/js/layer/layer.min.js"></script>
-<script type="text/javascript" src="static/js/main.min.js"></script>
+
 <script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table-zh-CN.min.js"></script>
+<!--时间范围选择插件-->
+<script src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+
+<script src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+
+<script type="text/javascript" src="static/js/bootstrap-daterangepicker/daterangepicker.min.js"></script>
+<script type="text/javascript" src="static/js/main.min.js"></script>
 <script>
-  var authorization = 'Bearer ' + localStorage.getItem("token")
+
   $(function () {
-    $("[data-provide = 'datepicker']").each(function () {
-      var options = {
-        language: 'zh-CN', // 默认简体中文
-        multidateSeparator: ', ', // 默认多个日期用,分隔
-        dateFormat: 'YYYY-MM-DD HH:mm:ss',
-        timePicker: true
+    $('input[name="datetimes"]').daterangepicker({
+      timePicker: true,
+      startDate: moment().startOf('hour'),
+      endDate: moment().startOf('hour').add(32, 'hour'),
+      locale: {
+        format: 'M/DD hh:mm A'
       }
-
-      if ($(this).prop("tagName") != 'INPUT') {
-        options.inputs = [$(this).find('input:first'), $(this).find('input:last')];
-      }
-      $(this).datepicker(options);
     });
-
 
     $("#searchButton").on("click", function () {
       // 事件处理代码
       searchList()
     });
 
-    $("#addButton").on("click", function () {
-      //每次新增都重置模态框的内容
+    $('#addButton').on('click', function () {
+      addValidator()
     });
-
-    
 
     $("#addSave").on("click", function () {
       //新增处理逻辑
       var param = {
-        title: $('#activityAddForm input[name=title]').val(),
-        desc: $('#activityAddForm textarea[name=desc]').val(),
-        startTime: $('#activityAddForm input[name=startTime]').val(),
-        endTime: $('#activityAddForm input[name=endTime]').val(),
+        title: $('#activityAddForm input[name=add_title]').val(),
+        desc: $('#activityAddForm textarea[name=add_desc]').val(),
+        startTime: $('#activityAddForm input[name=add_startTime]').val(),
+        endTime: $('#activityAddForm input[name=add_endTime]').val(),
       }
       var json = JSON.stringify(param)
       $.ajax({
@@ -90,7 +86,11 @@
               btn: ['确定', '取消'],
               yes: function (index, layero) {
                 layer.close(index)
+                $("#activityAddForm").data('bootstrapValidator').destroy();
+                $('#activityAddForm').data('bootstrapValidator', null);
                 $('#exampleModal').modal('hide')
+                $("#activityAddForm")[0].reset();
+                addValidator()
                 searchList()
               },
               cancle: function (index, layero) {
@@ -129,7 +129,7 @@
           arrays.push(this.id);// STOREID为获得到的整条数据中指定的一列
         });
         var param = {
-          ids:arrays
+          ids: arrays
         }
         deleteIds(JSON.stringify(param))
       }
@@ -140,9 +140,8 @@
     searchList()
   });
 
-  
-  
   function addValidator() {
+
     $('#activityAddForm').bootstrapValidator({
       excluded: [':disabled'],
       message: '该值无效',
@@ -152,7 +151,7 @@
         validating: 'mdi mdi-refresh'
       },
       fields: {
-        'title': {
+        'add_title': {
           message: '活动标题不能为空',
           validators: {
             notEmpty: {
@@ -165,7 +164,7 @@
           }
         },
 
-        'startTime': {
+        'add_startTime': {
           message: '活动开始时间不能为空',
           validators: {
             notEmpty: {
@@ -174,7 +173,7 @@
           }
         },
 
-        'endTime': {
+        'add_endTime': {
           message: '活动结束时间不能为空',
           validators: {
             notEmpty: {
@@ -183,62 +182,10 @@
           }
         }
       }
-    }).on('success.form.bv', function (e) {
-      // Prevent form submission
-      e.preventDefault();
-      var postData = {
-        title: $('#title').val(),
-        startTime: $('#startTime').val(),
-        // password2: $('#password2').val(),
-        endTime: $('#nickName').val(),
-        desc: $('#desc').val(),
-      };
-      var json = JSON.stringify(postData)
-      console.info("表单提交数据： " + json)
-      $.ajax({
-        type: 'POST',
-        url: basePath + "/admin/api/activity/add",
-        data: json,
-        contentType: 'application/json',
-        headers: {
-          "Authorization": authorization,
-          'Content-Type': 'application/json'
-        },
-        success: function (response) {
-          if (response.code == 200) {
-            layer.alert('新增成功', {
-              icon: 'success',
-              skin: 'lyear-skin-success',
-              title: '新增提示',
-              closeBtn: 1,
-              btn: ['确定', '取消'],
-              yes: function (index, layero) {
-               
-                searchList()
-              },
-              cancle: function (index, layero) {
-                layer.close(index)
-              }
-            })
-          } else {
-            layer.alert(response.msg, {
-              icon: 'error',
-              skin: 'lyear-skin-danger',
-            })
-          }
-        },
-        error: function (xhr, status, error) {
-          layer.alert('系统错误', {
-            icon: 'error',
-            skin: 'lyear-skin-danger',
-            title: '新增提示',
-          })
-        }
-      });
-    });
+    })
   }
-  function searchList() {
 
+  function searchList() {
     $("#activityTable").bootstrapTable('destroy')
     $("#activityTable").bootstrapTable({
       method: "POST",
@@ -316,24 +263,22 @@
           title: '活动描述',
           field: 'desc',
           align: 'center',
-          formatter: function (value, row, index) {
-            return value + "0%";
-          }
+
         },
         {
           title: '活动状态',
           field: 'status',
           align: 'center',
-          formatter : function(value,row,index){
+          formatter: function (value, row, index) {
             var a = ""
-            if(value ==0){
+            if (value == 0) {
 
-            }else if(value==1){
-                a = "<span class=\"label label-default\">未开始</span>";
-            }else if(value==2){
-                a = "<span class=\"label label-success\">进行中</span>";
-            }else if(value ==3){
-                a = "<span class=\"label label-yellow\">已结束</span>"; 
+            } else if (value == 1) {
+              a = "<span class=\"label label-default\">未开始</span>";
+            } else if (value == 2) {
+              a = "<span class=\"label label-success\">进行中</span>";
+            } else if (value == 3) {
+              a = "<span class=\"label label-yellow\">已结束</span>";
             }
             return a
           }
@@ -342,11 +287,23 @@
           title: '开始时间',
           field: 'startTime',
           align: 'center',
+          formatter: function (value, row, index) {
+            if (value != "") {
+              return formatISOTime(value)
+            }
+            return ""
+          }
         },
         {
           title: '结束时间',
           field: 'endTime',
           align: 'center',
+          formatter: function (value, row, index) {
+            if (value != "") {
+              return formatISOTime(value)
+            }
+            return ""
+          }
         },
 
         {
@@ -354,20 +311,20 @@
           field: 'id',
           align: 'left',
           formatter: function (value, row, index) {
-            var startHtml = "<a class=\"btn btn-xs btn-success\" href=\"#!\" title=\"开启\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-circle-outline\">开启</i></a>&nbsp";
-            var endTimeHtml = "<a class=\"btn btn-xs btn-warning\" href=\"#!\" title=\"结束\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-pause\">结束</i></a>&nbsp";
+            var startHtml = "<a class=\"btn btn-xs btn-success\" href=\"#!\" onclick=startActivity(" + row.id + ") title=\"开启\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-circle-outline\">开启</i></a>&nbsp";
+            var endTimeHtml = "<a class=\"btn btn-xs btn-warning\" href=\"#!\" onclick=stopActivity(" + row.id + ") title=\"结束\" data-toggle=\"tooltip\"><i class=\"mdi mdi-play-pause\">结束</i></a>&nbsp";
             var editHtml = "<a class=\"btn btn-xs btn-primary\" href=\"#!\" title=\"编辑\" data-toggle=\"tooltip\"><i class=\"mdi mdi-pencil\">编辑</i></a>&nbsp";
-            var removeHtml =  "<a class=\"btn btn-xs btn btn-danger\" href=\"#!\" title=\"删除\" data-toggle=\"tooltip\"><i class=\"mdi mdi-window-close\">删除</i></a>";
+            var removeHtml = "<a class=\"btn btn-xs btn btn-danger\" href=\"#!\" onclick=deleteOne(" + row.id + ") title=\"删除\" data-toggle=\"tooltip\"><i class=\"mdi mdi-window-close\">删除</i></a>";
             var status = row.status
             var resultHtml = "";
-            if(status==0){//初始化状态: 展示按钮 开启、编辑、删除
-              resultHtml = startHtml+ endTimeHtml+editHtml + removeHtml
-            }else if(status ==1){
-              resultHtml = startHtml+ editHtml + removeHtml
-            }else if(status ==2){
-              resultHtml = endTimeHtml+ editHtml + removeHtml
-            }else if(status==3){
-              resultHtml =  editHtml + removeHtml
+            if (status == 0) {//初始化状态: 展示按钮 开启、编辑、删除
+              resultHtml = startHtml + endTimeHtml + editHtml + removeHtml
+            } else if (status == 1) {
+              resultHtml = startHtml + editHtml + removeHtml
+            } else if (status == 2) {
+              resultHtml = endTimeHtml + editHtml + removeHtml
+            } else if (status == 3) {
+              resultHtml = editHtml + removeHtml
             }
             return resultHtml
           }
@@ -384,7 +341,6 @@
         })
       }
     })
-
   }
 
   //默认加载时携带参数 
@@ -400,16 +356,84 @@
     return JSON.stringify(data)
   }
 
-  //删除请求
-  function deleteIds(ids){
-    layer.alert('您确定要删除这些活动吗？', {
-            icon: 'error',
-            skin: 'lyear-skin-danger',
-            title: '删除提示',
+  function deleteOne(id) {
+    console.info("删除一行: " + id)
+    var arrays = [id]
+    var param = {
+      ids: arrays
+    }
+    deleteIds(JSON.stringify(param))
+  }
+
+  function startActivity(id) {
+    updateStatus(id, 2)
+  }
+
+  function stopActivity(id) {
+    updateStatus(id, 3)
+  }
+
+  function updateStatus(id, status) {
+    var param = {
+      id: id,
+      status, status
+    }
+    $.ajax({
+      type: 'POST',
+      url: basePath + "/admin/api/activity/updateStatus",
+      data: JSON.stringify(param),
+      contentType: 'application/json',
+      headers: {
+        "Authorization": authorization,
+        'Content-Type': 'application/json'
+      },
+      success: function (response) {
+        var tooltip = status == 2 ? "开启成功" : "关闭成功"
+        if (response.code == 200) {
+          layer.alert(tooltip, {
+            icon: 'success',
+            skin: 'lyear-skin-success',
+            title: '活动提示',
             closeBtn: 1,
             btn: ['确定', '取消'],
             yes: function (index, layero) {
-              $.ajax({
+              layer.close(index)
+              searchList()
+            },
+            cancle: function (index, layero) {
+              layer.close(index)
+            }
+          })
+        } else {
+          layer.alert(response.msg, {
+            icon: 'error',
+            skin: 'lyear-skin-danger',
+          })
+        }
+      },
+      error: function (xhr, status, error) {
+        layer.alert('系统错误', {
+          icon: 'error',
+          skin: 'lyear-skin-danger',
+          title: '删除提示',
+        })
+      }
+    });
+
+
+
+  }
+
+  //删除请求
+  function deleteIds(ids) {
+    layer.alert('您确定要删除这些活动吗？', {
+      icon: 'error',
+      skin: 'lyear-skin-danger',
+      title: '删除提示',
+      closeBtn: 1,
+      btn: ['确定', '取消'],
+      yes: function (index, layero) {
+        $.ajax({
           type: 'POST',
           url: basePath + "/admin/api/activity/delete",
           data: ids,
@@ -449,14 +473,31 @@
             })
           }
         });
-            },
-            cancle: function (index, layero) {
-              layer.close(index)
-            }
+      },
+      cancle: function (index, layero) {
+        layer.close(index)
+      }
 
-          })
-  
+    })
+
   }
+
+  //ISO时间转换
+  function formatISOTime(isoString) {
+    // 创建一个 Date 对象  
+    const date = new Date(isoString);
+
+    // 提取年、月、日、时、分、秒  
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1  
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // 格式化并返回结果  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }  
 </script>
 
 <body>
@@ -470,15 +511,10 @@
               <div class="form-group m-b-5">
                 <input class="form-control" type="text" id="code" placeholder="请输入活动编码或者名称..">
               </div>
+
               <div class="form-group m-b-5">
                 <div class="input-group">
-                  <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime"
-                    placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
-                    data-format="YYYY-MM-DD HH:mm:ss" />
-                  <span class="input-group-addon no-border-lr">~</span>
-                  <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime"
-                    placeholder="结束时间" value="" data-side-by-side="true" data-locale="zh-cn"
-                    data-format="YYYY-MM-DD HH:mm:ss" />
+                  <input type="text" name="datetimes" class="form-control" placeholder="请输入活动编码或者名称..">
                 </div>
               </div>
               <!-- <div class="form-group m-b-5">
@@ -513,33 +549,33 @@
                 <div class="modal-body">
                   <form class="form-horizontal" id="activityAddForm">
                     <div class="form-group">
-                      <label class="col-md-3 control-label" for="title">活动标题:</label>
+                      <label class="col-md-3 control-label" for="add_title">活动标题:</label>
                       <div class="col-md-7">
-                        <input type="text" class="form-control" id="title" name="title" placeholder="请输入活动标题">
+                        <input type="text" class="form-control" id="add_title" name="add_title" placeholder="请输入活动标题">
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label class="col-md-3 control-label" for="desc">活动描述:</label>
+                      <label class="col-md-3 control-label" for="add_desc">活动描述:</label>
                       <div class="col-md-7">
-                        <textarea class="form-control" id="desc" name="desc"></textarea>
+                        <textarea class="form-control" id="add_desc" name="add_desc"></textarea>
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label class="col-md-3 control-label" for="startTime">活动开始时间:</label>
+                      <label class="col-md-3 control-label" for="add_startTime">活动开始时间:</label>
                       <div class="col-md-7">
-                        <input class="form-control js-datetimepicker" type="text" id="startTime" name="startTime"
-                          placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
+                        <input class="form-control js-datetimepicker" type="text" id="add_startTime"
+                          name="add_startTime" placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
                           data-format="YYYY-MM-DD HH:mm:ss" />
 
                       </div>
                     </div>
 
                     <div class="form-group">
-                      <label class="col-md-3 control-label" for="endTime">活动结束时间:</label>
+                      <label class="col-md-3 control-label" for="add_endTime">活动结束时间:</label>
                       <div class="col-md-7">
-                        <input class="form-control js-datetimepicker" type="text" id="endTime" name="endTime"
+                        <input class="form-control js-datetimepicker" type="text" id="add_endTime" name="add_endTime"
                           placeholder="开始时间" value="" data-side-by-side="true" data-locale="zh-cn"
                           data-format="YYYY-MM-DD HH:mm:ss" />
                       </div>
