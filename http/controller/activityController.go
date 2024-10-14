@@ -22,11 +22,12 @@ func (index ActivityController) QueryList(c *gin.Context, code, startTime, endTi
 		EndTime:   time.Time{},
 	}
 	if startTime != "" {
-		t1, _ := time.ParseInLocation(globalConst.DateFormat, startTime, time.Local) //这里按照当前时区转
+
+		t1, _ := time.Parse(globalConst.DateFormat, startTime) //这里按照当前时区转
 		activity.StartTime = t1
 	}
 	if endTime != "" {
-		t2, _ := time.ParseInLocation(globalConst.DateFormat, endTime, time.Local) //这里按照当前时区转
+		t2, _ := time.Parse(globalConst.DateFormat, endTime) //这里按照当前时区转
 		activity.EndTime = t2
 	}
 	activityService.List(activity, pageSize, limit, c)

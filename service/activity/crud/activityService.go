@@ -1,6 +1,7 @@
 package activityService
 
 import (
+	"fmt"
 	"friends_ranking/models"
 	"friends_ranking/utils/response"
 
@@ -13,6 +14,7 @@ import (
 */
 func List(activity *models.Activity, limit, pageSize int, c *gin.Context) {
 	activityModels := models.CreateActivityFactory("")
+	fmt.Println("code： ", activity.Code, "; startTime: ", activity.StartTime, "endTime: ", activity.EndTime, "; status: ", activity.Status, "; limit: ", limit, "; size: ", pageSize)
 	count, details := activityModels.Show(activity.Code, activity.StartTime, activity.EndTime, activity.Status, limit, pageSize)
 	response.ReturnSuccess(c, details, count)
 }

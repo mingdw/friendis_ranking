@@ -1,14 +1,11 @@
 package checkvalidator
 
 import (
-	"bytes"
-	"fmt"
 	"friends_ranking/config/globalConst"
 
 	"friends_ranking/http/controller"
 	"friends_ranking/http/data_transfer"
 	"friends_ranking/utils/response"
-	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,13 +45,6 @@ type ActivityUpDateStatus struct {
 
 // 验证器语法，参见 Register.go文件，有详细说明
 func (ac ActivityList) CheckParams(context *gin.Context) {
-	body, err := context.GetRawData()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("请求参数", string(body))
-	context.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 	//1.基本的验证规则没有通过
 	if err := context.ShouldBindJSON(&ac); err != nil {
 		response.ReturnCheckFail(context, err, &ac)
@@ -81,6 +71,19 @@ func (r ActivityAdd) CheckParams(context *gin.Context) {
 
 	//  该函数主要是将本结构体的字段（成员）按照 consts.ValidatorPrefix+ json标签对应的 键 => 值 形式绑定在上下文，便于下一步（控制器）可以直接通过 context.Get(键) 获取相关值
 	extraAddBindDataContext := data_transfer.DataAddContext(r, globalConst.ValidatorPrefix, context)
+	if r.Title == "" {
+		response.ReturnFail(context, "活动标题不能为空")
+		return
+	}
+
+	if r.StartTime == "" {
+		response.ReturnFail(context, "活动开始时间不能为空")
+		return
+	}
+	if r.EndTime == "" {
+		response.ReturnFail(context, "活动结束时间不能为空")
+		return
+	}
 	if extraAddBindDataContext == nil {
 		response.ReturnFail(context, "userLogin表单验证器json化失败")
 		return

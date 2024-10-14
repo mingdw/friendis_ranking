@@ -78,12 +78,11 @@ func (u *User) InsertUser(u2 *User) bool {
 	return false
 }
 
-func (u *User) UpdateUser(u2 *User) bool {
-	err := u.DB.Model(&User{}).Where("id = ?", u2.Id).Updates(u2).Error
-	if err != nil {
-		return false
+func (u *User) UpdateLastLoginTime(id int, time time.Time) bool {
+	if res := u.Table("sys_user").Where("id = ?", id).Update("lastLoginTime", time); res.RowsAffected >= 0 {
+		return true
 	}
-	return true
+	return false
 }
 
 // 记录用户登陆（login）生成的token，每次登陆记录一次token

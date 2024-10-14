@@ -51,9 +51,10 @@ func (activity *Activity) Show(code string, startTime, endTime time.Time, status
 	}
 
 	if !startTime.IsZero() && !endTime.IsZero() {
+		fmt.Println("时间范围灵芝")
 		sql.Where(" startTime>= ? and startTime<=?", startTime, endTime)
 	}
-	sql.Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Find(&temp)
+	sql.Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").Find(&temp)
 	return
 }
 

@@ -52,7 +52,7 @@ func (index IndexController) Login(c *gin.Context) {
 	nowTime := now.Format(globalConst.DateFormat)
 	user.LastLoginTime = nowTime
 	user.EditTime = ""
-	updateResult := userModels.UpdateUser(user)
+	updateResult := userModels.UpdateLastLoginTime(user.Id, now)
 	fmt.Println("更新结果： ", updateResult)
 	if updateResult {
 		//更新登陆时间成功,生成token并且存入redis当中，后面其它接口调用必须校验token
