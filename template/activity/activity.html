@@ -132,6 +132,19 @@
         }
       );
 
+      //模态框开始和结束时间的时间选择器
+      $('input[name="dateTimePicker"]')
+        .daterangepicker({
+          format: "yyyy-mm-dd hh:li:00",
+          language: "zh_CN",
+          autoclose: true,
+          minView: "hour",
+          maxView: "decade",
+          todayBtn: "linked",
+          pickPosition: "bootom_left",
+        })
+        .on("click", function () {});
+
       $("#searchButton").on("click", function () {
         // 事件处理代码
         searchList();
@@ -628,6 +641,9 @@
               icon: "error",
               skin: "lyear-skin-danger",
             });
+            if (res.codde == "-400100") {
+              top.location.href = basePath + "/login";
+            }
           }
         },
         error: function (xhr, status, error) {
@@ -828,7 +844,7 @@
                                 class="form-control js-datetimepicker"
                                 type="text"
                                 id="add_startTime"
-                                name="add_startTime"
+                                name="dateTimePicker"
                                 placeholder="开始时间"
                                 value=""
                                 data-side-by-side="true"
@@ -849,7 +865,7 @@
                                 class="form-control js-datetimepicker"
                                 type="text"
                                 id="add_endTime"
-                                name="add_endTime"
+                                name="dateTimePicker"
                                 placeholder="开始时间"
                                 value=""
                                 data-side-by-side="true"
