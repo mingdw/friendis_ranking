@@ -67,9 +67,6 @@
   <script src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
   <script src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
 
-  <script src="static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-  <script src="static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
-
   <script
     type="text/javascript"
     src="static/js/bootstrap-daterangepicker/daterangepicker.min.js"
@@ -77,7 +74,7 @@
   <script type="text/javascript" src="static/js/main.min.js"></script>
   <script>
     $(function () {
-      $('input[name="datetimes"]').daterangepicker(
+      $("#datetimes").daterangepicker(
         {
           timePicker: true, //显示时间
           timePicker24Hour: true, //时间制
@@ -134,14 +131,15 @@
 
       //模态框开始和结束时间的时间选择器
       $('input[name="dateTimePicker"]')
-        .daterangepicker({
+        .datetimepicker({
           format: "yyyy-mm-dd hh:li:00",
           language: "zh_CN",
           autoclose: true,
           minView: "hour",
           maxView: "decade",
           todayBtn: "linked",
-          pickPosition: "bootom_left",
+          pickPosition: "top-left",
+          linkField: "mirror_field",
         })
         .on("click", function () {});
 
@@ -152,29 +150,19 @@
 
       $("#addButton").on("click", function () {
         $("#add_code_d").hide();
+        $("#add_status_d").hide();
         $("#add_id").val("");
-        addValidator();
+        $("#add_startTime").val("");
+        $("#add_endTime").val("");
       });
 
-      $("#addSave").on("click", function () {
-        var suffixPath = "add";
-        var id = $("#add_id").val();
-        var param = {
-          title: $("#activityAddForm input[name=add_title]").val(),
-          desc: $("#activityAddForm textarea[name=add_desc]").val(),
-          startTime: $("#activityAddForm input[name=add_startTime]").val(),
-          endTime: $("#activityAddForm input[name=add_endTime]").val(),
-        };
-        if (id != "") {
-          //编辑
-          param.id = Number(id);
-          suffixPath = "update";
-        } else {
-          //新增
-        }
-        //新增处理逻辑
-        var json = JSON.stringify(param);
-        submitSaveOrUpdate(json, suffixPath);
+      //模态框关闭清空校验css、表单重置
+      $("#exampleModal").on("hidden.bs.modal", function () {
+        console.info("模态框关闭事件触发！");
+        $("#activityAddForm").data("bootstrapValidator").destroy();
+        $("#activityAddForm").data("bootstrapValidator", null);
+        $("#activityAddForm")[0].reset();
+        addValidator();
       });
 
       $("#deleteButton").on("click", function () {
@@ -207,47 +195,53 @@
     });
 
     function addValidator() {
-      $("#activityAddForm").bootstrapValidator({
-        excluded: [":disabled"],
-        message: "该值无效",
-        feedbackIcons: {
-          valid: "mdi mdi-check",
-          invalid: "mdi mdi-close",
-          validating: "mdi mdi-refresh",
-        },
-        fields: {
-          add_title: {
-            message: "活动标题不能为空",
-            validators: {
-              notEmpty: {
-                message: "活动标题不能为空",
-              },
-              stringLength: {
-                max: 64,
-                message: "活动标题不能超过64个字符",
+      $("#activityAddForm")
+        .bootstrapValidator({
+          excluded: [":disabled"],
+          message: "该值无效",
+          feedbackIcons: {
+            valid: "mdi mdi-check",
+            invalid: "mdi mdi-close",
+            validating: "mdi mdi-refresh",
+          },
+          fields: {
+            add_title: {
+              message: "活动标题不能为空",
+              validators: {
+                notEmpty: {
+                  message: "活动标题不能为空",
+                },
+                stringLength: {
+                  max: 64,
+                  message: "活动标题不能超过64个字符",
+                },
               },
             },
-          },
 
-          add_startTime: {
-            message: "活动开始时间不能为空",
-            validators: {
-              notEmpty: {
-                message: "活动开始时间不能为空",
+            add_startTime: {
+              message: "活动开始时间不能为空",
+              validators: {
+                notEmpty: {
+                  message: "活动开始时间不能为空",
+                },
               },
             },
-          },
 
-          add_endTime: {
-            message: "活动结束时间不能为空",
-            validators: {
-              notEmpty: {
-                message: "活动结束时间不能为空",
+            add_endTime: {
+              message: "活动结束时间不能为空",
+              validators: {
+                notEmpty: {
+                  message: "活动结束时间不能为空",
+                },
               },
             },
           },
-        },
-      });
+        })
+        .on("success.form.bv", function (e) {
+          //新增或者编辑校验成功
+          e.preventDefault();
+          doAddOrUpdate();
+        });
     }
 
     function searchList() {
@@ -259,7 +253,7 @@
         sidePagination: "server", //服务器分页
         striped: true, //隔行换色
 
-        clickToSelect: true, //选择行即选择checkbox
+        clickToSelect: false, //选择行即选择checkbox
         singleSelect: false, //可以手动选择多行
         pagination: true, //启用分页
         pageSize: 10, //每页行数
@@ -284,7 +278,8 @@
               btn: ["确定", "取消"],
               yes: function (index, layero) {
                 layer.close(index);
-                if (res.codde == "-400100") {
+                if (Number(res.code) === -400100) {
+                  console.info("code3: " + res.code);
                   top.location.href = basePath + "/login";
                 }
               },
@@ -467,6 +462,26 @@
       updateStatus(id, 3);
     }
 
+    function doAddOrUpdate() {
+      var suffixPath = "add";
+      var id = $("#add_id").val();
+
+      var param = {
+        title: $("#activityAddForm input[name=add_title]").val(),
+        desc: $("#activityAddForm textarea[name=add_desc]").val(),
+        startTime: $("#add_startTime").val(),
+        endTime: $("#add_endTime").val(),
+      };
+      if (id != "") {
+        //编辑
+        param.id = Number(id);
+        suffixPath = "update";
+      }
+      //新增处理逻辑
+      var json = JSON.stringify(param);
+      submitSaveOrUpdate(json, suffixPath);
+    }
+
     function ediClick(id, code, title, desc, startTime, endTime, status) {
       $("#add_id").val(id); //将id放入隐藏区域，后面判断是编辑还是新增
       $("#add_code").val(code);
@@ -474,9 +489,23 @@
       $("#add_title").val(title);
       $("#add_startTime").val(formatISOTime(startTime));
       $("#add_endTime").val(formatISOTime(endTime));
-      $("#add_status").select(status);
+      console.info("编辑信息，活动id： " + id + "; 活动状态： " + status);
+      if (status == 1) {
+        $("#add_status").attr("class", "label label-default");
+        $("#add_status").html("未开始");
+      } else if (status == 2) {
+        $("#add_status").attr("class", "label label-success");
+        $("#add_status").html("进行中");
+      } else if (status == 3) {
+        $("#add_status").attr("class", "label label-warning");
+        $("#add_status").html("已结束");
+      }
+
+      // $("#add_status").select(status);
       $("#add_code_d").show();
+      $("#add_status_d").show();
     }
+
     function updateStatus(id, status) {
       var tooltip1 = status == 2 ? "您是否开启活动？" : "您是否关闭活动？";
       layer.alert(tooltip1, {
@@ -509,7 +538,7 @@
                   title: "活动提示",
                   time: 1000,
                   yes: function (index, layero) {
-                    layer.closeAll();
+                    layer.close(index);
                     searchList();
                   },
                   cancle: function (index, layero) {
@@ -589,6 +618,10 @@
                 skin: "lyear-skin-danger",
                 title: "删除提示",
               });
+              if (Number(response.code) === -400100) {
+                layer.close(index);
+                top.location.href = basePath + "/login";
+              }
             },
           });
         },
@@ -605,7 +638,7 @@
         alertOkMsg = "编辑成功";
         lertOkTitle = "编辑提示";
       }
-
+      console.info(suffixPath + ": " + data);
       $.ajax({
         type: "POST",
         url: basePath + "/admin/api/activity/" + suffixPath,
@@ -625,11 +658,7 @@
               btn: ["确定", "取消"],
               yes: function (index, layero) {
                 layer.close(index);
-                $("#activityAddForm").data("bootstrapValidator").destroy();
-                $("#activityAddForm").data("bootstrapValidator", null);
-                $("#exampleModal").modal("hide");
-                $("#activityAddForm")[0].reset();
-                addValidator();
+                $("#exampleModal").modal("hide"); //手动关闭
                 searchList();
               },
               cancle: function (index, layero) {
@@ -641,7 +670,9 @@
               icon: "error",
               skin: "lyear-skin-danger",
             });
-            if (res.codde == "-400100") {
+            layer.closeAll();
+            if (Number(response.code) === -400100) {
+              layer.close(index);
               top.location.href = basePath + "/login";
             }
           }
@@ -798,8 +829,24 @@
                                 id="add_code"
                                 name="add_code"
                                 readonly
-                                placeholder="请输入活动标题"
+                                placeholder="请输入活动编码"
                               />
+                            </div>
+                          </div>
+                          <div
+                            class="form-group m-t-10"
+                            style="display: none"
+                            id="add_status_d"
+                          >
+                            <label class="col-md-3 control-label" for="add_code"
+                              >活动状态:</label
+                            >
+                            <div class="col-md-7 m-t-5">
+                              <span
+                                class="label"
+                                id="add_status"
+                                value=""
+                              ></span>
                             </div>
                           </div>
 
@@ -847,7 +894,6 @@
                                 name="dateTimePicker"
                                 placeholder="开始时间"
                                 value=""
-                                data-side-by-side="true"
                                 data-locale="zh-cn"
                                 data-format="YYYY-MM-DD HH:mm:ss"
                               />
@@ -866,32 +912,30 @@
                                 type="text"
                                 id="add_endTime"
                                 name="dateTimePicker"
-                                placeholder="开始时间"
+                                placeholder="结束时间"
                                 value=""
-                                data-side-by-side="true"
                                 data-locale="zh-cn"
                                 data-format="YYYY-MM-DD HH:mm:ss"
                               />
                             </div>
                           </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              data-dismiss="modal"
+                            >
+                              关闭
+                            </button>
+                            <button
+                              type="submit"
+                              class="btn btn-primary"
+                              id="addSave"
+                            >
+                              确定
+                            </button>
+                          </div>
                         </form>
-                      </div>
-
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-default"
-                          data-dismiss="modal"
-                        >
-                          关闭
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          id="addSave"
-                        >
-                          确定
-                        </button>
                       </div>
                     </div>
                   </div>

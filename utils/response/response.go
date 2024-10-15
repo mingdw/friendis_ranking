@@ -69,7 +69,7 @@ func ReturnFail(c *gin.Context, erroMsg string) {
 	c.Abort()
 }
 
-func ReturnFailCus(c *gin.Context, errorCode, erroMsg string) {
+func ReturnFailCus(c *gin.Context, errorCode int, erroMsg string) {
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	var resp = map[string]interface{}{
 		"code": errorCode,
