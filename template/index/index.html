@@ -503,137 +503,115 @@ function bindEvent(){
         <input type="checkbox" checked="" value="1" id="idname"><span></span>
       </label>
     </div>
+  </div>
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">设置详情</h4>
+        </div>
+        <div class="modal-body">
 
-
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">设置详情</h4>
-          </div>
-          <div class="modal-body">
-
-            <ul id="myTabs" class="nav nav-tabs" role="tablist">
-              <li class="active"><a href="#userinfo" data-toggle="tab">活动设置</a></li>
-              <li><a href="#enclosure" data-toggle="tab">背景音乐</a></li>
-              <li><a href="#log" data-toggle="tab">其它设置</a></li>
-            </ul>
-            <div id="myTabContent" class="tab-content p-10">
-              <div class="tab-pane fade active in" id="userinfo">
-                <div class="row">
-                  <p class="col-md-4">编码：HB123456789</p>
-                  <p class="col-md-4">姓名：马小云</p>
-                  <p class="col-md-4">证件号码：001020120126325000</p>
-                  <p class="col-md-4">生日：2010-02-05</p>
-                  <p class="col-md-4">性别：男</p>
-                  <p class="col-md-4 text-ellipsis">户籍地址：<span class="label label-info">山东菏泽曹县河畔花园南栋</span></p>
-                  <p class="col-md-4 text-ellipsis">现住地址：<span class="label label-primary">北京市海淀区苏家坨乡前沙涧村</span></p>
-                  <p class="col-md-4">年龄：10</p>
-                  <p class="col-md-4">学校：北京大学附属小学</p>
-                  <p class="col-md-4">状态：<span class="label label-primary">初审</span></p>
-                  <p class="col-md-4">创建时间：2020-06-13 12:25:10</p>
-                  <p class="col-md-4">更新时间：2020-06-13 22:57:23</p>
-                </div>
-                <h5 class="m-t-15"><strong>监护人信息</strong></h5>
-                <hr />
-                <div class="row">
-                  <p class="col-md-4">证件号码：132456789123456</p>
-                  <p class="col-md-4">电话号码：13302020202</p>
-                  <p class="col-md-4">姓名：<span class="label label-outline-primary">马大云</span></p>
-                  <p class="col-md-4">关系：父亲</p>
-                  <p class="col-md-8">工作单位：汽修</p>
-                  <p class="col-md-4">证件号码：123456789123456</p>
-                  <p class="col-md-4">电话号码：13402020202</p>
-                  <p class="col-md-4">姓名：<span class="label label-outline-primary">吴笑笑</span></p>
-                  <p class="col-md-4">关系：母亲</p>
-                  <p class="col-md-8">工作单位：家庭主妇</p>
-                </div>
-                <h5 class="m-t-15"><strong>匹配结果</strong></h5>
-                <hr />
-                <div class="row">
-                  <p class="col-md-6">户籍地址：<span class="label label-info">山东菏泽曹县河畔花园南栋</span></p>
-                  <p class="col-md-6">现住地址：<span class="label label-primary">北京市海淀区苏家坨乡前沙涧村</span></p>
-                  <p class="col-md-6">预报名学校：<span class="label label-info">北京大学附属小学</span></p>
-                  <p class="col-md-6">原住地学校：<span class="label label-outline-primary">山东河畔二小</span></p>
-                  <p class="col-md-6">匹配结果：<span class="label label-danger">异常</span></p>
-                </div>
+          <ul id="myTabs" class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#userinfo" data-toggle="tab">活动设置</a></li>
+            <li><a href="#enclosure" data-toggle="tab">背景音乐</a></li>
+            <li><a href="#log" data-toggle="tab">其它设置</a></li>
+          </ul>
+          <div id="myTabContent" class="tab-content p-10">
+            <div class="tab-pane fade active in" id="userinfo">
+              <div class="row">
+                <p class="col-md-4">活动编码：HB123456789</p>
+                <p class="col-md-4">创建时间：2020-06-13 12:25:10</p>
+                <p class="col-md-4">更新时间：2020-06-13 22:57:23</p>
               </div>
-              <div class="tab-pane fade" id="enclosure">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>类型</th>
-                      <th>附件名称</th>
-                      <th>上传时间</th>
-                      <th>状态</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td><i class="mdi mdi-file-word fa-1-5x"></i></td>
-                      <td>户籍证明</td>
-                      <td>2020-06-13 00:02:13</td>
-                      <td><span class="label label-warning">待审核</span></td>
-                      <td>
-                        <a href="#!">下载</a> <a href="#!">审核</a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td><i class="mdi mdi-file-pdf fa-1-5x"></i></td>
-                      <td>电子签章证明PDF文件</td>
-                      <td>2020-06-12 12:12:25</td>
-                      <td><span class="label label-success">审核中</span></td>
-                      <td>
-                        <a href="#!">下载</a> <a href="#!">审核</a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td><i class="mdi mdi-file-image fa-1-5x"></i></td>
-                      <td>手持身份证照片</td>
-                      <td>2020-06-12 06:52:00</td>
-                      <td><span class="label label-warning">待定</span></td>
-                      <td>
-                        <a href="#!">下载</a> <a href="#!">审核</a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <h5 class="m-t-15"><strong>活动详情</strong></h5>
+              <hr />
+              <div class="row">
+                <p class="col-md-4">证件号码：132456789123456</p>
+                <p class="col-md-4">电话号码：13302020202</p>
+                <p class="col-md-4">姓名：<span class="label label-outline-primary">马大云</span></p>
+                <p class="col-md-4">关系：母亲</p>
+                <p class="col-md-8">工作单位：家庭主妇</p>
               </div>
-              <div class="tab-pane fade" id="log">
-                <ul class="list-unstyled log-ul">
-                  <li>admin 2020-06-13 12:25:36登录系统，修改了审核状态。</li>
-                  <li>马大云 2020-06-12 23:50:36登录系统。
-                    <ul>
-                      <li>上传了户籍证明资料。</li>
-                      <li>上传了电子签章证明PDF文件。</li>
-                      <li>上传了手持身份证照片。</li>
-                      <li>修改了户籍地址。</li>
-                    </ul>
-                  </li>
-                  <li>admin 2020-06-09 12:25:36登录系统，创建了数据。</li>
-                </ul>
+              <h5 class="m-t-15"><strong>其它</strong></h5>
+              <hr />
+              <div class="row">
+                <p class="col-md-6">户籍地址：<span class="label label-info">山东菏泽曹县河畔花园南栋</span></p>
               </div>
             </div>
+            <div class="tab-pane fade" id="enclosure">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>类型</th>
+                    <th>附件名称</th>
+                    <th>上传时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><i class="mdi mdi-file-word fa-1-5x"></i></td>
+                    <td>户籍证明</td>
+                    <td>2020-06-13 00:02:13</td>
+                    <td><span class="label label-warning">待审核</span></td>
+                    <td>
+                      <a href="#!">下载</a> <a href="#!">审核</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><i class="mdi mdi-file-pdf fa-1-5x"></i></td>
+                    <td>电子签章证明PDF文件</td>
+                    <td>2020-06-12 12:12:25</td>
+                    <td><span class="label label-success">审核中</span></td>
+                    <td>
+                      <a href="#!">下载</a> <a href="#!">审核</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><i class="mdi mdi-file-image fa-1-5x"></i></td>
+                    <td>手持身份证照片</td>
+                    <td>2020-06-12 06:52:00</td>
+                    <td><span class="label label-warning">待定</span></td>
+                    <td>
+                      <a href="#!">下载</a> <a href="#!">审核</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="log">
+              <ul class="list-unstyled log-ul">
+                <li>admin 2020-06-13 12:25:36登录系统，修改了审核状态。</li>
+                <li>马大云 2020-06-12 23:50:36登录系统。
+                  <ul>
+                    <li>上传了户籍证明资料。</li>
+                    <li>上传了电子签章证明PDF文件。</li>
+                    <li>上传了手持身份证照片。</li>
+                    <li>修改了户籍地址。</li>
+                  </ul>
+                </li>
+                <li>admin 2020-06-09 12:25:36登录系统，创建了数据。</li>
+              </ul>
+            </div>
+          </div>
 
-          </div>
-          <div class="modal-footer">
-            <button type="cancle" class="btn btn-default" data-dismiss="modal">取消</button>
-            <button type="submit" class="btn btn-primary">确定</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary">确定</button>
         </div>
       </div>
     </div>
+  </div>
 
-  </div>
-  </div>
-  </div>
   <div class="left">
     <table class="table1">
       <tr>
