@@ -59,7 +59,7 @@
       position: relative;
     }
 
-    .left table {
+    .left .table1 {
       position: absolute;
       top: 20%;
       left: 40%;
@@ -89,82 +89,95 @@
       justify-content: center;
       align-items: center;
     }
-  </style>
 
-  <style>
-    a {
-      color: #8ff;
+    .gongpai {
+      display: flex;
+      width: 70px;
+      height: 100px;
+      border-radius: 5px;
+      background-color: #F82A1E;
+      border-color: #e0dbdb;
+      border-style: solid;
+      border-width: 2px;
+      box-shadow: 0px 0px 12px rgba(223, 219, 10, 0.5);
+      justify-content: center;
+      align-items: center;
     }
 
-    #menu {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
+    .gongpai:hover {
+      border-color: rgba(246, 61, 10, 0.75);
+      border-style: solid;
+      border-width: 2px;
+      box-shadow: 0px 0px 12px rgba(223, 219, 10, 0.5);
+    }
+
+    .gongpai table {
+      margin: 0 auto;
+      width: 80%;
+      height: 90%;
+      font-size: 0.4em;
+      font-style: normal;
+      font-weight: bolder;
+      color: #FAF5C3;
       text-align: center;
     }
 
-    .element {
+    .gongpai table:hover {
+      color: rgb(255, 255, 255);
+    }
+
+    .buttons {
+      float: left;
+      margin-left: 15%;
+      display: flex;
+
+    }
+
+    .buttons button {
+      float: left;
+      margin-left: 5%;
       width: 120px;
-      height: 160px;
-      box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
-      border: 1px solid rgba(127, 255, 255, 0.25);
-      font-family: Helvetica, sans-serif;
-      text-align: center;
-      line-height: normal;
-      cursor: default;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 1em;
+      border-radius: 20px;
+      border-style: none;
+      background-color: #F2B000;
+      color: #853F00;
+      font-weight: bold
     }
 
-    .element:hover {
-      box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
-      border: 1px solid rgba(127, 255, 255, 0.75);
+    .buttons button:hover {
+      background-color: #f2ee00;
     }
 
-    .element .number {
+    /**
+      设置模态框样式
+    */
+    .text-ellipsis {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
+      position: relative;
+    }
+
+    .text-ellipsis .label {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 12px;
-      color: rgba(127, 255, 255, 0.75);
+      padding-top: 4px;
+      top: 0px;
+      padding-bottom: 5px;
     }
 
-    .element .symbol {
-      position: absolute;
-      top: 40px;
-      left: 0px;
-      right: 0px;
-      font-size: 60px;
-      font-weight: bold;
-      color: rgba(255, 255, 255, 0.75);
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+    .log-ul ul {
+      margin: 10px 0px;
     }
 
-    .element .details {
-      position: absolute;
-      bottom: 15px;
-      left: 0px;
-      right: 0px;
-      font-size: 12px;
-      color: rgba(127, 255, 255, 0.75);
-    }
-
-    button {
-      color: rgba(127, 255, 255, 0.75);
-      background: transparent;
-      outline: 1px solid rgba(127, 255, 255, 0.75);
-      border: 0px;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: rgba(0, 255, 255, 0.5);
-    }
-
-    button:active {
-      color: #000000;
-      background-color: rgba(0, 255, 255, 0.75);
+    .log-ul li {
+      margin-bottom: 10px;
     }
   </style>
+
 </head>
 <script type="text/javascript" src="static/js/jquery.min.js"></script>
 <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
@@ -191,15 +204,15 @@
   import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 const table = [
-  'H', 'Hydrogen', '1.00794', 1, 1,
-  'He', 'Helium', '4.002602', 18, 1,
-  'Li', 'Lithium', '6.941', 1, 2,
-  'Be', 'Beryllium', '9.012182', 2, 2,
-  'B', 'Boron', '10.811', 13, 2,
-  'C', 'Carbon', '12.0107', 14, 2,
-  'N', 'Nitrogen', '14.0067', 15, 2,
-  'O', 'Oxygen', '15.9994', 16, 2,
-  'F', 'Fluorine', '18.9984032', 17, 2,
+  '张三', '科学技术部', '1.00794', 1, 1,
+  '李四', '科学技术部', '4.002602', 18, 1,
+  '王五', '科学技术部', '6.941', 1, 2,
+  '赵六', '科学技术部', '9.012182', 2, 2,
+  '啊哈', '科学技术部', '10.811', 13, 2,
+  '大声道', '科学技术部', '12.0107', 14, 2,
+  '企业化', '科学技术部', '14.0067', 15, 2,
+  '准名', '科学技术部', '15.9994', 16, 2,
+  '要命', 'Fluorine', '18.9984032', 17, 2,
   'Ne', 'Neon', '20.1797', 18, 2,
   'Na', 'Sodium', '22.98976...', 1, 3,
   'Mg', 'Magnesium', '24.305', 2, 3,
@@ -320,37 +333,17 @@ const targets = { table: [], sphere: [], helix: [], grid: [] };
 let group;
 init();
 animate();
+bindEvent()
 
 function init() {
-
   camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
   camera.position.z = 3000;
 
   scene = new THREE.Scene();
-  group = new THREE.Group()
-
-  // table
-
+  
   for ( let i = 0; i < table.length; i += 5 ) {
-
-    const element = document.createElement( 'div' );
-    element.className = 'element';
-    element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
-
-    const number = document.createElement( 'div' );
-    number.className = 'number';
-    number.textContent = ( i / 5 ) + 1;
-    element.appendChild( number );
-
-    const symbol = document.createElement( 'div' );
-    symbol.className = 'symbol';
-    symbol.textContent = table[ i ];
-    element.appendChild( symbol );
-
-    const details = document.createElement( 'div' );
-    details.className = 'details';
-    details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
-    element.appendChild( details );
+    var obj = {}
+    var element = createElement(obj)
 
     const objectCSS = new CSS3DObject( element );
     objectCSS.position.x = Math.random() * 4000 - 2000;
@@ -360,99 +353,91 @@ function init() {
 
     objects.push( objectCSS );
 
-    //
     const object = new THREE.Object3D();
     object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
     object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
-
     targets.table.push( object );
-
   }
-
   // sphere
   const vector = new THREE.Vector3();
-
   for ( let i = 0, l = objects.length; i < l; i ++ ) {
-
     const phi = Math.acos( - 1 + ( 2 * i ) / l );
     const theta = Math.sqrt( l * Math.PI ) * phi;
-
     const object = new THREE.Object3D();
-
     object.position.setFromSphericalCoords( 800, phi, theta );
-
     vector.copy( object.position ).multiplyScalar( 2 );
-
     object.lookAt( vector );
-
     targets.sphere.push( object );
-
   }
 
   // helix
   for ( let i = 0, l = objects.length; i < l; i ++ ) {
-
     const theta = i * 0.175 + Math.PI;
     const y = - ( i * 8 ) + 450;
-
     const object = new THREE.Object3D();
-
     object.position.setFromCylindricalCoords( 900, theta, y );
-
     vector.x = object.position.x * 2;
     vector.y = object.position.y;
     vector.z = object.position.z * 2;
-
     object.lookAt( vector );
-
     targets.helix.push( object );
-
   }
 
   // grid
   for ( let i = 0; i < objects.length; i ++ ) {
-
     const object = new THREE.Object3D();
-
     object.position.x = ( ( i % 5 ) * 400 ) - 800;
     object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
     object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
 
     targets.grid.push( object );
-
   }
-
-  //
 
   renderer = new CSS3DRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.getElementById( 'container' ).appendChild( renderer.domElement );
 
-  //
-
   controls = new TrackballControls( camera, renderer.domElement );
   controls.minDistance = 500;
   controls.maxDistance = 6000;
   controls.addEventListener( 'change', render );
-
+  controls.rotation = true
 
   transform( targets.table, 2000 );
-
-  //
-
   window.addEventListener( 'resize', onWindowResize );
 
 }
 
+function createElement(oneTable){
+    const element = document.createElement( 'div' );
+    element.className = 'gongpai';
+    let html = "<table>"+
+        "<tr>"+
+          "<td colspan=\"2\" style=\"height: 30%;\"><span style=\"font-size: 15px;\">张三</span></td>"+
+        "</tr>"+
+        "<tr style=\"height: 10px;\">"+
+          "<td>电话:</td>"+
+          "<td>18710181278</td>"+
+        "</tr>"+
+        "<tr style=\"height: 10px;\">"+
+          "<td>部门:</td>"+
+          "<td>系统运维部</td>"+
+        "</tr>"+
+        "<tr style=\"height: 10px;\">"+
+          "<td>职位</td>"+
+          "<td>客户专员</td>"+
+        "</tr>"+
+      "</table>";
+      element.innerHTML=html
+      return element
+
+  }
+
 function transform( targets, duration ) {
-
   TWEEN.removeAll();
-
   for ( let i = 0; i < objects.length; i ++ ) {
-
     const object = objects[ i ];
     const target = targets[ i ];
-
     new TWEEN.Tween( object.position )
       .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
       .easing( TWEEN.Easing.Exponential.InOut )
@@ -469,25 +454,41 @@ function transform( targets, duration ) {
     .to( {}, duration * 2 )
     .onUpdate( render )
     .start();
-
 }
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-
   renderer.setSize( window.innerWidth, window.innerHeight );
   render();
 }
+var animationId = ''
 
 function animate() {
-  requestAnimationFrame( animate );
+  animationId = requestAnimationFrame( animate );
   TWEEN.update();
   controls.update();
+  render()
 }
 
 function render() {
+  scene.rotation.y += 0.01;
   renderer.render( scene, camera );
+}
+
+function bindEvent(){
+  $("#sphere").on("click", function () {
+    if( $("#sphere").val()=="0"){
+      cancelAnimationFrame(animationId);
+      $("#sphere").val("1")
+      $("#sphere").text("开始")
+    }else if($("#sphere").val()=="1"){
+      animate()
+      $("#sphere").val("0")
+      $("#sphere").text("停止")
+    }
+   
+  });
 }
 
 </script>
@@ -497,15 +498,144 @@ function render() {
     <div class="text">公司名称</div>
     <div class="title"><span>xxx2024超级活动现场</span> </div>
     <div class="music">
+      <a href="#" class="btn-danger" data-toggle="modal" data-target="#myModal"><i class="mdi mdi-settings"></i></a>
       <a href="#"><i class="mdi mdi-music">&nbsp;</i></a> <label class="lyear-switch switch-solid switch-primary">
         <input type="checkbox" checked="" value="1" id="idname"><span></span>
       </label>
     </div>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">设置详情</h4>
+          </div>
+          <div class="modal-body">
+
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+              <li class="active"><a href="#userinfo" data-toggle="tab">活动设置</a></li>
+              <li><a href="#enclosure" data-toggle="tab">背景音乐</a></li>
+              <li><a href="#log" data-toggle="tab">其它设置</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content p-10">
+              <div class="tab-pane fade active in" id="userinfo">
+                <div class="row">
+                  <p class="col-md-4">编码：HB123456789</p>
+                  <p class="col-md-4">姓名：马小云</p>
+                  <p class="col-md-4">证件号码：001020120126325000</p>
+                  <p class="col-md-4">生日：2010-02-05</p>
+                  <p class="col-md-4">性别：男</p>
+                  <p class="col-md-4 text-ellipsis">户籍地址：<span class="label label-info">山东菏泽曹县河畔花园南栋</span></p>
+                  <p class="col-md-4 text-ellipsis">现住地址：<span class="label label-primary">北京市海淀区苏家坨乡前沙涧村</span></p>
+                  <p class="col-md-4">年龄：10</p>
+                  <p class="col-md-4">学校：北京大学附属小学</p>
+                  <p class="col-md-4">状态：<span class="label label-primary">初审</span></p>
+                  <p class="col-md-4">创建时间：2020-06-13 12:25:10</p>
+                  <p class="col-md-4">更新时间：2020-06-13 22:57:23</p>
+                </div>
+                <h5 class="m-t-15"><strong>监护人信息</strong></h5>
+                <hr />
+                <div class="row">
+                  <p class="col-md-4">证件号码：132456789123456</p>
+                  <p class="col-md-4">电话号码：13302020202</p>
+                  <p class="col-md-4">姓名：<span class="label label-outline-primary">马大云</span></p>
+                  <p class="col-md-4">关系：父亲</p>
+                  <p class="col-md-8">工作单位：汽修</p>
+                  <p class="col-md-4">证件号码：123456789123456</p>
+                  <p class="col-md-4">电话号码：13402020202</p>
+                  <p class="col-md-4">姓名：<span class="label label-outline-primary">吴笑笑</span></p>
+                  <p class="col-md-4">关系：母亲</p>
+                  <p class="col-md-8">工作单位：家庭主妇</p>
+                </div>
+                <h5 class="m-t-15"><strong>匹配结果</strong></h5>
+                <hr />
+                <div class="row">
+                  <p class="col-md-6">户籍地址：<span class="label label-info">山东菏泽曹县河畔花园南栋</span></p>
+                  <p class="col-md-6">现住地址：<span class="label label-primary">北京市海淀区苏家坨乡前沙涧村</span></p>
+                  <p class="col-md-6">预报名学校：<span class="label label-info">北京大学附属小学</span></p>
+                  <p class="col-md-6">原住地学校：<span class="label label-outline-primary">山东河畔二小</span></p>
+                  <p class="col-md-6">匹配结果：<span class="label label-danger">异常</span></p>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="enclosure">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>类型</th>
+                      <th>附件名称</th>
+                      <th>上传时间</th>
+                      <th>状态</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td><i class="mdi mdi-file-word fa-1-5x"></i></td>
+                      <td>户籍证明</td>
+                      <td>2020-06-13 00:02:13</td>
+                      <td><span class="label label-warning">待审核</span></td>
+                      <td>
+                        <a href="#!">下载</a> <a href="#!">审核</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td><i class="mdi mdi-file-pdf fa-1-5x"></i></td>
+                      <td>电子签章证明PDF文件</td>
+                      <td>2020-06-12 12:12:25</td>
+                      <td><span class="label label-success">审核中</span></td>
+                      <td>
+                        <a href="#!">下载</a> <a href="#!">审核</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td><i class="mdi mdi-file-image fa-1-5x"></i></td>
+                      <td>手持身份证照片</td>
+                      <td>2020-06-12 06:52:00</td>
+                      <td><span class="label label-warning">待定</span></td>
+                      <td>
+                        <a href="#!">下载</a> <a href="#!">审核</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="log">
+                <ul class="list-unstyled log-ul">
+                  <li>admin 2020-06-13 12:25:36登录系统，修改了审核状态。</li>
+                  <li>马大云 2020-06-12 23:50:36登录系统。
+                    <ul>
+                      <li>上传了户籍证明资料。</li>
+                      <li>上传了电子签章证明PDF文件。</li>
+                      <li>上传了手持身份证照片。</li>
+                      <li>修改了户籍地址。</li>
+                    </ul>
+                  </li>
+                  <li>admin 2020-06-09 12:25:36登录系统，创建了数据。</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="cancle" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="submit" class="btn btn-primary">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
   </div>
   </div>
   <div class="left">
-    <table>
+    <table class="table1">
       <tr>
         <td>扫 码 签 到</td>
       </tr>
@@ -515,18 +645,19 @@ function render() {
         </td>
       </tr>
     </table>
+
   </div>
   <div class="center">
     <div id="container"></div>
-    <div id='display' hidden></div> //主要用来放照片放大后的结构
+    <div id='display' hidden></div>
   </div>
   <div class="footer">
-    <div id="menu">
-      <button id="table">去抽奖</button>
-      <button id="sphere">选择音乐</button>
-      <button id="helix">播放/暂停</button>
+    <div class="buttons">
+      <button id="table">开始抽奖</button>
+      <button id="sphere" value="0">停止</button>
       <button id="grid">设置</button>
     </div>
+
   </div>
 </body>
 
