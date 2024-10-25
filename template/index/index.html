@@ -38,7 +38,7 @@
     }
 
     .top .title {
-      width: 80%;
+      width: 70%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -46,15 +46,16 @@
     }
 
     .top .music {
-      width: 5%;
+      width: 15%;
       font-size: 0.5em;
-      float: right;
-
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .left {
       float: left;
-      width: 15%;
+      width: 25%;
       height: 80%;
       position: relative;
     }
@@ -64,7 +65,7 @@
       top: 20%;
       left: 40%;
       margin-left: -50px;
-      margin-top: 80px;
+      margin-top: 50px;
       text-align: center;
       font-size: 1.5em;
       font-style: normal;
@@ -72,13 +73,87 @@
       color: rgb(244, 244, 235);
     }
 
+    .left .lottery_left {
+      width: 100%;
+      height: 100%;
+      display: none;
+      background-image: url('static/images/prize_award.png');
+      background-size: cover;
+    }
+
+    .left .lottery_left_02 {
+      width: 90%;
+      height: 90%;
+      margin-top: 20px;
+      margin-left: 20px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 10px;
+      background-color: #681A05;
+
+      display: flex;
+      justify-content: center;
+      border-color: #f11106;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .left .lottery_left_02 .first_line {
+      width: 90%;
+      height: 10%;
+      margin-top: 10px;
+    }
+
+    .left .lottery_left_02 .first_line .l_left {
+      float: left;
+      width: 25%;
+      height: 100%;
+    }
+
+    .left .lottery_left_02 .first_line .l_center {
+      float: left;
+      width: 50%;
+      height: 100%;
+      background-color: #5E1E21;
+      font-size: 2em;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      color: #FEAC55;
+      display: flex;
+      justify-content: center;
+      border-bottom: 5px double #F2B000;
+      border-radius: 0 0px 5px 5px;
+    }
+
+    .left .lottery_left_02 .first_line .l_right {
+      float: left;
+      width: 25%;
+      height: 100%;
+      transform: skew(45deg);
+    }
+
     .center {
       float: left;
-      width: 85%;
+      width: 50%;
       height: 80%;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .right {
+      float: left;
+      width: 25%;
+      height: 80%;
+      position: relative;
+
+
+    }
+
+    .right .prize_win_top {
+      width: 100%;
+      height: 100%;
+      display: none;
+      background-image: url('static/images/prize_top.jpg');
+      background-size: cover;
     }
 
     .footer {
@@ -129,16 +204,8 @@
       color: rgb(255, 255, 255);
     }
 
-    .buttons {
+    .footer button {
       float: left;
-      margin-left: 15%;
-      display: flex;
-
-    }
-
-    .buttons button {
-      float: left;
-      margin-left: 5%;
       width: 120px;
       height: 40px;
       border-radius: 10px;
@@ -150,8 +217,10 @@
       font-weight: bold
     }
 
-    .buttons button:hover {
+    .footer button:hover {
       background-color: #f2ee00;
+      font-size: 1.3em;
+      color: #c15c03;
     }
 
     /*bootstrap-select插件用到的，也可以不用*/
@@ -242,21 +311,27 @@
     });
 
     $('.gongpai').hover(  
-    function() {  
+      function() {  
+          if(!stop){
+          let div = document.getElementById("display"); 		
+          var obj = {}
+          div.appendChild(createElement(obj))		
+        }
+      },  
+      function() {  
+      
         if(!stop){
-        let div = document.getElementById("display"); 		
-        var obj = {}
-        div.appendChild(createElement(obj))		
-      }
-    },  
-    function() {  
-    
-      if(!stop){
-        let div = document.getElementById("display"); 		
-        div.innerHTML=""
-      }
-    }  
-);
+          let div = document.getElementById("display"); 		
+          div.innerHTML=""
+        }
+      }  
+    );
+
+    $('#startLottery').on('click',function(){
+      $('#qdtable').hide()
+      $('#lottery_item').show();
+      $('#prize_win_item').show();
+    })
     
   });
 
@@ -786,7 +861,31 @@ function mouseClickDisplay(e){
   </div>
 
   <div class="left">
-    <table class="table1">
+
+    <div class="lottery_left_02">
+      <div class="first_line">
+        <div class="l_left">
+          <div style="width: 65%;">
+            </hr>
+          </div>
+          <div style="width: 35%;">
+            </hr>
+          </div>
+        </div>
+        <div class="l_center"><strong>幸 运 抽 奖</strong></div>
+        <div class="l_right">
+          <div style="width: 35%;">
+
+          </div>
+          <div style="width: 65%;">
+            </hr>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <table class="table1" id="qdtable" style="display: none;">
       <tr>
         <td>扫 码 签 到</td>
       </tr>
@@ -797,18 +896,24 @@ function mouseClickDisplay(e){
       </tr>
     </table>
 
+    <div class="lottery_left" id="lottery_item" style="display: none;">
+
+
+    </div>
+
   </div>
   <div class="center">
     <div id="container"></div>
     <div id='display' class="display"></div>
   </div>
-  <div class="footer">
-    <div class="buttons">
-      <button id="table">开始抽奖</button>
 
+  <div class="right">
+    <div class="prize_win_top" id="prize_win_item" style="display: none;">
 
     </div>
-
+  </div>
+  <div class="footer">
+    <button id="startLottery">开始抽奖</button>
   </div>
 </body>
 
