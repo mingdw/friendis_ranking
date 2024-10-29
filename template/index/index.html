@@ -105,11 +105,14 @@
       background: radial-gradient(#4E211E, #681A05);
     }
 
+
+
     .left .lottery_left_02 .first_line .title {
       position: absolute;
     }
 
     .lottery_cas {
+      float: left;
       width: 100%;
       height: 90%;
     }
@@ -198,13 +201,12 @@
       width: 25%;
       height: 80%;
       position: relative;
-
+      justify-content: center;
+      align-items: center;
 
     }
 
     .right .prize_win_top {
-      width: 100%;
-      height: 100%;
       width: 90%;
       height: 90%;
       margin-top: 20px;
@@ -219,6 +221,29 @@
       border-width: 1px;
       border-style: solid;
     }
+
+    .right .name_item {
+      width: 90%;
+      height: auto;
+      margin-top: 20%;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+    }
+
+    .right .name_item table tr {
+      line-height: 40px;
+    }
+
+    .right .name_item td {
+      justify-content: center;
+      font-size: 1em;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: #F1B729;
+      font-weight: bold;
+    }
+
+
 
     .footer {
       float: left;
@@ -392,7 +417,7 @@
       }
     );
 
-    $('#startLottery').on('click', function () {
+    $('#goLottery').on('click', function () {
       $('#qdtable').hide()
       $('#lottery_left_02').show();
       $('#prize_win_item').show();
@@ -1073,11 +1098,31 @@
         <canvas class="lottery_cas" id="lottery_cas1">
         </canvas>
       </div>
+      <div class="name_item">
+        <table>
+          <tr>
+            <td><strong>张*&nbsp;&nbsp;&nbsp;</strong></td>
+            <td>187****9123&nbsp;&nbsp;&nbsp;</td>
+            <td>苹果16手机</td>
+          </tr>
+          <tr>
+            <td>李*华&nbsp;&nbsp;&nbsp;</td>
+            <td>187****1222&nbsp;&nbsp;&nbsp;</td>
+            <td>苹果16手机</td>
+          </tr>
 
+          <tr>
+            <td>王*喜&nbsp;&nbsp;&nbsp;</td>
+            <td>134****1187&nbsp;&nbsp;&nbsp;</td>
+            <td>苹果16手机</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
   <div class="footer">
-    <button id="startLottery">开始抽奖</button>
+    <button id="goLottery">去抽奖</button>
+
   </div>
 </body>
 
