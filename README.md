@@ -23,11 +23,11 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
 - 注册页面
 
-  ![image-20241029211323691](https://github.com/mingdw/lottery_annual/blob/master/doc/img/\image-20241029211323691.png)
+  ![image-20241029211323691](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029211323691.png)
 
 - 活动管理相关
 
-  ![image-20241029211442715](https://github.com/mingdw/lottery_annual/blob/master/doc/img/\image-20241029211442715.png)
+  ![image-20241029211442715](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029211442715.png)
 
 
 
