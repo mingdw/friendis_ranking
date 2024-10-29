@@ -1,7 +1,40 @@
-#项目简介
-readme 是一个Web应用程序，允许你以所见即所得（WYSIWYG）的方式编辑和格式化Markdown。它的目标是为开发者提供一个集美观与实用性于一身的环境，使得编写README文件如同在现代文本编辑器里工作一样简单高效。
+## 项目简介
+lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置，快速开始一个抽奖活动。本人是一名JAVA开发人员，目前正在学习Golang，学以致用，以此记录自己的学习成果，有很多不足之处，欢迎交流指正，在此不胜感激！！！
 
-技术分析
+
+
+## 部分截图
+
+
+
+
+
+## 技术选型
+
+- ##### 前端相关
+
+  抽奖首页：3D照片球改造，three.js
+
+  后台管理：jquery、bootstrap相关如bootstrap-table、bootstrap-validate、bootstrap-datepicker、layer等等，
+
+  在此，感谢<font color=red> 笔下光年 </font>提供的模板 <a> https://gitee.com/yinqi/Light-Year-Admin-Template</a>
+
+- 后端相关（go+gorm+redis）
+
+  语言：Golang
+
+  缓存Redis：redigo
+
+  数据库：gorm
+
+  安全：dgrijalva
+
+  感谢后端 <font color=red>张奇峰 </font>的go框架：<a><font color=red> https://gitee.com/daitougege/GinSkeleton</font></a>
+
+  
+
+
+
 基于React的前端框架：项目使用React进行UI组件的构建，这保证了界面的流畅性和响应性。
 Markdown解析和渲染：内置了Markdown解析器，能够准确地将Markdown语法转换成HTML，实时预览效果。
 富文本编辑功能：支持直接插入图片、代码块、表格等复杂元素，提供像传统文字处理器那样的操作体验。
