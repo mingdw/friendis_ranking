@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"friends_ranking/config/variable"
+	"lottery_annual/config/variable"
 	"strings"
 	"time"
 

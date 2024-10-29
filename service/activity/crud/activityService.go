@@ -2,8 +2,8 @@ package activityService
 
 import (
 	"fmt"
-	"friends_ranking/models"
-	"friends_ranking/utils/response"
+	"lottery_annual/models"
+	"lottery_annual/utils/response"
 
 	"github.com/gin-gonic/gin"
 )

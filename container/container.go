@@ -1,8 +1,8 @@
 package container
 
 import (
-	"friends_ranking/config/variable"
 	"log"
+	"lottery_annual/config/variable"
 	"strings"
 	"sync"
 )

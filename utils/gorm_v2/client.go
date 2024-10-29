@@ -3,8 +3,8 @@ package gorm_v2
 import (
 	"errors"
 	"fmt"
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/variable"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/variable"
 	"strings"
 	"time"
 

@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "friends_ranking/bootstrap"
-	"friends_ranking/config/variable"
-	"friends_ranking/router"
+	_ "lottery_annual/bootstrap"
+	"lottery_annual/config/variable"
+	"lottery_annual/router"
 )
 
 func main() {

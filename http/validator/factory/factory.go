@@ -1,10 +1,10 @@
 package factory
 
 import (
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/variable"
-	"friends_ranking/container"
-	"friends_ranking/http/validator/interf"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/variable"
+	"lottery_annual/container"
+	"lottery_annual/http/validator/interf"
 
 	"github.com/gin-gonic/gin"
 )

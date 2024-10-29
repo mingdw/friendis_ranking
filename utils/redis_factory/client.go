@@ -2,10 +2,10 @@ package redis_factory
 
 import (
 	"fmt"
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/variable"
-	"friends_ranking/config/yamlConfig/ymlConfigInterf"
-	"friends_ranking/utils/event_manage"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/variable"
+	"lottery_annual/config/yamlConfig/ymlConfigInterf"
+	"lottery_annual/utils/event_manage"
 	"time"
 
 	"github.com/gomodule/redigo/redis"

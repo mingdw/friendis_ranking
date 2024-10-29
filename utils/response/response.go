@@ -1,7 +1,7 @@
 package response
 
 import (
-	"friends_ranking/config/globalConst"
+	"lottery_annual/config/globalConst"
 	"reflect"
 
 	"github.com/gin-gonic/gin"

@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"friends_ranking/config/globalConst"
-	"friends_ranking/models"
-	activityService "friends_ranking/service/activity/crud"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/models"
+	activityService "lottery_annual/service/activity/crud"
 	"math/rand"
 	"strconv"
 	"time"

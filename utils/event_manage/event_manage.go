@@ -1,8 +1,8 @@
 package event_manage
 
 import (
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/variable"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/variable"
 	"strings"
 	"sync"
 )

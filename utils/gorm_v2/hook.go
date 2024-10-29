@@ -1,9 +1,9 @@
 package gorm_v2
 
 import (
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
 	"reflect"
 	"strings"
 	"time"

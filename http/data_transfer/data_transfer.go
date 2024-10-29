@@ -2,8 +2,8 @@ package data_transfer
 
 import (
 	"encoding/json"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/http/validator/interf"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/http/validator/interf"
 	"time"
 
 	"github.com/gin-gonic/gin"

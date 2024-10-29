@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}",
             "args": [
                 "-test.run",
-                "${workspaceFolder}/friendsRankingMain.go"
+                "${workspaceFolder}/lotteryStartMain.go"
             ]
         },
 
@@ -17,7 +17,7 @@
         "request": "launch",
         "type": "go",
         "mode": "debug",
-        "program": "${workspaceFolder}/friendsRankingMain.go"
+        "program": "${workspaceFolder}/lotteryStartMain.go"
     }
     ]
 }

@@ -1,9 +1,9 @@
 package user_cach_redis
 
 import (
-	"friends_ranking/config/variable"
-	"friends_ranking/utils/md5_encrypt"
-	"friends_ranking/utils/redis_factory"
+	"lottery_annual/config/variable"
+	"lottery_annual/utils/md5_encrypt"
+	"lottery_annual/utils/redis_factory"
 	"strings"
 	"time"
 

@@ -6,11 +6,11 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/utils/response"
-	"friends_ranking/utils/user_token"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/utils/response"
+	"lottery_annual/utils/user_token"
 	"strings"
 )
 

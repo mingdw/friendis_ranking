@@ -2,8 +2,8 @@ package models
 
 import (
 	"fmt"
-	"friends_ranking/config/dbconn"
-	"friends_ranking/config/globalConst"
+	"lottery_annual/config/dbconn"
+	"lottery_annual/config/globalConst"
 	"time"
 )
 

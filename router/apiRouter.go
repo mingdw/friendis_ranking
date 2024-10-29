@@ -1,11 +1,11 @@
 package router
 
 import (
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/http/authorization"
-	"friends_ranking/http/validator/factory"
-	"friends_ranking/utils/ginRelease"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/http/authorization"
+	"lottery_annual/http/validator/factory"
+	"lottery_annual/utils/ginRelease"
 	"net/http"
 
 	"github.com/gin-contrib/pprof"

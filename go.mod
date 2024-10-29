@@ -1,4 +1,4 @@
-module friends_ranking
+module lottery_annual
 
 go 1.22.5
 

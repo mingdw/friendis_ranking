@@ -1,9 +1,9 @@
 package register_validator
 
 import (
-	"friends_ranking/config/globalConst"
-	"friends_ranking/container"
-	checkvalidator "friends_ranking/http/validator/common/check_validator"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/container"
+	checkvalidator "lottery_annual/http/validator/common/check_validator"
 )
 
 // 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器

@@ -3,10 +3,10 @@ package ginRelease
 import (
 	"errors"
 	"fmt"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/utils/response"
 	"io/ioutil"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/utils/response"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

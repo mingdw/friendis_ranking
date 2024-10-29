@@ -2,9 +2,9 @@ package controller
 
 import (
 	"fmt"
-	"friends_ranking/config/globalConst"
-	sysCommonService "friends_ranking/service/sys_common"
-	"friends_ranking/utils/response"
+	"lottery_annual/config/globalConst"
+	sysCommonService "lottery_annual/service/sys_common"
+	"lottery_annual/utils/response"
 
 	"github.com/gin-gonic/gin"
 )

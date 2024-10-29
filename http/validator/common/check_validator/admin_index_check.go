@@ -3,11 +3,11 @@ package checkvalidator
 import (
 	"bytes"
 	"fmt"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/http/controller"
-	"friends_ranking/http/data_transfer"
-	"friends_ranking/utils/response"
 	"io/ioutil"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/http/controller"
+	"lottery_annual/http/data_transfer"
+	"lottery_annual/utils/response"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,8 +1,8 @@
 package zap_factory
 
 import (
-	"friends_ranking/config/variable"
 	"log"
+	"lottery_annual/config/variable"
 	"time"
 
 	"github.com/natefinch/lumberjack"

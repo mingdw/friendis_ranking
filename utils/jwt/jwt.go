@@ -2,8 +2,8 @@ package jwy
 
 import (
 	"errors"
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/globalConst"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/globalConst"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"

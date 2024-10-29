@@ -1,12 +1,12 @@
 package userService
 
 import (
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/models"
-	"friends_ranking/service/user/user_cach_redis"
-	"friends_ranking/utils/md5_encrypt"
-	"friends_ranking/utils/response"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/models"
+	"lottery_annual/service/user/user_cach_redis"
+	"lottery_annual/utils/md5_encrypt"
+	"lottery_annual/utils/response"
 	"strconv"
 	"time"
 

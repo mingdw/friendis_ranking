@@ -1,11 +1,11 @@
 package yamlConfig
 
 import (
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/variable"
-	"friends_ranking/config/yamlConfig/ymlConfigInterf"
-	"friends_ranking/container"
 	"log"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/variable"
+	"lottery_annual/config/yamlConfig/ymlConfigInterf"
+	"lottery_annual/container"
 	"sync"
 	"time"
 

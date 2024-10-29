@@ -1,9 +1,9 @@
 package register_validator
 
 import (
-	"friends_ranking/config/globalConst"
-	"friends_ranking/container"
-	checkvalidator "friends_ranking/http/validator/common/check_validator"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/container"
+	checkvalidator "lottery_annual/http/validator/common/check_validator"
 )
 
 // 系统公共接口校验器

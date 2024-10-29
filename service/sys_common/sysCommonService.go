@@ -1,7 +1,7 @@
 package sys_common
 
 import (
-	"friends_ranking/utils/redis_factory"
+	"lottery_annual/utils/redis_factory"
 	"math/rand"
 )
 

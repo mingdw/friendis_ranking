@@ -1,9 +1,9 @@
 package variable
 
 import (
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/yamlConfig/ymlConfigInterf"
 	"log"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/yamlConfig/ymlConfigInterf"
 	"os"
 	"strings"
 

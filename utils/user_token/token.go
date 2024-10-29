@@ -3,12 +3,12 @@ package user_token
 import (
 	"errors"
 	"fmt"
-	"friends_ranking/config/errorMsg"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/models"
-	token_cache_redis "friends_ranking/service/user/user_cach_redis"
-	Myjwt "friends_ranking/utils/jwt"
+	"lottery_annual/config/errorMsg"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/models"
+	token_cache_redis "lottery_annual/service/user/user_cach_redis"
+	Myjwt "lottery_annual/utils/jwt"
 
 	"github.com/dgrijalva/jwt-go"
 

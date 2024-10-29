@@ -2,10 +2,10 @@ package models
 
 import (
 	"fmt"
-	"friends_ranking/config/dbconn"
-	"friends_ranking/config/globalConst"
-	"friends_ranking/config/variable"
-	"friends_ranking/service/user/user_cach_redis"
+	"lottery_annual/config/dbconn"
+	"lottery_annual/config/globalConst"
+	"lottery_annual/config/variable"
+	"lottery_annual/service/user/user_cach_redis"
 	"time"
 
 	"go.uber.org/zap"
