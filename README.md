@@ -11,23 +11,23 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
 - 抽奖页面
 
-  ![image-20241029210801812](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210801812.png)
+  ![image-20241029210801812](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029210801812.png)
 
 - 活动设置相关
 
-  ![image-20241029210900684](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210900684.png)
+  ![image-20241029210900684](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029210900684.png)
 
 - 登录页面
 
-  ![image-20241029211257937](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211257937.png)
+  ![image-20241029211257937](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029211257937.png)
 
 - 注册页面
 
-  ![image-20241029211323691](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211323691.png)
+  ![image-20241029211323691](https://github.com/mingdw/lottery_annual/blob/master/doc/img/\image-20241029211323691.png)
 
 - 活动管理相关
 
-  ![image-20241029211442715](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211442715.png)
+  ![image-20241029211442715](https://github.com/mingdw/lottery_annual/blob/master/doc/img/\image-20241029211442715.png)
 
 
 
