@@ -1,952 +1,741 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
-    <title>奖项设置</title>
-    <link rel="icon" href="favicon.ico" type="image/ico" />
-    <meta
-      name="keywords"
-      content="LightYear,光年,后台模板,后台管理系统,光年HTML模板"
-    />
-    <meta
-      name="description"
-      content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。"
-    />
-    <meta name="author" content="yinqi" />
-    <link href="static/js/bootstrap-table/bootstrap-table.min.css" />
-    <link href="static/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="static/css/materialdesignicons.min.css" rel="stylesheet" />
-    <!--日期选择插件-->
-    <link
-      rel="stylesheet"
-      href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="static/js/bootstrap-daterangepicker/daterangepicker.css"
-    />
 
-    <link href="static/css/style.min.css" rel="stylesheet" />
-    <style>
-      @media (max-width: 575.98px) {
-        .card-toolbar .form-inline {
-          display: block;
-        }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>奖项设置</title>
+  <link rel="icon" href="favicon.ico" type="image/ico" />
+  <meta name="keywords" content="抽奖活动后台-奖项设置" />
+  <meta name="description" content="基于LightYear的后台管理模板，实现奖项管理" />
+  <meta name="author" content="yinqi" />
+  <link href="static/js/bootstrap-table/bootstrap-table.min.css" />
+  <link href="static/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="static/css/materialdesignicons.min.css" rel="stylesheet" />
+  <!--日期选择插件-->
+  <link rel="stylesheet" href="static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" />
+  <link rel="stylesheet" href="static/js/bootstrap-daterangepicker/daterangepicker.css" />
+
+  <link href="static/css/style.min.css" rel="stylesheet" />
+  <style>
+    @media (max-width: 575.98px) {
+      .card-toolbar .form-inline {
+        display: block;
       }
-      .input-group-addon {
-        min-width: 30px;
-      }
-    </style>
-  </head>
-  <script type="text/javascript" src="static/js/jquery.min.js"></script>
-  <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
-  <script
-    type="text/javascript"
-    src="static/js/perfect-scrollbar.min.js"
-  ></script>
-  <script
-    type="text/javascript"
-    src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"
-  ></script>
-  <script type="text/javascript" src="static/js/layer/layer.min.js"></script>
+    }
 
-  <script
-    type="text/javascript"
-    src="static/js/bootstrap-table/bootstrap-table.min.js"
-  ></script>
-  <script
-    type="text/javascript"
-    src="static/js/bootstrap-table/bootstrap-table-zh-CN.min.js"
-  ></script>
-  <!--时间范围选择插件-->
-  <script src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
-  <script src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
-  <script src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+    .input-group-addon {
+      min-width: 30px;
+    }
+  </style>
+</head>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="static/js/layer/layer.min.js"></script>
 
-  <script
-    type="text/javascript"
-    src="static/js/bootstrap-daterangepicker/daterangepicker.min.js"
-  ></script>
-  <script type="text/javascript" src="static/js/main.min.js"></script>
-  <script>
-    $(function () {
-      $("#datetimes").daterangepicker(
-        {
-          timePicker: true, //显示时间
-          timePicker24Hour: true, //时间制
-          timePickerSeconds: true, //时间显示到秒
-          startDate: moment().hours(0).minutes(0).seconds(0), //设置开始日期
-          endDate: moment(new Date()), //设置结束器日期
-          maxDate: moment(new Date()), //设置最大日期
-          separator: "至",
-          opens: "center",
-          ranges: {
-            // '今天': [moment(), moment()],
-            昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-            上周: [moment().subtract(6, "days"), moment()],
-            前30天: [moment().subtract(29, "days"), moment()],
-            本月: [moment().startOf("month"), moment().endOf("month")],
-            上月: [
-              moment().subtract(1, "month").startOf("month"),
-              moment().subtract(1, "month").endOf("month"),
-            ],
-          },
-          showWeekNumbers: true,
-          locale: {
-            format: "YYYY-MM-DD HH:mm:ss", //设置显示格式
-            separator: " 至 ",
-            applyLabel: "确定", //确定按钮文本
-            cancelLabel: "取消", //取消按钮文本
-            customRangeLabel: "自定义",
-            daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
-            monthNames: [
-              "一月",
-              "二月",
-              "三月",
-              "四月",
-              "五月",
-              "六月",
-              "七月",
-              "八月",
-              "九月",
-              "十月",
-              "十一月",
-              "十二月",
-            ],
-            firstDay: 1,
-          },
+<script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap-table/bootstrap-table-zh-CN.min.js"></script>
+<!--时间范围选择插件-->
+<script src="static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+
+<script type="text/javascript" src="static/js/bootstrap-daterangepicker/daterangepicker.min.js"></script>
+<script type="text/javascript" src="static/js/main.min.js"></script>
+<script>
+  $(function () {
+    $("#datetimes").daterangepicker({
+        timePicker: true, //显示时间
+        timePicker24Hour: true, //时间制
+        timePickerSeconds: true, //时间显示到秒
+        startDate: moment().hours(0).minutes(0).seconds(0), //设置开始日期
+        endDate: moment(new Date()), //设置结束器日期
+        maxDate: moment(new Date()), //设置最大日期
+        separator: "至",
+        opens: "center",
+        ranges: {
+          // '今天': [moment(), moment()],
+          昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+          上周: [moment().subtract(6, "days"), moment()],
+          前30天: [moment().subtract(29, "days"), moment()],
+          本月: [moment().startOf("month"), moment().endOf("month")],
+          上月: [
+            moment().subtract(1, "month").startOf("month"),
+            moment().subtract(1, "month").endOf("month"),
+          ],
         },
-        function (start, end, label) {
-          timeRangeChange = [
-            start.format("YYYY-MM-DD HH:mm:ss"),
-            end.format("YYYY-MM-DD HH:mm:ss"),
-          ];
-          console.log("111" + timeRangeChange);
-        }
-      );
+        showWeekNumbers: true,
+        locale: {
+          format: "YYYY-MM-DD HH:mm:ss", //设置显示格式
+          separator: " 至 ",
+          applyLabel: "确定", //确定按钮文本
+          cancelLabel: "取消", //取消按钮文本
+          customRangeLabel: "自定义",
+          daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+          monthNames: [
+            "一月",
+            "二月",
+            "三月",
+            "四月",
+            "五月",
+            "六月",
+            "七月",
+            "八月",
+            "九月",
+            "十月",
+            "十一月",
+            "十二月",
+          ],
+          firstDay: 1,
+        },
+      },
+      function (start, end, label) {
+        timeRangeChange = [
+          start.format("YYYY-MM-DD HH:mm:ss"),
+          end.format("YYYY-MM-DD HH:mm:ss"),
+        ];
+        console.log("111" + timeRangeChange);
+      }
+    );
 
-      //模态框开始和结束时间的时间选择器
-      $('input[name="dateTimePicker"]')
-        .datetimepicker({
-          format: "yyyy-mm-dd hh:li:00",
-          language: "zh_CN",
-          autoclose: true,
-          minView: "hour",
-          maxView: "decade",
-          todayBtn: "linked",
-          pickPosition: "top-left",
-          linkField: "mirror_field",
-        })
-        .on("click", function () {});
+    //模态框开始和结束时间的时间选择器
+    $('input[name="dateTimePicker"]')
+      .datetimepicker({
+        format: "yyyy-mm-dd hh:li:00",
+        language: "zh_CN",
+        autoclose: true,
+        minView: "hour",
+        maxView: "decade",
+        todayBtn: "linked",
+        pickPosition: "top-left",
+        linkField: "mirror_field",
+      })
+      .on("click", function () {});
 
-      $("#searchButton").on("click", function () {
-        // 事件处理代码
-        searchList();
-      });
-
-      $("#addButton").on("click", function () {
-        $("#add_code_d").hide();
-        $("#add_status_d").hide();
-        $("#add_id").val("");
-        $("#add_startTime").val("");
-        $("#add_endTime").val("");
-      });
-
-      //模态框关闭清空校验css、表单重置
-      $("#exampleModal").on("hidden.bs.modal", function () {
-        console.info("模态框关闭事件触发！");
-        $("#activityAddForm").data("bootstrapValidator").destroy();
-        $("#activityAddForm").data("bootstrapValidator", null);
-        $("#activityAddForm")[0].reset();
-        addValidator();
-      });
-
-      $("#deleteButton").on("click", function () {
-        var rows = $("#activityTable").bootstrapTable("getSelections");
-        console.log(rows);
-        if (rows.length == 0) {
-          // rows 主要是为了判断是否选中，下面的else内容才是主要
-          layer.alert("未选择删除的行，请重新选择", {
-            icon: "error",
-            skin: "lyear-skin-danger",
-          });
-          return;
-        } else {
-          var arrays = new Array(); // 声明一个数组
-          $(rows).each(function () {
-            // 通过获得别选中的来进行遍历
-            arrays.push(this.id); // STOREID为获得到的整条数据中指定的一列
-          });
-          var param = {
-            ids: arrays,
-          };
-          deleteIds(JSON.stringify(param));
-        }
-      });
-      //新增校验逻辑
-      addValidator();
-      //初始化查询结果
-      $("#datetimes").val("");
+    $("#searchButton").on("click", function () {
+      // 事件处理代码
       searchList();
     });
 
-    function addValidator() {
-      $("#activityAddForm")
-        .bootstrapValidator({
-          excluded: [":disabled"],
-          message: "该值无效",
-          feedbackIcons: {
-            valid: "mdi mdi-check",
-            invalid: "mdi mdi-close",
-            validating: "mdi mdi-refresh",
-          },
-          fields: {
-            add_title: {
-              message: "活动标题不能为空",
-              validators: {
-                notEmpty: {
-                  message: "活动标题不能为空",
-                },
-                stringLength: {
-                  max: 64,
-                  message: "活动标题不能超过64个字符",
-                },
-              },
-            },
+    $("#addButton").on("click", function () {
+      $("#add_code_d").hide();
+      $("#add_status_d").hide();
+      $("#add_id").val("");
+      $("#add_startTime").val("");
+      $("#add_endTime").val("");
+    });
 
-            add_startTime: {
-              message: "活动开始时间不能为空",
-              validators: {
-                notEmpty: {
-                  message: "活动开始时间不能为空",
-                },
-              },
-            },
+    //模态框关闭清空校验css、表单重置
+    $("#exampleModal").on("hidden.bs.modal", function () {
+      console.info("模态框关闭事件触发！");
+      $("#activityAddForm").data("bootstrapValidator").destroy();
+      $("#activityAddForm").data("bootstrapValidator", null);
+      $("#activityAddForm")[0].reset();
+      addValidator();
+    });
 
-            add_endTime: {
-              message: "活动结束时间不能为空",
-              validators: {
-                notEmpty: {
-                  message: "活动结束时间不能为空",
-                },
-              },
-            },
-          },
-        })
-        .on("success.form.bv", function (e) {
-          //新增或者编辑校验成功
-          e.preventDefault();
-          doAddOrUpdate();
+    $("#deleteButton").on("click", function () {
+      var rows = $("#activityTable").bootstrapTable("getSelections");
+      console.log(rows);
+      if (rows.length == 0) {
+        // rows 主要是为了判断是否选中，下面的else内容才是主要
+        layer.alert("未选择删除的行，请重新选择", {
+          icon: "error",
+          skin: "lyear-skin-danger",
         });
-    }
+        return;
+      } else {
+        var arrays = new Array(); // 声明一个数组
+        $(rows).each(function () {
+          // 通过获得别选中的来进行遍历
+          arrays.push(this.id); // STOREID为获得到的整条数据中指定的一列
+        });
+        var param = {
+          ids: arrays,
+        };
+        deleteIds(JSON.stringify(param));
+      }
+    });
+    //新增校验逻辑
+    addValidator();
+    //初始化查询结果
+    $("#datetimes").val("");
+    searchList();
+  });
 
-    function searchList() {
-      $("#activityTable").bootstrapTable("destroy");
-      $("#activityTable").bootstrapTable({
-        method: "POST",
-        dataType: "json",
-        url: basePath + "/admin/api/activity/list",
-        sidePagination: "server", //服务器分页
-        striped: true, //隔行换色
-
-        clickToSelect: false, //选择行即选择checkbox
-        singleSelect: false, //可以手动选择多行
-        pagination: true, //启用分页
-        pageSize: 10, //每页行数
-        pageNumber: 1, //起始页
-        pageList: [10, 20, 50, 100], //可供选择的每页的行数
-        escape: true, //过滤危险字符
-        ajaxOptions: {
-          headers: {
-            Authorization: authorization,
-            "Content-Type": "application/json",
-          },
+  function addValidator() {
+    $("#activityAddForm")
+      .bootstrapValidator({
+        excluded: [":disabled"],
+        message: "该值无效",
+        feedbackIcons: {
+          valid: "mdi mdi-check",
+          invalid: "mdi mdi-close",
+          validating: "mdi mdi-refresh",
         },
-        queryParamsType: "",
-        queryParams: getParams, //携带参数
-        responseHandler: function (res) {
-          if (res.code != 200) {
-            layer.alert(res.msg, {
-              icon: "error",
-              skin: "lyear-skin-danger",
-              title: "错误提示",
-              closeBtn: 1,
-              btn: ["确定", "取消"],
-              yes: function (index, layero) {
-                layer.close(index);
-                if (Number(res.code) === -400100) {
-                  console.info("code3: " + res.code);
-                  top.location.href = basePath + "/login";
-                }
+        fields: {
+          add_title: {
+            message: "活动标题不能为空",
+            validators: {
+              notEmpty: {
+                message: "活动标题不能为空",
               },
-              cancle: function (index, layero) {
-                layer.close(index);
+              stringLength: {
+                max: 64,
+                message: "活动标题不能超过64个字符",
               },
-            });
-          }
+            },
+          },
 
-          // 对返回参数进行处理
-          return {
-            total: res.count,
-            rows: res.data,
-          };
+          add_startTime: {
+            message: "活动开始时间不能为空",
+            validators: {
+              notEmpty: {
+                message: "活动开始时间不能为空",
+              },
+            },
+          },
+
+          add_endTime: {
+            message: "活动结束时间不能为空",
+            validators: {
+              notEmpty: {
+                message: "活动结束时间不能为空",
+              },
+            },
+          },
         },
-
-        columns: [
-          {
-            checkbox: true,
-          },
-
-          {
-            title: "序号",
-            field: "",
-            align: "center",
-            formatter: function (value, row, index) {
-              return index + 1;
-            },
-          },
-          {
-            title: "编码",
-            field: "code",
-            align: "center",
-            valign: "middle",
-          },
-          {
-            title: "活动标题",
-            field: "title",
-            align: "center",
-            valign: "middle",
-          },
-          {
-            title: "活动描述",
-            field: "desc",
-            align: "center",
-          },
-          {
-            title: "活动状态",
-            field: "status",
-            align: "center",
-            formatter: function (value, row, index) {
-              var a = "";
-              if (value == 0) {
-              } else if (value == 1) {
-                a = '<span class="label label-default">未开始</span>';
-              } else if (value == 2) {
-                a = '<span class="label label-success">进行中</span>';
-              } else if (value == 3) {
-                a = '<span class="label label-yellow">已结束</span>';
-              }
-              return a;
-            },
-          },
-          {
-            title: "开始时间",
-            field: "startTime",
-            align: "center",
-            formatter: function (value, row, index) {
-              if (value != "") {
-                return formatISOTime(value);
-              }
-              return "";
-            },
-          },
-          {
-            title: "结束时间",
-            field: "endTime",
-            align: "center",
-            formatter: function (value, row, index) {
-              if (value != "") {
-                return formatISOTime(value);
-              }
-              return "";
-            },
-          },
-
-          {
-            title: "操作",
-            field: "id",
-            align: "left",
-            formatter: function (value, row, index) {
-              var startHtml =
-                '<a class="btn btn-xs btn-success" href="#!" onclick=startActivity(' +
-                row.id +
-                ') title="开启" data-toggle="tooltip"><i class="mdi mdi-play-circle-outline">开启</i></a>&nbsp';
-              var endTimeHtml =
-                '<a class="btn btn-xs btn-warning" href="#!" onclick=stopActivity(' +
-                row.id +
-                ') title="结束" data-toggle="tooltip"><i class="mdi mdi-play-pause">结束</i></a>&nbsp';
-              var t1 = getISOTimeMilions(row.startTime);
-              var t2 = getISOTimeMilions(row.endTime);
-              var editHtml =
-                '<a class="btn btn-xs btn-primary"  data-toggle="modal" data-target="#exampleModal" href="#!"  onclick=ediClick(' +
-                value +
-                ",'" +
-                row.code +
-                "','" +
-                row.title +
-                "','" +
-                row.desc +
-                "'," +
-                t1 +
-                "," +
-                t2 +
-                "," +
-                row.status +
-                ') title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
-              var removeHtml =
-                '<a class="btn btn-xs btn btn-danger" href="#!" onclick=deleteOne(' +
-                row.id +
-                ') title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close">删除</i></a>';
-              var status = row.status;
-              var resultHtml = "";
-              if (status == 0) {
-                //初始化状态: 展示按钮 开启、编辑、删除
-                resultHtml = startHtml + endTimeHtml + editHtml + removeHtml;
-              } else if (status == 1) {
-                resultHtml = startHtml + editHtml + removeHtml;
-              } else if (status == 2) {
-                resultHtml = endTimeHtml + editHtml + removeHtml;
-              } else if (status == 3) {
-                resultHtml = editHtml + removeHtml;
-              }
-              return resultHtml;
-            },
-          },
-        ],
-        onLoadSuccess: function () {},
-
-        onLoadError: function (response) {
-          layer.alert("系统错误", {
-            icon: "error",
-            skin: "lyear-skin-danger",
-          });
-        },
+      })
+      .on("success.form.bv", function (e) {
+        //新增或者编辑校验成功
+        e.preventDefault();
+        doAddOrUpdate();
       });
-    }
+  }
 
-    //默认加载时携带参数
-    function getParams(parm) {
-      var data = {
-        limit: parm.pageSize,
-        pageSize: parm.pageNumber,
-        code: $("#code").val(),
-        status: parseInt($("#status option:selected").val()),
-      };
-      var dateTimeRange = $("#datetimes").val();
-      if (dateTimeRange != "") {
-        var time = dateTimeRange.split(" 至 ");
-        data.startTime = time[0];
-        data.endTime = time[1];
-      }
-      return JSON.stringify(data);
-    }
+  function searchList() {
+    $("#activityTable").bootstrapTable("destroy");
+    $("#activityTable").bootstrapTable({
+      method: "POST",
+      dataType: "json",
+      url: basePath + "/admin/api/prize/list",
+      sidePagination: "server", //服务器分页
+      striped: true, //隔行换色
 
-    function deleteOne(id) {
-      console.info("删除一行: " + id);
-      var arrays = [id];
-      var param = {
-        ids: arrays,
-      };
-      deleteIds(JSON.stringify(param));
-    }
-
-    function startActivity(id) {
-      updateStatus(id, 2);
-    }
-
-    function stopActivity(id) {
-      updateStatus(id, 3);
-    }
-
-    function doAddOrUpdate() {
-      var suffixPath = "add";
-      var id = $("#add_id").val();
-
-      var param = {
-        title: $("#activityAddForm input[name=add_title]").val(),
-        desc: $("#activityAddForm textarea[name=add_desc]").val(),
-        startTime: $("#add_startTime").val(),
-        endTime: $("#add_endTime").val(),
-      };
-      if (id != "") {
-        //编辑
-        param.id = Number(id);
-        suffixPath = "update";
-      }
-      //新增处理逻辑
-      var json = JSON.stringify(param);
-      submitSaveOrUpdate(json, suffixPath);
-    }
-
-    function ediClick(id, code, title, desc, startTime, endTime, status) {
-      $("#add_id").val(id); //将id放入隐藏区域，后面判断是编辑还是新增
-      $("#add_code").val(code);
-      $("#add_desc").val(desc);
-      $("#add_title").val(title);
-      $("#add_startTime").val(formatISOTime(startTime));
-      $("#add_endTime").val(formatISOTime(endTime));
-      console.info("编辑信息，活动id： " + id + "; 活动状态： " + status);
-      if (status == 1) {
-        $("#add_status").attr("class", "label label-default");
-        $("#add_status").html("未开始");
-      } else if (status == 2) {
-        $("#add_status").attr("class", "label label-success");
-        $("#add_status").html("进行中");
-      } else if (status == 3) {
-        $("#add_status").attr("class", "label label-warning");
-        $("#add_status").html("已结束");
-      }
-
-      // $("#add_status").select(status);
-      $("#add_code_d").show();
-      $("#add_status_d").show();
-    }
-
-    function updateStatus(id, status) {
-      var tooltip1 = status == 2 ? "您是否开启活动？" : "您是否关闭活动？";
-      layer.alert(tooltip1, {
-        icon: "success",
-        skin: "lyear-skin-success",
-        title: "活动提示",
-        closeBtn: 1,
-        btn: ["确定", "取消"],
-        yes: function (index, layero) {
-          var param = {
-            id: id,
-            status,
-            status,
-          };
-          $.ajax({
-            type: "POST",
-            url: basePath + "/admin/api/activity/updateStatus",
-            data: JSON.stringify(param),
-            contentType: "application/json",
-            headers: {
-              Authorization: authorization,
-              "Content-Type": "application/json",
-            },
-            success: function (response) {
-              var tooltip = status == 2 ? "开启成功" : "关闭成功";
-              if (response.code == 200) {
-                layer.alert(tooltip, {
-                  icon: "success",
-                  skin: "lyear-skin-success",
-                  title: "活动提示",
-                  time: 1000,
-                  yes: function (index, layero) {
-                    layer.close(index);
-                    searchList();
-                  },
-                  cancle: function (index, layero) {
-                    layer.closeAll();
-                    layer.close(index);
-                  },
-                });
-              } else {
-                layer.alert(response.msg, {
-                  icon: "error",
-                  skin: "lyear-skin-danger",
-                });
-              }
-            },
-            error: function (xhr, status, error) {
-              layer.alert("系统错误", {
-                icon: "error",
-                skin: "lyear-skin-danger",
-                title: "删除提示",
-              });
-            },
-          });
-
-          layer.close(index);
-          searchList();
-        },
-        cancle: function (index, layero) {
-          layer.close(index);
-        },
-      });
-    }
-
-    //删除请求
-    function deleteIds(ids) {
-      layer.alert("您确定要删除这些活动吗？", {
-        icon: "error",
-        skin: "lyear-skin-danger",
-        title: "删除提示",
-        closeBtn: 1,
-        btn: ["确定", "取消"],
-        yes: function (index, layero) {
-          $.ajax({
-            type: "POST",
-            url: basePath + "/admin/api/activity/delete",
-            data: ids,
-            contentType: "application/json",
-            headers: {
-              Authorization: authorization,
-              "Content-Type": "application/json",
-            },
-            success: function (response) {
-              if (response.code == 200) {
-                layer.alert("删除成功", {
-                  icon: "success",
-                  skin: "lyear-skin-success",
-                  title: "删除提示",
-                  closeBtn: 1,
-                  btn: ["确定", "取消"],
-                  yes: function (index, layero) {
-                    layer.close(index);
-                    searchList();
-                  },
-                  cancle: function (index, layero) {
-                    layer.close(index);
-                  },
-                });
-              } else {
-                layer.alert(response.msg, {
-                  icon: "error",
-                  skin: "lyear-skin-danger",
-                });
-              }
-            },
-            error: function (xhr, status, error) {
-              layer.alert("系统错误", {
-                icon: "error",
-                skin: "lyear-skin-danger",
-                title: "删除提示",
-              });
-              if (Number(response.code) === -400100) {
-                layer.close(index);
-                top.location.href = basePath + "/login";
-              }
-            },
-          });
-        },
-        cancle: function (index, layero) {
-          layer.close(index);
-        },
-      });
-    }
-
-    function submitSaveOrUpdate(data, suffixPath) {
-      var alertOkMsg = "新增成功";
-      var lertOkTitle = "新增提示";
-      if (suffixPath == "update") {
-        alertOkMsg = "编辑成功";
-        lertOkTitle = "编辑提示";
-      }
-      console.info(suffixPath + ": " + data);
-      $.ajax({
-        type: "POST",
-        url: basePath + "/admin/api/activity/" + suffixPath,
-        data: data,
-        contentType: "application/json",
+      clickToSelect: false, //选择行即选择checkbox
+      singleSelect: false, //可以手动选择多行
+      pagination: true, //启用分页
+      pageSize: 10, //每页行数
+      pageNumber: 1, //起始页
+      pageList: [10, 20, 50, 100], //可供选择的每页的行数
+      escape: true, //过滤危险字符
+      ajaxOptions: {
         headers: {
           Authorization: authorization,
           "Content-Type": "application/json",
         },
-        success: function (response) {
-          if (response.code == 200) {
-            layer.alert(alertOkMsg, {
-              icon: "success",
-              skin: "lyear-skin-success",
-              title: lertOkTitle,
-              closeBtn: 1,
-              btn: ["确定", "取消"],
-              yes: function (index, layero) {
-                layer.close(index);
-                $("#exampleModal").modal("hide"); //手动关闭
-                searchList();
-              },
-              cancle: function (index, layero) {
-                layer.close(index);
-              },
-            });
-          } else {
-            layer.alert(response.msg, {
+      },
+      queryParamsType: "",
+      queryParams: getParams, //携带参数
+      rowStyle: function (row, index) { // 动态修改行的颜色
+        if (index % 2 == 1) {
+          return {
+            css: {
+              "background-color": '#DFF0D8'
+            }
+          }
+        } else {
+          return {
+            css: {
+              "background-color": '#FFFFFF'
+            }
+          }
+        }
+      },
+      responseHandler: function (res) {
+        if (res.code != 200) {
+          layer.alert(res.msg, {
+            icon: "error",
+            skin: "lyear-skin-danger",
+            title: "错误提示",
+            closeBtn: 1,
+            btn: ["确定", "取消"],
+            yes: function (index, layero) {
+              layer.close(index);
+              if (Number(res.code) === -400100) {
+                console.info("code3: " + res.code);
+                top.location.href = basePath + "/login";
+              }
+            },
+            cancle: function (index, layero) {
+              layer.close(index);
+            },
+          });
+        }
+
+        // 对返回参数进行处理
+        return {
+          total: res.count,
+          rows: res.data,
+        };
+      },
+
+      columns: [{
+          checkbox: true,
+        },
+
+        {
+          title: "序号",
+          field: "",
+          align: "center",
+          formatter: function (value, row, index) {
+            return index + 1;
+          },
+        },
+        {
+          title: "编码",
+          field: "code",
+          align: "center",
+          valign: "middle",
+        },
+        {
+          title: "活动标题",
+          field: "title",
+          align: "center",
+          valign: "middle",
+        },
+
+        {
+          title: "奖项列表",
+          field: "title",
+          align: "center",
+          valign: "middle",
+        },
+
+
+        {
+          title: "操作",
+          field: "id",
+          align: "center",
+          valign: "middle",
+          formatter: function (value, row, index) {
+            var startHtml =
+              '<a class="btn btn-xs btn-warning" href="#!" onclick=startActivity(' + row.id +
+              ') title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
+            var endTimeHtml = '<a class="btn btn-xs btn-primary" href="#!" onclick=stopActivity(' + row.id +
+              ') title="查看详情" data-toggle="tooltip"><i class="mdi mdi-eye">查看</i></a>&nbsp';
+
+            var resultHtml = endTimeHtml + startHtml;
+            return resultHtml;
+          },
+        },
+      ],
+      onLoadSuccess: function () {},
+
+      onLoadError: function (response) {
+        layer.alert("系统错误", {
+          icon: "error",
+          skin: "lyear-skin-danger",
+        });
+      },
+    });
+  }
+
+  //默认加载时携带参数
+  function getParams(parm) {
+    var data = {
+      limit: parm.pageSize,
+      pageSize: parm.pageNumber,
+      code: $("#code").val(),
+      prizeName: $("#prizeName").val()
+    };
+
+    return JSON.stringify(data);
+  }
+
+  function deleteOne(id) {
+    console.info("删除一行: " + id);
+    var arrays = [id];
+    var param = {
+      ids: arrays,
+    };
+    deleteIds(JSON.stringify(param));
+  }
+
+  function startActivity(id) {
+    updateStatus(id, 2);
+  }
+
+  function stopActivity(id) {
+    updateStatus(id, 3);
+  }
+
+  function doAddOrUpdate() {
+    var suffixPath = "add";
+    var id = $("#add_id").val();
+
+    var param = {
+      title: $("#activityAddForm input[name=add_title]").val(),
+      desc: $("#activityAddForm textarea[name=add_desc]").val(),
+      startTime: $("#add_startTime").val(),
+      endTime: $("#add_endTime").val(),
+    };
+    if (id != "") {
+      //编辑
+      param.id = Number(id);
+      suffixPath = "update";
+    }
+    //新增处理逻辑
+    var json = JSON.stringify(param);
+    submitSaveOrUpdate(json, suffixPath);
+  }
+
+  function ediClick(id, code, title, desc, startTime, endTime, status) {
+    $("#add_id").val(id); //将id放入隐藏区域，后面判断是编辑还是新增
+    $("#add_code").val(code);
+    $("#add_desc").val(desc);
+    $("#add_title").val(title);
+    $("#add_startTime").val(formatISOTime(startTime));
+    $("#add_endTime").val(formatISOTime(endTime));
+    console.info("编辑信息，活动id： " + id + "; 活动状态： " + status);
+    if (status == 1) {
+      $("#add_status").attr("class", "label label-default");
+      $("#add_status").html("未开始");
+    } else if (status == 2) {
+      $("#add_status").attr("class", "label label-success");
+      $("#add_status").html("进行中");
+    } else if (status == 3) {
+      $("#add_status").attr("class", "label label-warning");
+      $("#add_status").html("已结束");
+    }
+
+    // $("#add_status").select(status);
+    $("#add_code_d").show();
+    $("#add_status_d").show();
+  }
+
+  function updateStatus(id, status) {
+    var tooltip1 = status == 2 ? "您是否开启活动？" : "您是否关闭活动？";
+    layer.alert(tooltip1, {
+      icon: "success",
+      skin: "lyear-skin-success",
+      title: "活动提示",
+      closeBtn: 1,
+      btn: ["确定", "取消"],
+      yes: function (index, layero) {
+        var param = {
+          id: id,
+          status,
+          status,
+        };
+        $.ajax({
+          type: "POST",
+          url: basePath + "/admin/api/activity/updateStatus",
+          data: JSON.stringify(param),
+          contentType: "application/json",
+          headers: {
+            Authorization: authorization,
+            "Content-Type": "application/json",
+          },
+          success: function (response) {
+            var tooltip = status == 2 ? "开启成功" : "关闭成功";
+            if (response.code == 200) {
+              layer.alert(tooltip, {
+                icon: "success",
+                skin: "lyear-skin-success",
+                title: "活动提示",
+                time: 1000,
+                yes: function (index, layero) {
+                  layer.close(index);
+                  searchList();
+                },
+                cancle: function (index, layero) {
+                  layer.closeAll();
+                  layer.close(index);
+                },
+              });
+            } else {
+              layer.alert(response.msg, {
+                icon: "error",
+                skin: "lyear-skin-danger",
+              });
+            }
+          },
+          error: function (xhr, status, error) {
+            layer.alert("系统错误", {
               icon: "error",
               skin: "lyear-skin-danger",
+              title: "删除提示",
             });
-            layer.closeAll();
+          },
+        });
+
+        layer.close(index);
+        searchList();
+      },
+      cancle: function (index, layero) {
+        layer.close(index);
+      },
+    });
+  }
+
+  //删除请求
+  function deleteIds(ids) {
+    layer.alert("您确定要删除这些活动吗？", {
+      icon: "error",
+      skin: "lyear-skin-danger",
+      title: "删除提示",
+      closeBtn: 1,
+      btn: ["确定", "取消"],
+      yes: function (index, layero) {
+        $.ajax({
+          type: "POST",
+          url: basePath + "/admin/api/activity/delete",
+          data: ids,
+          contentType: "application/json",
+          headers: {
+            Authorization: authorization,
+            "Content-Type": "application/json",
+          },
+          success: function (response) {
+            if (response.code == 200) {
+              layer.alert("删除成功", {
+                icon: "success",
+                skin: "lyear-skin-success",
+                title: "删除提示",
+                closeBtn: 1,
+                btn: ["确定", "取消"],
+                yes: function (index, layero) {
+                  layer.close(index);
+                  searchList();
+                },
+                cancle: function (index, layero) {
+                  layer.close(index);
+                },
+              });
+            } else {
+              layer.alert(response.msg, {
+                icon: "error",
+                skin: "lyear-skin-danger",
+              });
+            }
+          },
+          error: function (xhr, status, error) {
+            layer.alert("系统错误", {
+              icon: "error",
+              skin: "lyear-skin-danger",
+              title: "删除提示",
+            });
             if (Number(response.code) === -400100) {
               layer.close(index);
               top.location.href = basePath + "/login";
             }
-          }
-        },
-        error: function (xhr, status, error) {
-          layer.alert("系统错误", {
+          },
+        });
+      },
+      cancle: function (index, layero) {
+        layer.close(index);
+      },
+    });
+  }
+
+  function submitSaveOrUpdate(data, suffixPath) {
+    var alertOkMsg = "新增成功";
+    var lertOkTitle = "新增提示";
+    if (suffixPath == "update") {
+      alertOkMsg = "编辑成功";
+      lertOkTitle = "编辑提示";
+    }
+    console.info(suffixPath + ": " + data);
+    $.ajax({
+      type: "POST",
+      url: basePath + "/admin/api/activity/" + suffixPath,
+      data: data,
+      contentType: "application/json",
+      headers: {
+        Authorization: authorization,
+        "Content-Type": "application/json",
+      },
+      success: function (response) {
+        if (response.code == 200) {
+          layer.alert(alertOkMsg, {
+            icon: "success",
+            skin: "lyear-skin-success",
+            title: lertOkTitle,
+            closeBtn: 1,
+            btn: ["确定", "取消"],
+            yes: function (index, layero) {
+              layer.close(index);
+              $("#exampleModal").modal("hide"); //手动关闭
+              searchList();
+            },
+            cancle: function (index, layero) {
+              layer.close(index);
+            },
+          });
+        } else {
+          layer.alert(response.msg, {
             icon: "error",
             skin: "lyear-skin-danger",
-            title: lertOkTitle,
           });
-        },
-      });
-    }
+          layer.closeAll();
+          if (Number(response.code) === -400100) {
+            layer.close(index);
+            top.location.href = basePath + "/login";
+          }
+        }
+      },
+      error: function (xhr, status, error) {
+        layer.alert("系统错误", {
+          icon: "error",
+          skin: "lyear-skin-danger",
+          title: lertOkTitle,
+        });
+      },
+    });
+  }
 
-    function getISOTimeMilions(isostring) {
-      return new Date(isostring).getTime();
-    }
+  function getISOTimeMilions(isostring) {
+    return new Date(isostring).getTime();
+  }
 
-    //ISO时间转换
-    function formatISOTime(isoString) {
-      // 创建一个 Date 对象
-      const date = new Date(isoString);
+  //ISO时间转换
+  function formatISOTime(isoString) {
+    // 创建一个 Date 对象
+    const date = new Date(isoString);
 
-      // 提取年、月、日、时、分、秒
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0");
-      const minutes = String(date.getMinutes()).padStart(2, "0");
-      const seconds = String(date.getSeconds()).padStart(2, "0");
+    // 提取年、月、日、时、分、秒
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
 
-      // 格式化并返回结果
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    }
-  </script>
+    // 格式化并返回结果
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+</script>
 
-  <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-toolbar clearfix">
-              <form
-                class="form-inline"
-                action="javascript:void(0)"
-                id="activity"
-              >
-                <div class="input-group mb-2 mr-2">
-                  <span class="input-group-addon">活动编码：</span>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="code"
-                    name="code"
-                    value=""
-                    placeholder="请输入活动编码或者名称.."
-                  />
-                </div>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-toolbar clearfix">
+            <form class="form-inline" action="javascript:void(0)" id="activity">
+              <div class="input-group mb-2 mr-2">
+                <span class="input-group-addon">活动编码：</span>
+                <input type="text" class="form-control" id="code" name="code" value="" placeholder="请输入活动编码或者名称.." />
+              </div>
+              <div class="input-group mb-2 mr-2">
+                <span class="input-group-addon">奖项名称：</span>
+                <input type="text" class="form-control" id="prizeName" name="prizeName" value=""
+                  placeholder="请输入奖项名称.." />
+              </div>
 
-                <div class="input-group mb-2 mr-2">
-                  <span class="input-group-addon">活动时间：</span>
-                  <input
-                    type="text"
-                    id="datetimes"
-                    name="datetimes"
-                    style="width: 300px"
-                    class="form-control"
-                    placeholder="请选择活动时间范围..."
-                  />
-                </div>
+              <div class="input-group mb-2 mr-2" style="margin-left: 20px">
+                <button class="btn btn-default mb-2 m-l-5" id="searchButton" type="submit">
+                  <i class="mdi mdi-magnify"></i> 搜索
+                </button>
+                <button class="btn btn-secondary mb-2 m-l-5" type="reset">
+                  <i class="mdi mdi-delete"></i> 重置
+                </button>
+              </div>
+            </form>
+          </div>
 
-                <div class="input-group mb-2 mr-2">
-                  <span class="input-group-addon">活动状态：</span>
-                  <select id="status" class="form-control">
-                    <option value="">活动状态</option>
-                    <option value="1">未开始</option>
-                    <option value="2">进心中</option>
-                    <option value="3">已结束</option>
-                  </select>
-                </div>
-                <div class="input-group mb-2 mr-2" style="margin-left: 20px">
-                  <button
-                    class="btn btn-default mb-2 m-l-5"
-                    id="searchButton"
-                    type="submit"
-                  >
-                    <i class="mdi mdi-magnify"></i> 搜索
-                  </button>
-                  <button class="btn btn-secondary mb-2 m-l-5" type="reset">
-                    <i class="mdi mdi-delete"></i> 重置
-                  </button>
-                </div>
-              </form>
-            </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <div class="input-group mb-2 mr-2">
+                <button class="btn btn-danger m-b-5 m-l-5" id="deleteButton">
+                  <i class="mdi mdi-window-close"></i> 清空奖项
+                </button>
+              </div>
 
-            <div class="card-body">
-              <div class="table-responsive">
-                <div class="input-group mb-2 mr-2">
-                  <button
-                    class="btn btn-primary m-b-5 m-l-5"
-                    id="addButton"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
-                    data-whatever="@mdo"
-                  >
-                    <i class="mdi mdi mdi-plus"></i> 新增
-                  </button>
-                  <button class="btn btn-danger m-b-5 m-l-5" id="deleteButton">
-                    <i class="mdi mdi-window-close"></i> 删除
-                  </button>
-                </div>
-
-                <div
-                  class="modal fade"
-                  id="exampleModal"
-                  tabindex="-1"
-                  role="dialog"
-                  aria-labelledby="exampleModalLabel"
-                >
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button
-                          type="button"
-                          class="close"
-                          data-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" id="exampleModalLabel">
-                          新增活动
-                        </h4>
-                      </div>
-                      <div class="modal-body">
-                        <form class="form-horizontal" id="activityAddForm">
-                          <div
-                            class="form-group"
-                            style="display: none"
-                            id="add_code_d"
-                          >
-                            <label class="col-md-3 control-label" for="add_code"
-                              >活动编码:</label
-                            >
-                            <span
-                              id="add_id"
-                              value=""
-                              style="display: none"
-                            ></span>
-                            <div class="col-md-7">
-                              <input
-                                type="text"
-                                class="form-control disabled"
-                                id="add_code"
-                                name="add_code"
-                                readonly
-                                placeholder="请输入活动编码"
-                              />
-                            </div>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      <h4 class="modal-title" id="exampleModalLabel">
+                        新增活动
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                      <form class="form-horizontal" id="activityAddForm">
+                        <div class="form-group" style="display: none" id="add_code_d">
+                          <label class="col-md-3 control-label" for="add_code">活动编码:</label>
+                          <span id="add_id" value="" style="display: none"></span>
+                          <div class="col-md-7">
+                            <input type="text" class="form-control disabled" id="add_code" name="add_code" readonly
+                              placeholder="请输入活动编码" />
                           </div>
-                          <div
-                            class="form-group m-t-10"
-                            style="display: none"
-                            id="add_status_d"
-                          >
-                            <label class="col-md-3 control-label" for="add_code"
-                              >活动状态:</label
-                            >
-                            <div class="col-md-7 m-t-5">
-                              <span
-                                class="label"
-                                id="add_status"
-                                value=""
-                              ></span>
-                            </div>
+                        </div>
+                        <div class="form-group m-t-10" style="display: none" id="add_status_d">
+                          <label class="col-md-3 control-label" for="add_code">活动状态:</label>
+                          <div class="col-md-7 m-t-5">
+                            <span class="label" id="add_status" value=""></span>
                           </div>
+                        </div>
 
-                          <div class="form-group">
-                            <label
-                              class="col-md-3 control-label"
-                              for="add_title"
-                              >活动标题:</label
-                            >
-                            <div class="col-md-7">
-                              <input
-                                type="text"
-                                class="form-control"
-                                id="add_title"
-                                name="add_title"
-                                placeholder="请输入活动标题"
-                              />
-                            </div>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_title">活动标题:</label>
+                          <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_title" name="add_title"
+                              placeholder="请输入活动标题" />
                           </div>
+                        </div>
 
-                          <div class="form-group">
-                            <label class="col-md-3 control-label" for="add_desc"
-                              >活动描述:</label
-                            >
-                            <div class="col-md-7">
-                              <textarea
-                                class="form-control"
-                                id="add_desc"
-                                name="add_desc"
-                              ></textarea>
-                            </div>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_desc">活动描述:</label>
+                          <div class="col-md-7">
+                            <textarea class="form-control" id="add_desc" name="add_desc"></textarea>
                           </div>
+                        </div>
 
-                          <div class="form-group">
-                            <label
-                              class="col-md-3 control-label"
-                              for="add_startTime"
-                              >活动开始时间:</label
-                            >
-                            <div class="col-md-7">
-                              <input
-                                class="form-control js-datetimepicker"
-                                type="text"
-                                id="add_startTime"
-                                name="dateTimePicker"
-                                placeholder="开始时间"
-                                value=""
-                                data-locale="zh-cn"
-                                data-format="YYYY-MM-DD HH:mm:ss"
-                              />
-                            </div>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_startTime">活动开始时间:</label>
+                          <div class="col-md-7">
+                            <input class="form-control js-datetimepicker" type="text" id="add_startTime"
+                              name="dateTimePicker" placeholder="开始时间" value="" data-locale="zh-cn"
+                              data-format="YYYY-MM-DD HH:mm:ss" />
                           </div>
+                        </div>
 
-                          <div class="form-group">
-                            <label
-                              class="col-md-3 control-label"
-                              for="add_endTime"
-                              >活动结束时间:</label
-                            >
-                            <div class="col-md-7">
-                              <input
-                                class="form-control js-datetimepicker"
-                                type="text"
-                                id="add_endTime"
-                                name="dateTimePicker"
-                                placeholder="结束时间"
-                                value=""
-                                data-locale="zh-cn"
-                                data-format="YYYY-MM-DD HH:mm:ss"
-                              />
-                            </div>
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_endTime">活动结束时间:</label>
+                          <div class="col-md-7">
+                            <input class="form-control js-datetimepicker" type="text" id="add_endTime"
+                              name="dateTimePicker" placeholder="结束时间" value="" data-locale="zh-cn"
+                              data-format="YYYY-MM-DD HH:mm:ss" />
                           </div>
-                          <div class="modal-footer">
-                            <button
-                              type="button"
-                              class="btn btn-default"
-                              data-dismiss="modal"
-                            >
-                              关闭
-                            </button>
-                            <button
-                              type="submit"
-                              class="btn btn-primary"
-                              id="addSave"
-                            >
-                              确定2SS
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">
+                            关闭
+                          </button>
+                          <button type="submit" class="btn btn-primary" id="addSave">
+                            确定
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
-
-                <table class="table table-bordered" id="activityTable"></table>
               </div>
+
+              <table class="table table-bordered" id="activityTable"></table>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

@@ -22,6 +22,7 @@ func init() {
 	register_validator.ApiRegisterValidator()
 	register_validator.CommonRegisterValidator()
 	register_validator.AdminActivityValidator()
+	register_validator.AdminPrizeValidator()
 
 	variable.YamlConfig = yamlConfig.CreateYamlFactory()
 	variable.YamlConfig.ConfigFileChangeListen()

@@ -123,6 +123,7 @@ func adminApiInit(router *gin.Engine) {
 	page := router.Group("/admin/api")
 	page.Use(authorization.CheckTokenAuth())
 	{
+		//活动管理相关
 		page.POST("/activity/list", factory.Create(globalConst.ValidatorPrefix+"ActivityList"))
 
 		page.POST("/activity/add", factory.Create(globalConst.ValidatorPrefix+"ActivityAdd"))
@@ -132,6 +133,19 @@ func adminApiInit(router *gin.Engine) {
 		page.POST("/activity/delete", factory.Create(globalConst.ValidatorPrefix+"ActivityDelete"))
 
 		page.POST("/activity/updateStatus", factory.Create(globalConst.ValidatorPrefix+"ActivityUpdateStatus"))
+
+		//奖项管理相关
+
+		page.POST("/prize/list", factory.Create(globalConst.ValidatorPrefix+"PrizeList"))
+
+		page.POST("/prize/add", factory.Create(globalConst.ValidatorPrefix+"PrizeAdd"))
+
+		page.POST("/prize/update", factory.Create(globalConst.ValidatorPrefix+"PrizeUpdate"))
+
+		page.POST("/prize/delete", factory.Create(globalConst.ValidatorPrefix+"PrizeDelete"))
+
+		page.POST("/prize/updateStatus", factory.Create(globalConst.ValidatorPrefix+"PrizeUpdateStatus"))
+
 	}
 
 }
