@@ -7,7 +7,7 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
 - 签到页面
 
-  ![image-20241029210134627](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210134627.png)
+  ![image-20241029210134627](doc\image\image-20241029210134627.png)
 
 - 抽奖页面
 
