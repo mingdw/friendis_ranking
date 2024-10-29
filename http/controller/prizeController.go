@@ -13,12 +13,7 @@ type PrizeController struct {
 }
 
 func (index PrizeController) QueryList(c *gin.Context, code, prizeName string, status, limit, pageSize int) {
-	details := &models.PrizeDetails{
-		Code:      code,
-		Status:    status,
-		StartTime: time.Time{},
-		EndTime:   time.Time{},
-	}
+	details := &models.PrizeDetails{}
 
 	details.SelectList(code, prizeName, status, pageSize, limit)
 }

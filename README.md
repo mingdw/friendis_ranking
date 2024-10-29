@@ -5,7 +5,29 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
 ## 部分截图
 
+- 签到页面
 
+  ![image-20241029210134627](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210134627.png)
+
+- 抽奖页面
+
+  ![image-20241029210801812](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210801812.png)
+
+- 活动设置相关
+
+  ![image-20241029210900684](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029210900684.png)
+
+- 登录页面
+
+  ![image-20241029211257937](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211257937.png)
+
+- 注册页面
+
+  ![image-20241029211323691](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211323691.png)
+
+- 活动管理相关
+
+  ![image-20241029211442715](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241029211442715.png)
 
 
 
@@ -51,3 +73,34 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
    cd 到项目根目录，执行命令 go run lotteryStartMain.go
 
+
+
+## 里程碑
+
+```mermaid
+
+gantt
+        dateFormat  YYYY-MM-DD
+        title 开发进度情况
+        section 已完成
+        后端框架搭建               :done,   des1, 2024-08-01,2024-08-08
+        jwt安全校验               :done, des2 , 2024-08-08,2024-08-10
+        使用redis缓存token               :done,  des3, 2024-08-10, 2d
+        活动管理               :         done, des4,after des3, 5d
+        登陆页面与功能  :         done, des5,after des4, 2d
+        注册页面与功能  :         done, des6,after des5, 2d
+        
+        section 进行中
+        抽奖页面3d球特效开发               :active,    des1, 2024-09-06,2024-09-20
+        抽奖切换开发               :active,  des2, 2024-09-20, 5d
+        抽奖配置页面开发               :active         des3, after des2, 5d
+        活动管理奖项管理               :active         des4, after des3, 5d
+        活动管理人员管理               :active         des5, after des4, 5d
+        
+        section 未开始
+        后台管理个人资料               :    des1, 2024-11-15,2024-11-20
+        3d旋转球调整特效               :  des2, after des1, 5d
+        其它优化               :         des3, after des2, 10d
+
+
+```

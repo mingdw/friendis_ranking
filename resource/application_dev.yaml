@@ -2,50 +2,48 @@ Application:
   name: friedns_ranking
   desc: 朋友圈排行榜
   port: ":8808"
-  
-AppDebug: true   # 设置程序所处的模式，debug=true 调试模式，日志优先显示在控制台， debug=false 非调试模式，将写入日志文件
 
-
+AppDebug: true # 设置程序所处的模式，debug=true 调试模式，日志优先显示在控制台， debug=false 非调试模式，将写入日志文件
 
 Gormv2: # 只针对 gorm  操作数据库有效
-  UseDbType: "mysql"  # 备选项 mysql 、sqlserver、 postgresql
-  SqlDebug: true   # 请根据个人习惯设置，true 表示执行的sql全部会输出在终端(一般来说开发环境可能会方便调试) ，  false 表示默认不会在终端输出sql(生产环境建议设置为 false),
+  UseDbType: "mysql" # 备选项 mysql 、sqlserver、 postgresql
+  SqlDebug: true # 请根据个人习惯设置，true 表示执行的sql全部会输出在终端(一般来说开发环境可能会方便调试) ，  false 表示默认不会在终端输出sql(生产环境建议设置为 false),
   Mysql:
-    IsInitGlobalGormMysql: 1    # 随项目启动为gorm db初始化一个全局 variable.GormDbMysql（完全等于*gorm.Db）,正确配置数据库，该值必须设置为: 1
-    SlowThreshold: 30            # 慢 SQL 阈值(sql执行时间超过此时间单位（秒），就会触发系统日志记录)
+    IsInitGlobalGormMysql: 1 # 随项目启动为gorm db初始化一个全局 variable.GormDbMysql（完全等于*gorm.Db）,正确配置数据库，该值必须设置为: 1
+    SlowThreshold: 30 # 慢 SQL 阈值(sql执行时间超过此时间单位（秒），就会触发系统日志记录)
     Write:
       Host: "127.0.0.1"
       DataBase: "friends_rankking"
       Port: 3306
-      Prefix: "tb_"   #  目前没有用到该配置项
+      Prefix: "tb_" #  目前没有用到该配置项
       User: "root"
-      Pass: "Mdw19921129%"
+      Pass: "mdw19921129#"
       Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
-      SetConnMaxLifetime: 60    # 连接不活动时的最大生存时间(秒)
+      SetConnMaxLifetime: 60 # 连接不活动时的最大生存时间(秒)
       #ReConnectInterval: 1    # 保留项,重连数据库间隔秒数
       #PingFailRetryTimes: 3   # 保留项,最大重连次数
-    IsOpenReadDb: 0                     # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
+    IsOpenReadDb: 0 # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
     Read:
       Host: "127.0.0.1"
       DataBase: "db_goskeleton"
-      Port: 3308                        #注意，非3306，请自行调整
+      Port: 3308 #注意，非3306，请自行调整
       Prefix: "tb_"
       User: "root"
       Pass: "yourPassword"
       Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
-      SetConnMaxLifetime: 60  
+      SetConnMaxLifetime: 60
 Token:
-  JwtTokenSignKey: "goskeleton"    #设置token生成时加密的签名
-  JwtTokenOnlineUsers: 10          #一个账号密码允许最大获取几个有效的token，当超过这个值，第一次获取的token的账号、密码就会失效
-  JwtTokenCreatedExpireAt: 7200   #创建时token默认有效秒数（token生成时间加上该时间秒数，算做有效期）,3600*8=28800 等于8小时
-  JwtTokenRefreshAllowSec: 86400   #对于过期的token，允许在多少小时之内刷新，超过此时间则不允许刷新换取新token，86400=3600*24，即token过期24小时之内允许换新token
-  JwtTokenRefreshExpireAt: 36000   #对于过期的token，支持从相关接口刷新获取新的token，它有效期为10个小时，3600*10=36000 等于10小时
-  BindContextKeyName: "userToken"  #用户在 header 头部提交的token绑定到上下文时的键名，方便直接从上下文(gin.context)直接获取每个用户的id等信息
-  IsCacheToRedis: 1                #用户token是否缓存到redis, 如果已经正确配置了redis,建议设置为1, 开启redis缓存token，（1=用户token缓存到redis; 0=token只存在于mysql）
+  JwtTokenSignKey: "goskeleton" #设置token生成时加密的签名
+  JwtTokenOnlineUsers: 10 #一个账号密码允许最大获取几个有效的token，当超过这个值，第一次获取的token的账号、密码就会失效
+  JwtTokenCreatedExpireAt: 7200 #创建时token默认有效秒数（token生成时间加上该时间秒数，算做有效期）,3600*8=28800 等于8小时
+  JwtTokenRefreshAllowSec: 86400 #对于过期的token，允许在多少小时之内刷新，超过此时间则不允许刷新换取新token，86400=3600*24，即token过期24小时之内允许换新token
+  JwtTokenRefreshExpireAt: 36000 #对于过期的token，支持从相关接口刷新获取新的token，它有效期为10个小时，3600*10=36000 等于10小时
+  BindContextKeyName: "userToken" #用户在 header 头部提交的token绑定到上下文时的键名，方便直接从上下文(gin.context)直接获取每个用户的id等信息
+  IsCacheToRedis: 1 #用户token是否缓存到redis, 如果已经正确配置了redis,建议设置为1, 开启redis缓存token，（1=用户token缓存到redis; 0=token只存在于mysql）
 
 Redis:
   Host: "127.0.0.1"
@@ -54,17 +52,17 @@ Redis:
   MaxIdle: 10
   MaxActive: 1000
   IdleTimeout: 60
-  IndexDb: 1      # 注意 redis 默认连接的是 1 号数据库，不是 0号数据库
-  ConnFailRetryTimes: 3    #从连接池获取连接失败，最大重试次数
-  ReConnectInterval: 1     # 从连接池获取连接失败，每次重试之间间隔的秒数
+  IndexDb: 1 # 注意 redis 默认连接的是 1 号数据库，不是 0号数据库
+  ConnFailRetryTimes: 3 #从连接池获取连接失败，最大重试次数
+  ReConnectInterval: 1 # 从连接池获取连接失败，每次重试之间间隔的秒数
 
 Logs:
-  GinLogName: "/logs/gin.log"                  #设置 gin 框架的接口访问日志
-  GoSkeletonLogName: "/logs/gin.log"    #设置GoSkeleton项目骨架运行时日志文件名，注意该名称不要与上一条重复 ,避免和 gin 框架的日志掺杂一起，造成混乱。
-  TextFormat: "json"                                #记录日志的格式，参数选项：console、json ， console 表示一般的文本格式
-  TimePrecision: "millisecond"                         #记录日志时，相关的时间精度，该参数选项：second  、 millisecond ， 分别表示 秒 和 毫秒 ,默认为毫秒级别
-  MaxSize: 10                                           #每个日志的最大尺寸(以MB为单位）， 超过该值，系统将会自动进行切割
-  MaxBackups: 7                                        #保留旧日志最大个数
-  MaxAge: 15                                           #保留旧日志最大天数
-  Compress: false                                      #日志备份时，是否进行压缩
+  GinLogName: "/logs/gin.log" #设置 gin 框架的接口访问日志
+  GoSkeletonLogName: "/logs/gin.log" #设置GoSkeleton项目骨架运行时日志文件名，注意该名称不要与上一条重复 ,避免和 gin 框架的日志掺杂一起，造成混乱。
+  TextFormat: "json" #记录日志的格式，参数选项：console、json ， console 表示一般的文本格式
+  TimePrecision: "millisecond" #记录日志时，相关的时间精度，该参数选项：second  、 millisecond ， 分别表示 秒 和 毫秒 ,默认为毫秒级别
+  MaxSize: 10 #每个日志的最大尺寸(以MB为单位）， 超过该值，系统将会自动进行切割
+  MaxBackups: 7 #保留旧日志最大个数
+  MaxAge: 15 #保留旧日志最大天数
+  Compress: false #日志备份时，是否进行压缩
 
