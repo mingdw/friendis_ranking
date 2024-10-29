@@ -29,6 +29,16 @@ lottery-annual宗旨是打造一个简单的抽奖系统，通过简单的配置
 
   ![image-20241029211442715](https://github.com/mingdw/lottery_annual/blob/master/doc/img/image-20241029211442715.png)
 
+## 项目特点
+
+- 简单快捷。  Golang前后端不分离，开箱即用，直接go run即可，要做的仅仅更改一下数据库配置
+
+- 适合新手。本人也是新手，怎么简单方便怎么来，页面不多，想怎么改怎么改
+
+- 操作简单，功能单一。功能简单，后台配置活动，前端负责抽奖，其它一概没有
+
+  ...
+
 
 
 ## 技术选型
@@ -101,6 +111,22 @@ gantt
         后台管理个人资料               :    des1, 2024-11-15,2024-11-20
         3d旋转球调整特效               :  des2, after des1, 5d
         其它优化               :         des3, after des2, 10d
+        
 
 
 ```
+
+
+
+## 关于开源
+
+目前本人并非全职开发，也不是专业的前端和Golang开发人员，也只是一个初学者，目前还有好多功能没有实现，同时对于已有的一些功能实现的也并不是太完美，希望有大佬路过指点，不胜感激。
+
+站在巨人的肩膀上，前端主要借鉴 **[笔下光年](https://gitee.com/yinqi)/[Light Year Admin](https://gitee.com/yinqi/Light-Year-Admin-Template)**，后端主要框架借鉴 <a href="https://gitee.com/daitougege/GinSkeleton"><strong>张奇峰/GinSkeleton</strong></a> ，感谢你们的开源奉献！！！
+
+本项目没有啥版权，喜欢就拿去玩去，别干违法犯罪的事即可（哈哈，貌似也没那功能）
+
+未来，会一直持续更新下去，欢迎交流，欢迎指正！！！
+
+
+
