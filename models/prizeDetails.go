@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"lottery_annual/config/dbconn"
 	"lottery_annual/config/globalConst"
 	"time"
@@ -11,7 +12,7 @@ type ActivityAndPrizeDetails struct {
 	Code         string          `json:"code" gorm:"column:code"`
 	Title        string          `json:"title" gorm:"column:title"`
 	Status       int             `json:"status"  gorm:"column:status" `
-	PrizeDetails []*PrizeDetails `gorm:"foreignKey:AcId"`
+	PrizeDetails []*PrizeDetails `json :"prizeDetails"   gorm:"foreignKey:AcId"`
 	dbconn.BaseModel
 }
 
@@ -30,15 +31,19 @@ type PrizeDetails struct {
 	dbconn.BaseModel
 }
 
-func (p *PrizeDetails) TableName() string {
+func (p *ActivityAndPrizeDetails) TableName() string {
 	return "sys_activity"
 }
 
-func CreatePrizeFactory(sqlType string) *PrizeDetails {
+func (p *PrizeDetails) TableName() string {
+	return "sys_prize"
+}
+
+func CreatePrizeFactory(sqlType string) *ActivityAndPrizeDetails {
 	now := time.Now()
 	nowTime := now.Format(globalConst.DateFormat)
 	creator := globalConst.SysAccount
-	return &PrizeDetails{BaseModel: dbconn.BaseModel{
+	return &ActivityAndPrizeDetails{BaseModel: dbconn.BaseModel{
 		DB:         dbconn.UseDbConn(sqlType),
 		Id:         0,
 		CreateTime: nowTime,
@@ -50,11 +55,11 @@ func CreatePrizeFactory(sqlType string) *PrizeDetails {
 }
 
 // 查询（根据关键词模糊查询）
-func (prize *PrizeDetails) SelectList(code, prizeName string, status, pageSize, limit int) (counts int64, temp []ActivityAndPrizeDetails) {
+func (prize *ActivityAndPrizeDetails) SelectList(code, prizeName string, status, pageSize, limit int) (counts int64, temp []ActivityAndPrizeDetails) {
 
-	//acAndPrizes := ActivityAndPrizeDetails{}
 	// 计算总记录数并执行分页查询
-	sql := prize.Model(&ActivityAndPrizeDetails{}).Where("isDelete = ?", 0)
+	fmt.Println("开启查询，code；", code, "; prizeName: ", prizeName, "; status: ", status, "; pageSize: ", pageSize, "; limit: ", limit)
+	sql := prize.Where("isDelete = ?", 0)
 	if code != "" {
 		codeStr := "%" + code + "%"
 		sql.Where("code like ? or title like?", codeStr, codeStr)
@@ -62,7 +67,6 @@ func (prize *PrizeDetails) SelectList(code, prizeName string, status, pageSize, 
 	if status != 0 {
 		sql.Where("status = ?", status)
 	}
-	sql.Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").Find(&temp)
-
+	sql.Model(&prize).Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").First(&prize).Preload("PrizeDetails").Find(&temp)
 	return
 }

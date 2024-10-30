@@ -309,11 +309,17 @@
 
         {
           title: "奖项列表",
-          field: "title",
+          field: "prizeDetails",
           align: "center",
           valign: "middle",
+          format: function (value, row, index) {
+            var html = ""
+            if (value.length > 0) {
+              html += '<p><span class=\"label label-outline-danger\">' + value.name + '</span></p>'
+            }
+            return html
+          }
         },
-
 
         {
           title: "操作",
@@ -321,13 +327,14 @@
           align: "center",
           valign: "middle",
           formatter: function (value, row, index) {
-            var startHtml =
-              '<a class="btn btn-xs btn-warning" href="#!" onclick=startActivity(' + row.id +
-              ') title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
-            var endTimeHtml = '<a class="btn btn-xs btn-primary" href="#!" onclick=stopActivity(' + row.id +
-              ') title="查看详情" data-toggle="tooltip"><i class="mdi mdi-eye">查看</i></a>&nbsp';
+            var editHtml = '<a class="btn btn-xs btn-warning" href="#!" onclick=editAndLook(' + JSON.stringify(
+                row).replace(/\"/g, "'") + ',' + '0)' +
+              ' title="编辑" data-toggle="modal" data-target="#myModal" ><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
 
-            var resultHtml = endTimeHtml + startHtml;
+            var lookHtml = '<a class="btn btn-xs btn-primary" href="#!" onclick=editAndLook(' + JSON.stringify(
+                row).replace(/\"/g, "'") + ',' + '1)' +
+              ' title="编辑" data-toggle="modal" data-target="#myModal" ><i class="mdi mdi-pencil">查看</i></a>&nbsp';
+            var resultHtml = editHtml + lookHtml;
             return resultHtml;
           },
         },
@@ -364,122 +371,11 @@
     deleteIds(JSON.stringify(param));
   }
 
-  function startActivity(id) {
-    updateStatus(id, 2);
+  function editAndLook(value, type) {
+    console.info(value.id + ": " + value.title)
   }
 
-  function stopActivity(id) {
-    updateStatus(id, 3);
-  }
 
-  function doAddOrUpdate() {
-    var suffixPath = "add";
-    var id = $("#add_id").val();
-
-    var param = {
-      title: $("#activityAddForm input[name=add_title]").val(),
-      desc: $("#activityAddForm textarea[name=add_desc]").val(),
-      startTime: $("#add_startTime").val(),
-      endTime: $("#add_endTime").val(),
-    };
-    if (id != "") {
-      //编辑
-      param.id = Number(id);
-      suffixPath = "update";
-    }
-    //新增处理逻辑
-    var json = JSON.stringify(param);
-    submitSaveOrUpdate(json, suffixPath);
-  }
-
-  function ediClick(id, code, title, desc, startTime, endTime, status) {
-    $("#add_id").val(id); //将id放入隐藏区域，后面判断是编辑还是新增
-    $("#add_code").val(code);
-    $("#add_desc").val(desc);
-    $("#add_title").val(title);
-    $("#add_startTime").val(formatISOTime(startTime));
-    $("#add_endTime").val(formatISOTime(endTime));
-    console.info("编辑信息，活动id： " + id + "; 活动状态： " + status);
-    if (status == 1) {
-      $("#add_status").attr("class", "label label-default");
-      $("#add_status").html("未开始");
-    } else if (status == 2) {
-      $("#add_status").attr("class", "label label-success");
-      $("#add_status").html("进行中");
-    } else if (status == 3) {
-      $("#add_status").attr("class", "label label-warning");
-      $("#add_status").html("已结束");
-    }
-
-    // $("#add_status").select(status);
-    $("#add_code_d").show();
-    $("#add_status_d").show();
-  }
-
-  function updateStatus(id, status) {
-    var tooltip1 = status == 2 ? "您是否开启活动？" : "您是否关闭活动？";
-    layer.alert(tooltip1, {
-      icon: "success",
-      skin: "lyear-skin-success",
-      title: "活动提示",
-      closeBtn: 1,
-      btn: ["确定", "取消"],
-      yes: function (index, layero) {
-        var param = {
-          id: id,
-          status,
-          status,
-        };
-        $.ajax({
-          type: "POST",
-          url: basePath + "/admin/api/activity/updateStatus",
-          data: JSON.stringify(param),
-          contentType: "application/json",
-          headers: {
-            Authorization: authorization,
-            "Content-Type": "application/json",
-          },
-          success: function (response) {
-            var tooltip = status == 2 ? "开启成功" : "关闭成功";
-            if (response.code == 200) {
-              layer.alert(tooltip, {
-                icon: "success",
-                skin: "lyear-skin-success",
-                title: "活动提示",
-                time: 1000,
-                yes: function (index, layero) {
-                  layer.close(index);
-                  searchList();
-                },
-                cancle: function (index, layero) {
-                  layer.closeAll();
-                  layer.close(index);
-                },
-              });
-            } else {
-              layer.alert(response.msg, {
-                icon: "error",
-                skin: "lyear-skin-danger",
-              });
-            }
-          },
-          error: function (xhr, status, error) {
-            layer.alert("系统错误", {
-              icon: "error",
-              skin: "lyear-skin-danger",
-              title: "删除提示",
-            });
-          },
-        });
-
-        layer.close(index);
-        searchList();
-      },
-      cancle: function (index, layero) {
-        layer.close(index);
-      },
-    });
-  }
 
   //删除请求
   function deleteIds(ids) {
@@ -655,75 +551,89 @@
                 </button>
               </div>
 
-              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-                <div class="modal-dialog" role="document">
+              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                      <h4 class="modal-title" id="exampleModalLabel">
-                        新增活动
-                      </h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                          aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">活动详情</h4>
                     </div>
                     <div class="modal-body">
-                      <form class="form-horizontal" id="activityAddForm">
-                        <div class="form-group" style="display: none" id="add_code_d">
-                          <label class="col-md-3 control-label" for="add_code">活动编码:</label>
-                          <span id="add_id" value="" style="display: none"></span>
-                          <div class="col-md-7">
-                            <input type="text" class="form-control disabled" id="add_code" name="add_code" readonly
-                              placeholder="请输入活动编码" />
+
+                      <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                        <li class="active"><a href="#userinfo" data-toggle="tab">奖项详情</a></li>
+                        <li><a href="#enclosure" data-toggle="tab">奖品详情</a></li>
+                      </ul>
+                      <div id="myTabContent" class="tab-content p-10">
+                        <div class="tab-pane fade active in" id="userinfo">
+                          <div class="row">
+                            <p class="col-md-4">活动名称：2024年会活动</p>
+                            <p class="col-md-4">活动编码：HB123456789</p>
+                            <p class="col-md-4">活动状态：<span class="label label-primary">初审</span></p>
+                            <p class="col-md-4">创建时间：2020-06-13 12:25:10</p>
+                            <p class="col-md-4">更新时间：2020-06-13 22:57:23</p>
                           </div>
+                          <h5 class="m-t-15"><strong>奖项信息</strong></h5>
+                          <hr />
+                          <div class="row">
+                            <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>类型</th>
+                                  <th>附件名称</th>
+                                  <th>上传时间</th>
+                                  <th>状态</th>
+                                  <th>操作</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>1</td>
+                                  <td><i class="mdi mdi-file-word fa-1-5x"></i></td>
+                                  <td>户籍证明</td>
+                                  <td>2020-06-13 00:02:13</td>
+                                  <td><span class="label label-warning">待审核</span></td>
+                                  <td>
+                                    <a href="#!">下载</a> <a href="#!">审核</a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>2</td>
+                                  <td><i class="mdi mdi-file-pdf fa-1-5x"></i></td>
+                                  <td>电子签章证明PDF文件</td>
+                                  <td>2020-06-12 12:12:25</td>
+                                  <td><span class="label label-success">审核中</span></td>
+                                  <td>
+                                    <a href="#!">下载</a> <a href="#!">审核</a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>3</td>
+                                  <td><i class="mdi mdi-file-image fa-1-5x"></i></td>
+                                  <td>手持身份证照片</td>
+                                  <td>2020-06-12 06:52:00</td>
+                                  <td><span class="label label-warning">待定</span></td>
+                                  <td>
+                                    <a href="#!">下载</a> <a href="#!">审核</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+
                         </div>
-                        <div class="form-group m-t-10" style="display: none" id="add_status_d">
-                          <label class="col-md-3 control-label" for="add_code">活动状态:</label>
-                          <div class="col-md-7 m-t-5">
-                            <span class="label" id="add_status" value=""></span>
-                          </div>
+                        <div class="tab-pane fade" id="enclosure">
+
                         </div>
 
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_title">活动标题:</label>
-                          <div class="col-md-7">
-                            <input type="text" class="form-control" id="add_title" name="add_title"
-                              placeholder="请输入活动标题" />
-                          </div>
-                        </div>
+                      </div>
 
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_desc">活动描述:</label>
-                          <div class="col-md-7">
-                            <textarea class="form-control" id="add_desc" name="add_desc"></textarea>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_startTime">活动开始时间:</label>
-                          <div class="col-md-7">
-                            <input class="form-control js-datetimepicker" type="text" id="add_startTime"
-                              name="dateTimePicker" placeholder="开始时间" value="" data-locale="zh-cn"
-                              data-format="YYYY-MM-DD HH:mm:ss" />
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_endTime">活动结束时间:</label>
-                          <div class="col-md-7">
-                            <input class="form-control js-datetimepicker" type="text" id="add_endTime"
-                              name="dateTimePicker" placeholder="结束时间" value="" data-locale="zh-cn"
-                              data-format="YYYY-MM-DD HH:mm:ss" />
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">
-                            关闭
-                          </button>
-                          <button type="submit" class="btn btn-primary" id="addSave">
-                            确定
-                          </button>
-                        </div>
-                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                      <button type="button" class="btn btn-primary">确定</button>
                     </div>
                   </div>
                 </div>

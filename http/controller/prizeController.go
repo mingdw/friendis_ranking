@@ -4,6 +4,7 @@ import (
 	"lottery_annual/config/globalConst"
 	"lottery_annual/models"
 	activityService "lottery_annual/service/activity/crud"
+	prizeService "lottery_annual/service/prize/crud"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,9 +14,7 @@ type PrizeController struct {
 }
 
 func (index PrizeController) QueryList(c *gin.Context, code, prizeName string, status, limit, pageSize int) {
-	details := &models.PrizeDetails{}
-
-	details.SelectList(code, prizeName, status, pageSize, limit)
+	prizeService.DetailList(code, prizeName, status, limit, pageSize, c)
 }
 
 func (index PrizeController) Add(c *gin.Context, title, desc, startTime, endTime string) {

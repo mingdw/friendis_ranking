@@ -11,9 +11,9 @@ import (
 *
 分页查询活动详情列表
 */
-func List(code, prizeName string, status, limit, pageSize int, c *gin.Context) {
+func DetailList(code, prizeName string, status, limit, pageSize int, c *gin.Context) {
 	prizeModels := models.CreatePrizeFactory("")
-	count, details := prizeModels.SelectList(code, prizeName, status, limit, pageSize)
+	count, details := prizeModels.SelectList(code, prizeName, status, pageSize, limit)
 	response.ReturnSuccess(c, details, count)
 }
 
