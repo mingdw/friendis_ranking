@@ -136,28 +136,6 @@
       addValidator();
     });
 
-    $("#deleteButton").on("click", function () {
-      var rows = $("#activityTable").bootstrapTable("getSelections");
-      console.log(rows);
-      if (rows.length == 0) {
-        // rows 主要是为了判断是否选中，下面的else内容才是主要
-        layer.alert("未选择删除的行，请重新选择", {
-          icon: "error",
-          skin: "lyear-skin-danger",
-        });
-        return;
-      } else {
-        var arrays = new Array(); // 声明一个数组
-        $(rows).each(function () {
-          // 通过获得别选中的来进行遍历
-          arrays.push(this.id); // STOREID为获得到的整条数据中指定的一列
-        });
-        var param = {
-          ids: arrays,
-        };
-        deleteIds(JSON.stringify(param));
-      }
-    });
     //新增校验逻辑
     addValidator();
     //初始化查询结果
@@ -312,10 +290,13 @@
           field: "prizeDetails",
           align: "center",
           valign: "middle",
-          format: function (value, row, index) {
-            var html = ""
+          formatter: function (value, row, index) {
+            var html = "<p><span>-</span></p>"
             if (value.length > 0) {
-              html += '<p><span class=\"label label-outline-danger\">' + value.name + '</span></p>'
+              html = ""
+              for (var i = 0; i < value.length; i++) {
+                html += '<p><span class=\"label label-outline-danger\">' + value[i].name + '</span></p>'
+              }
             }
             return html
           }
@@ -327,13 +308,13 @@
           align: "center",
           valign: "middle",
           formatter: function (value, row, index) {
-            var editHtml = '<a class="btn btn-xs btn-warning" href="#!" onclick=editAndLook(' + JSON.stringify(
+            var editHtml = '<a class="btn btn-xs btn-primary" href="#!" onclick=editAndLook(' + JSON.stringify(
                 row).replace(/\"/g, "'") + ',' + '0)' +
               ' title="编辑" data-toggle="modal" data-target="#myModal" ><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
 
-            var lookHtml = '<a class="btn btn-xs btn-primary" href="#!" onclick=editAndLook(' + JSON.stringify(
-                row).replace(/\"/g, "'") + ',' + '1)' +
-              ' title="编辑" data-toggle="modal" data-target="#myModal" ><i class="mdi mdi-pencil">查看</i></a>&nbsp';
+            var lookHtml = '<a class="btn btn-xs btn-danger" href="#!" onclick=deleteOne(' + JSON.stringify(
+                row).replace(/\"/g, "'") + ')' +
+              ' title="删除" ><i class="mdi mdi-pencil">删除</i></a>&nbsp';
             var resultHtml = editHtml + lookHtml;
             return resultHtml;
           },
@@ -362,24 +343,84 @@
     return JSON.stringify(data);
   }
 
-  function deleteOne(id) {
-    console.info("删除一行: " + id);
-    var arrays = [id];
-    var param = {
-      ids: arrays,
-    };
-    deleteIds(JSON.stringify(param));
+  function deleteOne(rowValue) {
+    if (rowValue.prizeDetails.length > 0) {
+      var arrays = [rowValue.prizeDetails.length]
+      for (var i = 0; i < rowValue.prizeDetails.length; i++) {
+        arrays.push(rowValue.prizeDetails[i].id)
+      }
+      deleteIds(JSON.stringify(arrays));
+    } else {
+      layer.alert("奖项未设置，不需要删除", {
+        icon: "danger",
+        skin: "lyear-skin-danger",
+        title: "删除提示",
+        closeBtn: 1,
+        btn: ["确定", "取消"],
+        yes: function (index, layero) {
+          layer.close(index);
+          searchList();
+        },
+        cancle: function (index, layero) {
+          layer.close(index);
+        },
+      });
+
+    }
+
   }
 
   function editAndLook(value, type) {
-    console.info(value.id + ": " + value.title)
+    console.info("编辑行信息: " + JSON.stringify(value))
+    $("#mod-prize-table tbody").html("")
+    //需要模态框传值
+    $("#mod-ac-title").text(value.title)
+    $("#mod-ac-code").text(value.code)
+    var statusText = ""
+    var statusCss = ""
+
+    if (value.status == 1) {
+      statusText = "未开始"
+      statusCss = "label label-outline-default"
+    } else if (value.status == 2) {
+      statusText = "进行中"
+      statusCss = "label label-outline-success"
+    } else if (value.status == 3) {
+      statusText = "已结束"
+      statusCss = "label label-outline-warning"
+    }
+
+    $("#mod-ac-status").text(statusText)
+    $("#mod-ac-status").attr("class", statusCss);
+    $("#mod-ac-createTime").text(value.startTime)
+
+    //奖项动态添加到body里面
+    if (value.prizeDetails.length > 0) {
+      //先清空tbody内容，在设置最新的值
+      var prizeDetails = value.prizeDetails
+      for (var i = 0; i < prizeDetails.length; i++) {
+        var detail = prizeDetails[i]
+        var newRow = $('<tr>');
+        $('<td>').text(i + 1).appendTo(newRow);
+        $('<td>').text(detail.name).appendTo(newRow);
+        $('<td>').text("iphone 16 pro max").appendTo(newRow);
+        $('<td>').text(detail.prizeNum).appendTo(newRow);
+        var flag = detail.isRepeat == 0 ? "否" : "是";
+        $('<td>').text(flag).appendTo(newRow);
+        $('<td>').html(
+          "<a href=\"#!\" class=\"btn btn-xs btn-primary\"><i class=\"mdi mdi-pencil\">编辑</a> <a href=\"#!\ class=\"btn btn-xs btn-danger\"><i class=\"mdi mdi-window-close\">删除</i></a>"
+        ).appendTo(newRow);
+        $("#mod-prize-table tbody").append(newRow)
+      }
+    }
+
   }
 
 
 
   //删除请求
   function deleteIds(ids) {
-    layer.alert("您确定要删除这些活动吗？", {
+    layer.alert("您确定要删除该活动的所有奖项吗？" + ids, {
       icon: "error",
       skin: "lyear-skin-danger",
       title: "删除提示",
@@ -388,7 +429,7 @@
       yes: function (index, layero) {
         $.ajax({
           type: "POST",
-          url: basePath + "/admin/api/activity/delete",
+          url: basePath + "/admin/api/prize/delete",
           data: ids,
           contentType: "application/json",
           headers: {
@@ -545,11 +586,6 @@
 
           <div class="card-body">
             <div class="table-responsive">
-              <div class="input-group mb-2 mr-2">
-                <button class="btn btn-danger m-b-5 m-l-5" id="deleteButton">
-                  <i class="mdi mdi-window-close"></i> 清空奖项
-                </button>
-              </div>
 
               <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
@@ -568,57 +604,29 @@
                       <div id="myTabContent" class="tab-content p-10">
                         <div class="tab-pane fade active in" id="userinfo">
                           <div class="row">
-                            <p class="col-md-4">活动名称：2024年会活动</p>
-                            <p class="col-md-4">活动编码：HB123456789</p>
-                            <p class="col-md-4">活动状态：<span class="label label-primary">初审</span></p>
-                            <p class="col-md-4">创建时间：2020-06-13 12:25:10</p>
-                            <p class="col-md-4">更新时间：2020-06-13 22:57:23</p>
+                            <p class="col-md-4">活动名称：<span id="mod-ac-title" class="label label-success"></span>
+                            </p>
+                            <p class="col-md-4">活动编码：<span id="mod-ac-code"></span></p>
+                            <p class="col-md-4">活动状态：<span class="label label-primary" id="mod-ac-status"></span></p>
+                            <p class="col-md-4">活动创建时间： <span id="mod-ac-createTime"></span></p>
                           </div>
                           <h5 class="m-t-15"><strong>奖项信息</strong></h5>
                           <hr />
                           <div class="row">
-                            <table class="table table-hover">
-                              <thead>
+                            <a class="btn btn-success btn-xs"><i class="mdi mdi-plus"> 新增奖项</i> </a>
+                            <table class="table table-hover" id="mod-prize-table">
+                              <thead style="align-content: center;">
                                 <tr>
                                   <th>#</th>
-                                  <th>类型</th>
-                                  <th>附件名称</th>
-                                  <th>上传时间</th>
-                                  <th>状态</th>
+                                  <th>奖项名称</th>
+                                  <th>奖品名称</th>
+                                  <th>中奖人数</th>
+                                  <th>可重复抽取</th>
                                   <th>操作</th>
                                 </tr>
                               </thead>
-                              <tbody>
-                                <tr>
-                                  <td>1</td>
-                                  <td><i class="mdi mdi-file-word fa-1-5x"></i></td>
-                                  <td>户籍证明</td>
-                                  <td>2020-06-13 00:02:13</td>
-                                  <td><span class="label label-warning">待审核</span></td>
-                                  <td>
-                                    <a href="#!">下载</a> <a href="#!">审核</a>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>2</td>
-                                  <td><i class="mdi mdi-file-pdf fa-1-5x"></i></td>
-                                  <td>电子签章证明PDF文件</td>
-                                  <td>2020-06-12 12:12:25</td>
-                                  <td><span class="label label-success">审核中</span></td>
-                                  <td>
-                                    <a href="#!">下载</a> <a href="#!">审核</a>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>3</td>
-                                  <td><i class="mdi mdi-file-image fa-1-5x"></i></td>
-                                  <td>手持身份证照片</td>
-                                  <td>2020-06-12 06:52:00</td>
-                                  <td><span class="label label-warning">待定</span></td>
-                                  <td>
-                                    <a href="#!">下载</a> <a href="#!">审核</a>
-                                  </td>
-                                </tr>
+                              <tbody style="align-content: center;">
+
                               </tbody>
                             </table>
                           </div>
@@ -638,7 +646,6 @@
                   </div>
                 </div>
               </div>
-
               <table class="table table-bordered" id="activityTable"></table>
             </div>
           </div>

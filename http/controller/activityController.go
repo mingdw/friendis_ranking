@@ -34,7 +34,7 @@ func (index ActivityController) QueryList(c *gin.Context, code, startTime, endTi
 }
 
 func (index ActivityController) Add(c *gin.Context, title, desc, startTime, endTime string) {
-	code := "AC" + time.Now().Format("20060102150405") + randNum(4)
+	code := "AT" + time.Now().Format("060102150405") + randNum(4)
 	t1, _ := time.ParseInLocation(globalConst.DateFormat, startTime, time.Local) //这里按照当前时区转
 	t2, _ := time.ParseInLocation(globalConst.DateFormat, endTime, time.Local)   //这里按照当前时区转
 	activity := &models.Activity{

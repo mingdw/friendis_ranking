@@ -12,7 +12,7 @@ type ActivityAndPrizeDetails struct {
 	Code         string          `json:"code" gorm:"column:code"`
 	Title        string          `json:"title" gorm:"column:title"`
 	Status       int             `json:"status"  gorm:"column:status" `
-	PrizeDetails []*PrizeDetails `json :"prizeDetails"   gorm:"foreignKey:AcId"`
+	PrizeDetails []*PrizeDetails `json:"prizeDetails"   gorm:"foreignKey:AcId"`
 	dbconn.BaseModel
 }
 
@@ -67,6 +67,6 @@ func (prize *ActivityAndPrizeDetails) SelectList(code, prizeName string, status,
 	if status != 0 {
 		sql.Where("status = ?", status)
 	}
-	sql.Model(&prize).Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").First(&prize).Preload("PrizeDetails").Find(&temp)
+	sql.Model(&prize).Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").Find(&prize).Preload("PrizeDetails").Find(&temp)
 	return
 }
