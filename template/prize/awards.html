@@ -314,7 +314,7 @@
 
             var lookHtml = '<a class="btn btn-xs btn-danger" href="#!" onclick=deleteOne(' + JSON.stringify(
                 row).replace(/\"/g, "'") + ')' +
-              ' title="删除" ><i class="mdi mdi-pencil">删除</i></a>&nbsp';
+              ' title="删除" ><i class="mdi mdi-close">删除</i></a>&nbsp';
             var resultHtml = editHtml + lookHtml;
             return resultHtml;
           },
@@ -405,10 +405,15 @@
         $('<td>').text(detail.name).appendTo(newRow);
         $('<td>').text("iphone 16 pro max").appendTo(newRow);
         $('<td>').text(detail.prizeNum).appendTo(newRow);
-        var flag = detail.isRepeat == 0 ? "否" : "是";
-        $('<td>').text(flag).appendTo(newRow);
+        var flag = detail.isRepeat == 0 ? "" : "switch-success";
+        var flagHtml = '<label class="lyear-switch switch-solid ' + flag + '">' +
+          '<input type="checkbox" checked="">' +
+          '<span></span>' +
+          '</label>';
+
+        $('<td>').html(flagHtml).appendTo(newRow);
         $('<td>').html(
-          "<a href=\"#!\" class=\"btn btn-xs btn-primary\"><i class=\"mdi mdi-pencil\">编辑</a> <a href=\"#!\ class=\"btn btn-xs btn-danger\"><i class=\"mdi mdi-window-close\">删除</i></a>"
+          "<a href=\"#!\" class=\"btn btn-xs btn-primary\"><i class=\"mdi mdi-pencil\">编辑</i></a> <a href=\"#!\" class=\"btn btn-xs btn-danger\"><i class=\"mdi mdi-close\">编辑</i></a>"
         ).appendTo(newRow);
         $("#mod-prize-table tbody").append(newRow)
       }
