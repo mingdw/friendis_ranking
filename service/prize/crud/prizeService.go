@@ -36,8 +36,8 @@ func Update(activity *models.Activity, c *gin.Context) {
 }
 
 func Delete(ids []int, c *gin.Context) {
-	activityModels := models.CreateActivityFactory("")
-	if activityModels.Delete(ids) {
+	prizeModels := models.CreatePrizeFactory("")
+	if prizeModels.Delete(ids) {
 		response.ReturnDefaultOk(c)
 		return
 	}

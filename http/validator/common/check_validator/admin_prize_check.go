@@ -123,7 +123,7 @@ func (r PrizeDelete) CheckParams(context *gin.Context) {
 		return
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&controller.ActivityController{}).Delete(context, r.Ids)
+		(&controller.PrizeController{}).Delete(context, r.Ids)
 	}
 }
 

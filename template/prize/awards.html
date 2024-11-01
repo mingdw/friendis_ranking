@@ -127,6 +127,21 @@
       $("#add_endTime").val("");
     });
 
+
+    $("#mode-cancel").on("click", function () {
+      searchList()
+    });
+
+    $("#mode-confirm").on("click", function () {
+      searchList()
+    });
+    $("#add-prize-btn").on("click", function () {
+      $("#mymode2").css("backgroundcolor", "balck")
+    });
+
+
+
+
     //模态框关闭清空校验css、表单重置
     $("#exampleModal").on("hidden.bs.modal", function () {
       console.info("模态框关闭事件触发！");
@@ -142,6 +157,9 @@
     $("#datetimes").val("");
     searchList();
   });
+
+
+  var curUpdatePrizeDetails = []
 
   function addValidator() {
     $("#activityAddForm")
@@ -312,9 +330,9 @@
                 row).replace(/\"/g, "'") + ',' + '0)' +
               ' title="编辑" data-toggle="modal" data-target="#myModal" ><i class="mdi mdi-pencil">编辑</i></a>&nbsp';
 
-            var lookHtml = '<a class="btn btn-xs btn-danger" href="#!" onclick=deleteOne(' + JSON.stringify(
+            var lookHtml = '<a class="btn btn-xs btn-danger" href="#!" onclick=clearPrize(' + JSON.stringify(
                 row).replace(/\"/g, "'") + ')' +
-              ' title="删除" ><i class="mdi mdi-close">删除</i></a>&nbsp';
+              ' title="清空奖项" ><i class="mdi mdi-close">清空奖项</i></a>&nbsp';
             var resultHtml = editHtml + lookHtml;
             return resultHtml;
           },
@@ -343,13 +361,17 @@
     return JSON.stringify(data);
   }
 
-  function deleteOne(rowValue) {
+  function clearPrize(rowValue) {
     if (rowValue.prizeDetails.length > 0) {
       var arrays = [rowValue.prizeDetails.length]
       for (var i = 0; i < rowValue.prizeDetails.length; i++) {
         arrays.push(rowValue.prizeDetails[i].id)
       }
-      deleteIds(JSON.stringify(arrays));
+      var flag = deleteIds(arrays, 0)
+      console.info("清空结果： " + flag)
+      if (flag) {
+        console.info("清空成功")
+      }
     } else {
       layer.alert("奖项未设置，不需要删除", {
         icon: "danger",
@@ -370,9 +392,21 @@
 
   }
 
+
+  function deletePrizeOne(id, trIndex) {
+    var idArray = []
+    idArray.push(id)
+    var flag = deleteIds(idArray, 1)
+    console.info("删除结果： " + flag)
+    if (flag) {
+      //删除成功，删除模态框里面表格当前id的tr
+
+    }
+  }
+
   function editAndLook(value, type) {
     console.info("编辑行信息: " + JSON.stringify(value))
-    $("#mod-prize-table tbody").html("")
+
     //需要模态框传值
     $("#mod-ac-title").text(value.title)
     $("#mod-ac-code").text(value.code)
@@ -398,25 +432,33 @@
     if (value.prizeDetails.length > 0) {
       //先清空tbody内容，在设置最新的值
       var prizeDetails = value.prizeDetails
-      for (var i = 0; i < prizeDetails.length; i++) {
-        var detail = prizeDetails[i]
-        var newRow = $('<tr>');
-        $('<td>').text(i + 1).appendTo(newRow);
-        $('<td>').text(detail.name).appendTo(newRow);
-        $('<td>').text("iphone 16 pro max").appendTo(newRow);
-        $('<td>').text(detail.prizeNum).appendTo(newRow);
-        var flag = detail.isRepeat == 0 ? "" : "switch-success";
-        var flagHtml = '<label class="lyear-switch switch-solid ' + flag + '">' +
-          '<input type="checkbox" checked="">' +
-          '<span></span>' +
-          '</label>';
+      curUpdatePrizeDetails = prizeDetails
+      resizePrizeTable(prizeDetails)
+    }
 
-        $('<td>').html(flagHtml).appendTo(newRow);
-        $('<td>').html(
-          "<a href=\"#!\" class=\"btn btn-xs btn-primary\"><i class=\"mdi mdi-pencil\">编辑</i></a> <a href=\"#!\" class=\"btn btn-xs btn-danger\"><i class=\"mdi mdi-close\">编辑</i></a>"
-        ).appendTo(newRow);
-        $("#mod-prize-table tbody").append(newRow)
-      }
+  }
+
+
+  function resizePrizeTable(prizeDetails) {
+    $("#mod-prize-table tbody").html("")
+    for (var i = 0; i < prizeDetails.length; i++) {
+      var detail = prizeDetails[i]
+      var newRow = $('<tr id="prize-table-tr' + detail.id + '">');
+      $('<td>').text(i + 1).appendTo(newRow);
+      $('<td>').text(detail.name).appendTo(newRow);
+      $('<td>').text("iphone 16 pro max").appendTo(newRow);
+      $('<td>').text(detail.prizeNum).appendTo(newRow);
+      var flag = detail.isRepeat == 0 ? "" : "switch-success";
+      var flagHtml = '<label class="lyear-switch switch-solid ' + flag + '">' +
+        '<input type="checkbox" checked="" disabled>' +
+        '<span></span>' +
+        '</label>';
+      $('<td>').html(flagHtml).appendTo(newRow);
+      $('<td>').html(
+        "<a href=\"#!\" class=\"btn btn-xs btn-primary\"><i class=\"mdi mdi-pencil\">编辑</i></a> <a href=\"#!\" onclick=deletePrizeOne(" +
+        detail.id + ") class=\"btn btn-xs btn-danger\"><i class=\"mdi mdi-close\">删除</i></a>"
+      ).appendTo(newRow);
+      $("#mod-prize-table tbody").append(newRow)
     }
 
   }
@@ -424,8 +466,17 @@
 
 
   //删除请求
-  function deleteIds(ids) {
-    layer.alert("您确定要删除该活动的所有奖项吗？" + ids, {
+  function deleteIds(idArray, type) {
+    var returnFlag = false;
+    var title = "您确定要删除该活动的所有奖项吗？"
+    if (type == 1) {
+      title = "您确定要删除该奖项吗？";
+    }
+    var request = {
+      ids: idArray
+    }
+
+    layer.alert(title, {
       icon: "error",
       skin: "lyear-skin-danger",
       title: "删除提示",
@@ -435,13 +486,14 @@
         $.ajax({
           type: "POST",
           url: basePath + "/admin/api/prize/delete",
-          data: ids,
+          data: JSON.stringify(request),
           contentType: "application/json",
           headers: {
             Authorization: authorization,
             "Content-Type": "application/json",
           },
           success: function (response) {
+            console.info("返回的code： " + response.code)
             if (response.code == 200) {
               layer.alert("删除成功", {
                 icon: "success",
@@ -451,7 +503,22 @@
                 btn: ["确定", "取消"],
                 yes: function (index, layero) {
                   layer.close(index);
-                  searchList();
+                  if (type == 0) {
+                    searchList();
+                  } else if (type == 1) {
+                    //删除tabble对应的tr
+                    layer.close(index);
+                    var newPrizeDetails = []
+                    for (var i = 0; i < curUpdatePrizeDetails.length; i++) {
+                      if (curUpdatePrizeDetails[i].id != idArray[0]) {
+                        newPrizeDetails.push(curUpdatePrizeDetails[i])
+                      }
+                    }
+                    // $("#prize-table-tr" + idArray[0]).remove()
+                    curUpdatePrizeDetails = newPrizeDetails
+                    resizePrizeTable(newPrizeDetails)
+                  }
+
                 },
                 cancle: function (index, layero) {
                   layer.close(index);
@@ -481,6 +548,7 @@
         layer.close(index);
       },
     });
+    return returnFlag
   }
 
   function submitSaveOrUpdate(data, suffixPath) {
@@ -591,7 +659,6 @@
 
           <div class="card-body">
             <div class="table-responsive">
-
               <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                   <div class="modal-content">
@@ -618,7 +685,8 @@
                           <h5 class="m-t-15"><strong>奖项信息</strong></h5>
                           <hr />
                           <div class="row">
-                            <a class="btn btn-success btn-xs"><i class="mdi mdi-plus"> 新增奖项</i> </a>
+                            <a class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal2"
+                              id="add-prize-btn"><i class="mdi mdi-plus"> 新增奖项</i> </a>
                             <table class="table table-hover" id="mod-prize-table">
                               <thead style="align-content: center;">
                                 <tr>
@@ -638,19 +706,96 @@
 
                         </div>
                         <div class="tab-pane fade" id="enclosure">
-
+                          <p>pic</p>
                         </div>
 
                       </div>
 
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                      <button type="button" class="btn btn-primary">确定</button>
+                      <button type="button" id="mode-cancel" class="btn btn-default" data-dismiss="modal">取消</button>
+                      <button type="button" id="mode-confirm" class="btn btn-primary" data-dismiss="modal">确定</button>
                     </div>
                   </div>
                 </div>
               </div>
+
+
+              <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      <h4 class="modal-title" id="exampleModalLabel">
+                        新增/编辑奖项
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                      <form class="form-horizontal" id="activityAddForm">
+                        <div class="form-group" style="display: none" id="add_code_d">
+                          <label class="col-md-3 control-label" for="add_code">活动编码:</label>
+                          <span id="add_id" value="" style="display: none"></span>
+                          <div class="col-md-7">
+                            <input type="text" class="form-control disabled" id="add_code" name="add_code" readonly
+                              placeholder="请输入活动编码" />
+                          </div>
+                        </div>
+                        <div class="form-group m-t-10" style="display: none" id="add_status_d">
+                          <label class="col-md-3 control-label" for="add_code">活动状态:</label>
+                          <div class="col-md-7 m-t-5">
+                            <span class="label" id="add_status" value=""></span>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_title">活动标题:</label>
+                          <div class="col-md-7">
+                            <input type="text" class="form-control" id="add_title" name="add_title"
+                              placeholder="请输入活动标题" />
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_desc">活动描述:</label>
+                          <div class="col-md-7">
+                            <textarea class="form-control" id="add_desc" name="add_desc"></textarea>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_startTime">活动开始时间:</label>
+                          <div class="col-md-7">
+                            <input class="form-control js-datetimepicker" type="text" id="add_startTime"
+                              name="dateTimePicker" placeholder="开始时间" value="" data-locale="zh-cn"
+                              data-format="YYYY-MM-DD HH:mm:ss" />
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="col-md-3 control-label" for="add_endTime">活动结束时间:</label>
+                          <div class="col-md-7">
+                            <input class="form-control js-datetimepicker" type="text" id="add_endTime"
+                              name="dateTimePicker" placeholder="结束时间" value="" data-locale="zh-cn"
+                              data-format="YYYY-MM-DD HH:mm:ss" />
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">
+                            关闭
+                          </button>
+                          <button type="submit" class="btn btn-primary" id="addSave">
+                            确定
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               <table class="table table-bordered" id="activityTable"></table>
             </div>
           </div>

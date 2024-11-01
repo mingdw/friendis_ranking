@@ -52,7 +52,7 @@ func (index PrizeController) Update(c *gin.Context, title, desc, startTime, endT
 }
 
 func (index PrizeController) Delete(c *gin.Context, ids []int) {
-	activityService.Delete(ids, c)
+	prizeService.Delete(ids, c)
 }
 
 func (index PrizeController) UpdateStatus(c *gin.Context, id, status int) {

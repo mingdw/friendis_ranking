@@ -70,3 +70,10 @@ func (prize *ActivityAndPrizeDetails) SelectList(code, prizeName string, status,
 	sql.Model(&prize).Count(&counts).Offset((pageSize - 1) * limit).Limit(limit).Order("editTime desc").Find(&prize).Preload("PrizeDetails").Find(&temp)
 	return
 }
+
+func (prize *ActivityAndPrizeDetails) Delete(ids []int) bool {
+	if res := prize.Table("sys_prize").Where("id in(?)", ids).Delete(nil); res.RowsAffected >= 0 {
+		return true
+	}
+	return false
+}
