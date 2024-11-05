@@ -18,16 +18,13 @@ func AdminPrizeValidator() {
 	key = globalConst.ValidatorPrefix + "PrizeList"
 	containers.Set(key, checkvalidator.PrizeList{})
 
-	key = globalConst.ValidatorPrefix + "PrizeAdd"
-	containers.Set(key, checkvalidator.PrizeAdd{})
-
-	key = globalConst.ValidatorPrefix + "PrizeUpdate"
-	containers.Set(key, checkvalidator.PrizeUpdate{})
+	key = globalConst.ValidatorPrefix + "SavaOrUpdate"
+	containers.Set(key, checkvalidator.PrizeAddAndUpdate{})
 
 	key = globalConst.ValidatorPrefix + "PrizeDelete"
 	containers.Set(key, checkvalidator.PrizeDelete{})
 
-	key = globalConst.ValidatorPrefix + "PrizeUpdateStatus"
-	containers.Set(key, checkvalidator.PrizeUpDateStatus{})
+	key = globalConst.ValidatorPrefix + "PrizeListByAcId"
+	containers.Set(key, checkvalidator.PrizeQueryByAcId{})
 
 }

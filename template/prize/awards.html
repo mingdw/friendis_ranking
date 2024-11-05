@@ -127,7 +127,6 @@
       $("#add_endTime").val("");
     });
 
-
     $("#mode-cancel").on("click", function () {
       searchList()
     });
@@ -135,19 +134,22 @@
     $("#mode-confirm").on("click", function () {
       searchList()
     });
+
     $("#add-prize-btn").on("click", function () {
-      $("#mymode2").css("backgroundcolor", "balck")
+      //$("#mymode2").css("backgroundcolor", "balck")
+
+
+
     });
 
 
 
 
     //模态框关闭清空校验css、表单重置
-    $("#exampleModal").on("hidden.bs.modal", function () {
-      console.info("模态框关闭事件触发！");
-      $("#activityAddForm").data("bootstrapValidator").destroy();
-      $("#activityAddForm").data("bootstrapValidator", null);
-      $("#activityAddForm")[0].reset();
+    $("#myModal2").on("hidden.bs.modal", function () {
+      $("#prizeAddForm").data("bootstrapValidator").destroy();
+      $("#prizeAddForm").data("bootstrapValidator", null);
+      $("#prizeAddForm")[0].reset();
       addValidator();
     });
 
@@ -155,14 +157,22 @@
     addValidator();
     //初始化查询结果
     $("#datetimes").val("");
+
+
+    //多层模态框的展示问题
+    $(document).on('show.bs.modal', '.modal', function (event) {
+      $(this).appendTo($('body'));
+    }).on('shown.bs.modal', '.modal.in', function (event) {
+      setModalsAndBackdropsOrder();
+    }).on('hidden.bs.modal', '.modal', function (event) {
+      setModalsAndBackdropsOrder();
+    });
     searchList();
   });
 
 
-  var curUpdatePrizeDetails = []
-
   function addValidator() {
-    $("#activityAddForm")
+    $("#prizeAddForm")
       .bootstrapValidator({
         excluded: [":disabled"],
         message: "该值无效",
@@ -172,33 +182,32 @@
           validating: "mdi mdi-refresh",
         },
         fields: {
-          add_title: {
-            message: "活动标题不能为空",
+          add_prize_name: {
+            message: "奖项名称不合法",
             validators: {
               notEmpty: {
-                message: "活动标题不能为空",
+                message: "奖项名称不能为空",
               },
               stringLength: {
-                max: 64,
-                message: "活动标题不能超过64个字符",
+                max: 24,
+                message: "奖项名称不能超过24字符",
               },
             },
           },
 
-          add_startTime: {
-            message: "活动开始时间不能为空",
+          add_prize_num: {
+            message: "抽奖人数不合法",
             validators: {
               notEmpty: {
-                message: "活动开始时间不能为空",
+                message: "抽奖人数不能为空",
               },
-            },
-          },
 
-          add_endTime: {
-            message: "活动结束时间不能为空",
-            validators: {
-              notEmpty: {
-                message: "活动结束时间不能为空",
+              digits: {
+                message: '抽奖人数为数字'
+              },
+              greaterThan: {
+                value: 1,
+                message: '抽奖人数需要大于1'
               },
             },
           },
@@ -207,7 +216,7 @@
       .on("success.form.bv", function (e) {
         //新增或者编辑校验成功
         e.preventDefault();
-        doAddOrUpdate();
+        saveOrUpdate();
       });
   }
 
@@ -397,11 +406,7 @@
     var idArray = []
     idArray.push(id)
     var flag = deleteIds(idArray, 1)
-    console.info("删除结果： " + flag)
-    if (flag) {
-      //删除成功，删除模态框里面表格当前id的tr
 
-    }
   }
 
   function editAndLook(value, type) {
@@ -427,13 +432,10 @@
     $("#mod-ac-status").text(statusText)
     $("#mod-ac-status").attr("class", statusCss);
     $("#mod-ac-createTime").text(value.startTime)
-
+    $("#add_ac_id").val(value.id)
     //奖项动态添加到body里面
     if (value.prizeDetails.length > 0) {
-      //先清空tbody内容，在设置最新的值
-      var prizeDetails = value.prizeDetails
-      curUpdatePrizeDetails = prizeDetails
-      resizePrizeTable(prizeDetails)
+      resizePrizeTable(value.prizeDetails)
     }
 
   }
@@ -463,7 +465,116 @@
 
   }
 
+  function saveOrUpdate() {
+    var param = {
+      acId: Number($("#add_ac_id").val()),
+      prizeName: $("#add_prize_name").val(),
+      prizeNum: Number($("#add_prize_num").val())
+    }
+    if ($("#add_prize_repeat").val() == "on") {
+      param.isRepeat = 1
+    } else {
+      param.isRepeat = 0
+    }
+    if ($("#add_prize_id").val() != "") {
+      param.id = Number($("#add_prize_id").val())
+    } else {
+      param.id = -1
+    }
+    var itm_code = $("#add_prize_item_code").val()
+    param.itemCode = itm_code
 
+    console.info("新增请求参数： " + JSON.stringify(param))
+    doSaveOrUpdate(param)
+  }
+
+
+  function doSaveOrUpdate(param) {
+    $.ajax({
+      type: "POST",
+      url: basePath + "/admin/api/prize/addAndUpdate",
+      data: JSON.stringify(param),
+      contentType: "application/json",
+      headers: {
+        Authorization: authorization,
+        "Content-Type": "application/json",
+      },
+      success: function (response) {
+        var successAlert = param.id == -1 ? "新增成功" : "修改成功"
+        var successTitle = param.id == -1 ? "新增提示" : "修改提示"
+        if (response.code == 200) {
+          layer.alert(successAlert, {
+            icon: "success",
+            skin: "lyear-skin-success",
+            title: successTitle,
+            closeBtn: 1,
+            btn: ["确定", "取消"],
+            yes: function (index, layero) {
+              layer.close(index);
+              if (param.id == -1) {
+                $("#myModal2").modal('hide'); //手动关闭
+                queryPrizeByAcId(param.acId)
+              }
+            },
+            cancle: function (index, layero) {
+              layer.close(index);
+            },
+          });
+        } else {
+          layer.alert(response.msg, {
+            icon: "error",
+            skin: "lyear-skin-danger",
+          });
+        }
+      },
+      error: function (xhr, status, error) {
+        layer.alert("系统错误", {
+          icon: "error",
+          skin: "lyear-skin-danger",
+          title: "更新提示",
+        });
+        if (Number(response.code) === -400100) {
+          layer.close(index);
+          top.location.href = basePath + "/login";
+        }
+      },
+    });
+
+
+  }
+
+  function queryPrizeByAcId(acId) {
+    $.ajax({
+      type: "GET",
+      url: basePath + "/admin/api/prize/getPrizeDetailsByAcId/" + acId,
+      contentType: "application/json",
+      headers: {
+        Authorization: authorization,
+        "Content-Type": "application/json",
+      },
+      success: function (response) {
+        if (response.code == 200) {
+          resizePrizeTable(response.data)
+        } else {
+          layer.alert(response.msg, {
+            icon: "error",
+            skin: "lyear-skin-danger",
+          });
+        }
+      },
+      error: function (xhr, status, error) {
+        layer.alert("系统错误", {
+          icon: "error",
+          skin: "lyear-skin-danger",
+          title: "删除提示",
+        });
+        if (Number(response.code) === -400100) {
+          layer.close(index);
+          top.location.href = basePath + "/login";
+        }
+      },
+    });
+  }
 
   //删除请求
   function deleteIds(idArray, type) {
@@ -508,15 +619,8 @@
                   } else if (type == 1) {
                     //删除tabble对应的tr
                     layer.close(index);
-                    var newPrizeDetails = []
-                    for (var i = 0; i < curUpdatePrizeDetails.length; i++) {
-                      if (curUpdatePrizeDetails[i].id != idArray[0]) {
-                        newPrizeDetails.push(curUpdatePrizeDetails[i])
-                      }
-                    }
-                    // $("#prize-table-tr" + idArray[0]).remove()
-                    curUpdatePrizeDetails = newPrizeDetails
-                    resizePrizeTable(newPrizeDetails)
+                    var acId = $("#add_ac_id").val()
+                    queryPrizeByAcId(acId)
                   }
 
                 },
@@ -551,61 +655,7 @@
     return returnFlag
   }
 
-  function submitSaveOrUpdate(data, suffixPath) {
-    var alertOkMsg = "新增成功";
-    var lertOkTitle = "新增提示";
-    if (suffixPath == "update") {
-      alertOkMsg = "编辑成功";
-      lertOkTitle = "编辑提示";
-    }
-    console.info(suffixPath + ": " + data);
-    $.ajax({
-      type: "POST",
-      url: basePath + "/admin/api/activity/" + suffixPath,
-      data: data,
-      contentType: "application/json",
-      headers: {
-        Authorization: authorization,
-        "Content-Type": "application/json",
-      },
-      success: function (response) {
-        if (response.code == 200) {
-          layer.alert(alertOkMsg, {
-            icon: "success",
-            skin: "lyear-skin-success",
-            title: lertOkTitle,
-            closeBtn: 1,
-            btn: ["确定", "取消"],
-            yes: function (index, layero) {
-              layer.close(index);
-              $("#exampleModal").modal("hide"); //手动关闭
-              searchList();
-            },
-            cancle: function (index, layero) {
-              layer.close(index);
-            },
-          });
-        } else {
-          layer.alert(response.msg, {
-            icon: "error",
-            skin: "lyear-skin-danger",
-          });
-          layer.closeAll();
-          if (Number(response.code) === -400100) {
-            layer.close(index);
-            top.location.href = basePath + "/login";
-          }
-        }
-      },
-      error: function (xhr, status, error) {
-        layer.alert("系统错误", {
-          icon: "error",
-          skin: "lyear-skin-danger",
-          title: lertOkTitle,
-        });
-      },
-    });
-  }
+
 
   function getISOTimeMilions(isostring) {
     return new Date(isostring).getTime();
@@ -626,6 +676,17 @@
 
     // 格式化并返回结果
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  function setModalsAndBackdropsOrder() {
+    var modalZIndex = 1040;
+    $('.modal.in').each(function (index) {
+      var $modal = $(this);
+      modalZIndex++;
+      $modal.css('zIndex', modalZIndex);
+      $modal.next('.modal-backdrop.in').addClass('hidden').css('zIndex', modalZIndex - 1);
+    });
+    $('.modal.in:visible:last').focus().next('.modal-backdrop.in').removeClass('hidden');
   }
 </script>
 
@@ -733,59 +794,59 @@
                       </h4>
                     </div>
                     <div class="modal-body">
-                      <form class="form-horizontal" id="activityAddForm">
-                        <div class="form-group" style="display: none" id="add_code_d">
-                          <label class="col-md-3 control-label" for="add_code">活动编码:</label>
-                          <span id="add_id" value="" style="display: none"></span>
+                      <form class="form-horizontal" id="prizeAddForm">
+                        <div class="form-group" id="add_prize">
+                          <span id="add_prize_id" value="" style="display: none"></span>
+                          <span id="add_ac_id" value="" style="display: none"></span>
+                          <label class="col-md-3 control-label" for="add_prize_name">奖项名称:</label>
                           <div class="col-md-7">
-                            <input type="text" class="form-control disabled" id="add_code" name="add_code" readonly
-                              placeholder="请输入活动编码" />
+                            <input type="text" class="form-control disabled" id="add_prize_name" name="add_prize_name"
+                              placeholder="请输入奖项名称" />
                           </div>
                         </div>
-                        <div class="form-group m-t-10" style="display: none" id="add_status_d">
-                          <label class="col-md-3 control-label" for="add_code">活动状态:</label>
-                          <div class="col-md-7 m-t-5">
-                            <span class="label" id="add_status" value=""></span>
+                        <div class="form-group" id="add_prize_item">
+                          <label class="col-md-3 control-label" for="add_code">序号:</label>
+                          <div class="col-md-7">
+                            <select class="form-control exampleSelect" name="add_prize_item_code"
+                              id="add_prize_item_code">
+                              <option value="0">自动</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                            </select>
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_title">活动标题:</label>
+                          <label class="col-md-3 control-label" for="add_prize_num">中奖人数:</label>
                           <div class="col-md-7">
-                            <input type="text" class="form-control" id="add_title" name="add_title"
-                              placeholder="请输入活动标题" />
+                            <input type="text" class="form-control" id="add_prize_num" name="add_prize_num"
+                              placeholder="请输入人数" />
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_desc">活动描述:</label>
-                          <div class="col-md-7">
-                            <textarea class="form-control" id="add_desc" name="add_desc"></textarea>
+                          <label class="col-md-3 control-label" for="add_prize_repeat">重复抽取:</label>
+                          <div class="col-md-3" style="margin-top: 7px;">
+                            <label class="lyear-switch switch-solid switch-success">
+                              <input type="checkbox" checked="false" id="add_prize_repeat">
+                              <span></span>
+                            </label>
                           </div>
                         </div>
 
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_startTime">活动开始时间:</label>
-                          <div class="col-md-7">
-                            <input class="form-control js-datetimepicker" type="text" id="add_startTime"
-                              name="dateTimePicker" placeholder="开始时间" value="" data-locale="zh-cn"
-                              data-format="YYYY-MM-DD HH:mm:ss" />
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="col-md-3 control-label" for="add_endTime">活动结束时间:</label>
-                          <div class="col-md-7">
-                            <input class="form-control js-datetimepicker" type="text" id="add_endTime"
-                              name="dateTimePicker" placeholder="结束时间" value="" data-locale="zh-cn"
-                              data-format="YYYY-MM-DD HH:mm:ss" />
-                          </div>
-                        </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default" data-dismiss="modal">
                             关闭
                           </button>
-                          <button type="submit" class="btn btn-primary" id="addSave">
+                          <button type="submit" class="btn btn-primary" id="addAndUpdatePrize">
                             确定
                           </button>
                         </div>

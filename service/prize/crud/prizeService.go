@@ -17,24 +17,6 @@ func DetailList(code, prizeName string, status, limit, pageSize int, c *gin.Cont
 	response.ReturnSuccess(c, details, count)
 }
 
-func Add(activity *models.Activity, c *gin.Context) {
-	activityModels := models.CreateActivityFactory("")
-	if activityModels.Add(activity) {
-		response.ReturnDefaultOk(c)
-		return
-	}
-	response.ReturnDeFaultFail(c)
-}
-
-func Update(activity *models.Activity, c *gin.Context) {
-	activityModels := models.CreateActivityFactory("")
-	if activityModels.Update(activity) {
-		response.ReturnDefaultOk(c)
-		return
-	}
-	response.ReturnDeFaultFail(c)
-}
-
 func Delete(ids []int, c *gin.Context) {
 	prizeModels := models.CreatePrizeFactory("")
 	if prizeModels.Delete(ids) {
@@ -44,9 +26,24 @@ func Delete(ids []int, c *gin.Context) {
 	response.ReturnDeFaultFail(c)
 }
 
-func UpdateStatus(id, status int, c *gin.Context) {
-	activityModels := models.CreateActivityFactory("")
-	if activityModels.UpdateStatus(id, status) {
+func SelectByAcId(acId int, c *gin.Context) {
+	prizeModels := models.CreatePrizeFactory("")
+	count, result := prizeModels.SelectByAcId(acId)
+	response.ReturnSuccess(c, result, count)
+}
+
+func Add(c *gin.Context, acid, itemCode, prizeNum, isRepeat int, prizeName string) {
+	prizeModels := models.CreatePrizeFactory("")
+	if prizeModels.Add(acid, itemCode, prizeNum, isRepeat, prizeName) {
+		response.ReturnDefaultOk(c)
+		return
+	}
+	response.ReturnDeFaultFail(c)
+}
+
+func Update(c *gin.Context, id, acid, itemCode, prizeNum, isRepeat int, prizeName string) {
+	prizeModels := models.CreatePrizeFactory("")
+	if prizeModels.Update(id, acid, itemCode, prizeNum, isRepeat, prizeName) {
 		response.ReturnDefaultOk(c)
 		return
 	}
